@@ -1,0 +1,22 @@
+@import 'tailwindcss';
+@plugin "daisyui" {
+  themes: light --default;
+}
+@plugin "daisyui/theme" {
+  name: 'light';
+  default: true;
+  --color-primary: #FF1A1A;
+  --color-secondary: #000000;
+  --color-accent: #8a8a8a;
+}
+
+@font-face {
+  font-family: 'Microgramma D Extended';
+  src: url('/src/assets/LogoFont.otf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.btn-primary {
+  @apply bg-[#FF1A1A] text-white border-none shadow-none hover:bg-secondary font-[poppins];
+}
