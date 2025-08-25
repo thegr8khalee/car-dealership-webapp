@@ -1,6 +1,6 @@
 import { LogOut, MenuIcon, User2 } from 'lucide-react';
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAdminStore } from '../store/useAdminStore';
 import { useAuthStore } from '../store/useAuthStore';
 
@@ -9,6 +9,7 @@ const Navbar = ({ className = '' }) => {
   const { logout, authUser, isAdmin } = useAuthStore();
 
   const navigate = useNavigate();
+  const location = useLocation(); // 👈 get current path
 
   const closeDrawer = () => {
     const drawerToggle = document.getElementById('my-drawer');
@@ -36,6 +37,12 @@ const Navbar = ({ className = '' }) => {
     navigate('/profile');
     closeDrawer();
   };
+
+  // helper function to apply bold if active
+  const getButtonClass = (path) =>
+    `font-normal btn bg-transparent border-0 shadow-0 hover:bg-transparent hover:shadow-none text-start justify-start ${
+      location.pathname === path ? 'font-bold text-primary' : ''
+    }`;
 
   return (
     <div className="drawer">
@@ -98,17 +105,33 @@ const Navbar = ({ className = '' }) => {
         ></label>
         <div className="menu p-4 w-64 min-h-full bg-base-200 text-base-content flex justify-between">
           <ul>
-            <li>
-              <a>Home</a>
+            <li className="p-2">
+              <button
+                className={getButtonClass('/')}
+                onClick={() => {
+                  navigate('/');
+                  closeDrawer();
+                }}
+              >
+                Home
+              </button>
             </li>
-            <li>
-              <a>Listings</a>
+            <li className="p-2">
+              <button
+                className={getButtonClass('/listings')}
+                onClick={() => {
+                  navigate('/listings');
+                  closeDrawer();
+                }}
+              >
+                Listings
+              </button>
             </li>
-            <li>
-              <a>Makes</a>
+            <li className="p-2">
+              <button className={getButtonClass('/makes')}>Makes</button>
             </li>
-            <li>
-              <a>Blogs</a>
+            <li className="p-2">
+              <button className={getButtonClass('/blogs')}>Blogs</button>
             </li>
           </ul>
           <div>
@@ -149,7 +172,7 @@ const Navbar = ({ className = '' }) => {
                   handleLogOut();
                 }}
               >
-                Logout 
+                Logout
                 <LogOut className="size-5 ml-2" />
               </button>
             )}

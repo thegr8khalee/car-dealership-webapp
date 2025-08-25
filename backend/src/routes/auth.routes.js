@@ -22,7 +22,7 @@ router.put('/update', protectRoute, updateProfile);
 router.delete('/delete', protectRoute, deleteAccount);
 
 router.post('/forgot-password', forgotPassword);
-router.post('/reset-password/:token', resetPassword);
+router.post('/reset-password/:token', protectRoute, resetPassword);
 router.put('/change-password', protectRoute, changePassword);
 
 export default router;

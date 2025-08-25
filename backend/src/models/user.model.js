@@ -4,14 +4,29 @@ import sequelize from '../lib/db.js';
 const User = sequelize.define(
   'User',
   {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4, // Automatically generates a UUID v4
+      primaryKey: true,
+      allowNull: false,
+    },
     username: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
+      validate: {
+        len: [3, 30],
+        notEmpty: true,
+      },
     },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
+      validate: {
+        isEmail: true,
+        notEmpty: true,
+      },
     },
     passwordHash: {
       type: DataTypes.STRING,
@@ -20,6 +35,9 @@ const User = sequelize.define(
     phoneNumber: {
       type: DataTypes.STRING,
       allowNull: true,
+      validate: {
+        is: /^[\+]?[1-9][\d]{0,15}$/,
+      },
     },
     passwordResetToken: {
       type: DataTypes.STRING,
@@ -32,6 +50,14 @@ const User = sequelize.define(
   },
   {
     timestamps: true,
+    indexes: [
+      {
+        fields: ['email'],
+      },
+      {
+        fields: ['username'],
+      },
+    ],
   }
 );
 
