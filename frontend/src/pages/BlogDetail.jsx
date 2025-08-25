@@ -329,7 +329,7 @@ const BlogDetail = () => {
                 </form>
               </div>
             </div>
-            <div className="w-full border-t border-gray-300 my-6 border-b py-4 flex w-full justify-between">
+            <div className="w-full border-t border-gray-300 my-6 border-b py-4 flex justify-between">
               <div className="flex">
                 <ChevronLeft className="size-10 text-gray-600" />
                 <div className="flex flex-col ml-2">
