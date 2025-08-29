@@ -8,19 +8,28 @@ import Listings from './pages/Listings';
 import CarDetails from './pages/CarDetails';
 import Blogs from './pages/Blogs';
 import BlogDetail from './pages/BlogDetail';
-import AdminLoginProtectedRoute from './components/AdminProtectedRoute';
+import AdminLoginProtectedRoute from './components/AdminLoginProtectedRoute';
 import AdminLoginPage from './pages/AdminLoginPage';
 import SignupPage from './pages/SignupPage';
-import { useAuthStore } from './store/useAuthStore';
+// import { useAuthStore } from './store/useAuthStore';
 import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
+import AdminDashboard from './pages/AdminDashboard';
+import { useUserAuthStore } from './store/useUserAuthStore';
+import AdminProtectedRoute from './components/AdminProtectedRoute';
+import AddCarPage from './pages/AddCarPage';
+import UpdateCarPage from './pages/UpdateCarPage';
+import AddBlogPage from './pages/AddBlogPage';
+import UpdateBlogPage from './pages/UpdateBlogPage';
 
 function App() {
-  const { checkAuth, authUser } = useAuthStore();
+  const { checkAuth, authUser } = useUserAuthStore();
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
+
+  console.log('Authenticated User:', authUser);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -37,7 +46,7 @@ function App() {
             element={authUser ? <ProfilePage /> : <LoginPage />}
           />
           <Route path="/listings" element={<Listings />} />
-          <Route path="/cars" element={<CarDetails />} />
+          <Route path="/car/:id" element={<CarDetails />} />
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/blog" element={<BlogDetail />} />
 
@@ -46,6 +55,14 @@ function App() {
           {/** admin routes */}
           <Route element={<AdminLoginProtectedRoute />}>
             <Route path="/admin/login" element={<AdminLoginPage />} />
+          </Route>
+
+          <Route element={<AdminProtectedRoute />}>
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path='/admin/cars/new' element={<AddCarPage />} />
+            <Route path='/admin/cars/update/:id' element={<UpdateCarPage />} />
+            <Route path='/admin/blogs/new' element={<AddBlogPage />} />
+            <Route path='/admin/blogs/update/:id' element={<UpdateBlogPage />} />
           </Route>
         </Routes>
 

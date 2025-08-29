@@ -1,32 +1,29 @@
-// src/components/Admin/AdminLoginProtectedRoute.jsx
-import React, { useEffect } from 'react';
+// src/components/Admin/AdminProtectedRoute.jsx
+import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import { useAuthStore } from '../store/useAuthStore';
+// import { useAuthStore } from '../store/useAuthStore'; // Import Zustand store
+import { useUserAuthStore } from '../store/useUserAuthStore';
 
-const AdminLoginProtectedRoute = () => {
-    const { authUser, isLoading, isAdmin, checkAuth } = useAuthStore(); // Access state from Zustand store
+const AdminProtectedRoute = () => {
+  const { authUser, isLoading, isAdmin } = useUserAuthStore(); // Access state from Zustand store
 
-    useEffect(() => {
-        checkAuth();
-      }, [checkAuth]);
+//   console.log('AdminProtectedRoute: authUser:', authUser); // DEBUG
+//   console.log('AdminProtectedRoute: isAdmin:', isAdmin); // DEBUG
+//   console.log('AdminProtectedRoute: isLoading:', isLoading); // DEBUG
 
-    if (isLoading) {
-        // Show a loading indicator while authentication status is being determined
-        return <div className="text-center p-4">Loading authentication...</div>;
-    }
+  if (isLoading) {
+    // Show a loading indicator while authentication status is being determined
+    return <div className="text-center p-4">Loading authentication...</div>;
+  }
 
-    // Condition 1: If already logged in AND is an admin, redirect to admin dashboard.
-    if (authUser && isAdmin) {
-        return <Navigate to="/admin/dashboard" replace />;
-    }
+  // Conditional rendering logic:
+  // If there's no authUser OR the authUser is not an admin, redirect them to the login page.
+  if (!authUser || !isAdmin) {
+    return <Navigate to="/" replace />;
+  }
 
-    // Condition 2: If logged in BUT NOT an admin (i.e., a regular user), redirect to the home page.
-    if (authUser && !isAdmin) {
-        return <Navigate to="/" replace />; // Redirect non-admin authenticated users to home
-    }
-
-    // Condition 3: If not logged in at all, allow access to the nested route (the AdminLoginPage).
-    return <Outlet />;
+  // If the authUser is logged in AND is an admin, render the nested routes (children of this Route element).
+  return <Outlet />;
 };
 
-export default AdminLoginProtectedRoute;
+export default AdminProtectedRoute;

@@ -1,7 +1,7 @@
 // src/pages/AdminSignupPage.jsx
 import React, { useState } from 'react';
 // import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../store/useAuthStore'; // Import your Zustand auth store
+import { useUserAuthStore } from '../store/useUserAuthStore'; // Import your Zustand auth store
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -19,7 +19,7 @@ const SignupPage = () => {
   //   const navigate = useNavigate();
 
   // Access authUser and isAdmin from the store to handle redirection if already logged in as admin
-  const { signup, isLoading } = useAuthStore();
+  const { signup, isLoading } = useUserAuthStore
   // Effect to redirect if an admin is already logged in
   // This handles cases where an admin manually navigates to /admin/login while already authenticated
 

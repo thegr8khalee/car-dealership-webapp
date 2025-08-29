@@ -1,12 +1,14 @@
 import { LogOut, MenuIcon, User2 } from 'lucide-react';
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useAdminStore } from '../store/useAdminStore';
-import { useAuthStore } from '../store/useAuthStore';
+// import { useAdminStore } from '../store/useAdminStore';
+// import { useAuthStore } from '../store/useAuthStore';
+import { useUserAuthStore } from '../store/useUserAuthStore';
+import { useAdminAuthStore } from '../store/useAdminAuthStore';
 
 const Navbar = ({ className = '' }) => {
-  const { adminLogout } = useAdminStore();
-  const { logout, authUser, isAdmin } = useAuthStore();
+  const { adminLogout } = useAdminAuthStore();
+  const { logout, authUser, isAdmin } = useUserAuthStore();
 
   const navigate = useNavigate();
   const location = useLocation(); // 👈 get current path

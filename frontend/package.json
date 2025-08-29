@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.11",
+    "@tinymce/tinymce-react": "^6.3.0",
     "axios": "^1.11.0",
     "flowbite-react": "^0.12.6",
     "framer-motion": "^12.23.12",

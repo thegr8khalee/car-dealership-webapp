@@ -1,9 +1,10 @@
 import { create } from 'zustand';
 import { axiosInstance } from '../lib/axios.js';
 import toast from 'react-hot-toast';
-import { useAuthStore } from './useAuthStore.js';
+import { useUserAuthStore } from './useUserAuthStore.js';
+// import { useAuthStore } from './useUserAuthStore.js';
 
-export const useAdminStore = create((set) => ({
+export const useAdminAuthStore = create((set) => ({
   authUser: null,
   isLoading: false,
   isSidebarOpen: false, // Initial state: sidebar is closed
@@ -21,13 +22,14 @@ export const useAdminStore = create((set) => ({
 
   adminLogin: async (data) => {
     set({ isLoading: true });
+    console.log('Admin login data:', data); // Add this
     try {
       console.log('Sending login request with data:', data); // Add this
-      const res = await axiosInstance.post('/admin/login', data);
+      const res = await axiosInstance.post('/admin/auth/login', data);
       console.log('Login response:', res);
-      useAuthStore.setState({
+      useUserAuthStore.setState({
         authUser: res.data,
-        isAdmin: res.data?.role === 'admin',
+        isAdmin: ['super_admin', 'editor', 'moderator'].includes(res.data?.role),
       });
       toast.success('Logged in successfully');
     } catch (error) {
@@ -41,8 +43,8 @@ export const useAdminStore = create((set) => ({
 
   adminLogout: async () => {
     try {
-      await axiosInstance.post('/admin/logout');
-      useAuthStore.setState({ authUser: null });
+      await axiosInstance.post('/admin/auth/logout');
+      useUserAuthStore.setState({ authUser: null });
       toast.success('Logged out successfully');
     } catch (error) {
       toast.error(error.message);

@@ -1,9 +1,9 @@
 // src/pages/AdminLoginPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../store/useAuthStore'; // Import your Zustand auth store
 import { Loader2 } from 'lucide-react';
-import { useAdminStore } from '../store/useAdminStore';
+import { useAdminAuthStore } from '../store/useAdminAuthStore';
+import { useUserAuthStore } from '../store/useUserAuthStore';
 
 const AdminLoginPage = () => {
   const [formData, setFormData] = useState({
@@ -15,8 +15,8 @@ const AdminLoginPage = () => {
   const navigate = useNavigate();
 
   // Access authUser and isAdmin from the store to handle redirection if already logged in as admin
-  const { authUser, isAdmin, isLoading } = useAuthStore();
-  const { adminLogin } = useAdminStore();
+  const { authUser, isAdmin, isLoading } = useUserAuthStore();
+  const { adminLogin } = useAdminAuthStore();
   // Effect to redirect if an admin is already logged in
   // This handles cases where an admin manually navigates to /admin/login while already authenticated
   React.useEffect(() => {
@@ -27,6 +27,7 @@ const AdminLoginPage = () => {
 
   // Handle form submission
   const handleSubmit = async (e) => {
+    console.log('Form submitted with data:', formData); // Add this
     e.preventDefault();
     await adminLogin(formData);
   };

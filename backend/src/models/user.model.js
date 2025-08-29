@@ -13,7 +13,6 @@ const User = sequelize.define(
     username: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
       validate: {
         len: [3, 30],
         notEmpty: true,
@@ -53,10 +52,7 @@ const User = sequelize.define(
     indexes: [
       {
         fields: ['email'],
-      },
-      {
-        fields: ['username'],
-      },
+      }
     ],
   }
 );

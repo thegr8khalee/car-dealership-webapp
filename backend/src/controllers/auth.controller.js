@@ -4,7 +4,7 @@
 import User from '../models/user.model.js'; // Use the Sequelize User model
 import Admin from '../models/admin.model.js'; // Use the Sequelize Admin model
 import bcrypt from 'bcryptjs';
-import { generateToken } from '../lib/utils.js';
+import { generateToken } from '../lib/utils.js'
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';

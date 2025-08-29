@@ -1,86 +1,116 @@
 import Car from '../models/car.model.js';
 import { Op } from 'sequelize';
 
-export const addCar = async (req, res) => {
+export const getAllCars = async (req, res) => {
   try {
-    // Extract car data from the request body
-    const carData = req.body;
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 20;
+    const offset = (page - 1) * limit;
 
-    // Basic validation for required fields
-    if (
-      !carData.modelText ||
-      !carData.price ||
-      !carData.mileage ||
-      !carData.fuelType ||
-      !carData.transmission ||
-      !carData.year
-    ) {
-      return res
-        .status(400)
-        .json({ message: 'Missing required car information.' });
+    // Dynamically build the where clause based on query parameters
+    const where = {};
+    if (req.query.make) where.make = req.query.make;
+    if (req.query.year) where.year = parseInt(req.query.year, 10);
+    if (req.query.bodyType) where.bodyType = req.query.bodyType;
+    if (req.query.fuelType) where.fuelType = req.query.fuelType;
+    if (req.query.transmission) where.transmission = req.query.transmission;
+    if (req.query.engineSize)
+      where.engineSize = parseFloat(req.query.engineSize);
+    if (req.query.drivetrain) where.drivetrain = req.query.drivetrain;
+
+    // Now filter directly on the `condition` field
+    if (req.query.condition) where.condition = req.query.condition;
+
+    // Handle price range filter, now targeting the `price` field
+    if (req.query.minPrice || req.query.maxPrice) {
+      where.price = {};
+      if (req.query.minPrice) {
+        where.price[Op.gte] = parseFloat(req.query.minPrice);
+      }
+      if (req.query.maxPrice) {
+        where.price[Op.lte] = parseFloat(req.query.maxPrice);
+      }
     }
 
-    // Use Sequelize's create method to add a new car
-    const newCar = await Car.create(carData);
+    // Use findAndCountAll to get both the data and the total count for pagination
+    const { count, rows: cars } = await Car.findAndCountAll({
+      where: where,
+      limit: limit,
+      offset: offset,
+      order: [['make', 'ASC']], // Default ordering
+    });
 
-    // Respond with the newly created car object
-    res.status(201).json(newCar);
+    res.status(200).json({
+      totalItems: count,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+      cars: cars,
+    });
   } catch (error) {
-    console.error('Error in addCar controller:', error);
+    console.error('Error in getAllCars controller:', error);
     res
       .status(500)
-      .json({ message: 'Internal Server Error while adding the car.' });
+      .json({ message: 'Internal Server Error while retrieving cars.' });
   }
 };
 
-export const updateCar = async (req, res) => {
+export const getCarById = async (req, res) => {
   try {
     const { id } = req.params;
-    const carData = req.body;
 
-    // Find the car by its primary key
+    // Use findByPk (find by primary key) for an efficient lookup
     const car = await Car.findByPk(id);
 
     if (!car) {
       return res.status(404).json({ message: 'Car not found.' });
     }
 
-    // Use Sequelize's update method on the instance to apply changes
-    await car.update(carData);
-
-    // Respond with the updated car object
     res.status(200).json(car);
   } catch (error) {
-    console.error('Error in updateCar controller:', error);
+    console.error('Error in getCarById controller:', error);
     res
       .status(500)
-      .json({ message: 'Internal Server Error while updating the car.' });
+      .json({ message: 'Internal Server Error while retrieving the car.' });
   }
 };
 
-export const deleteCar = async (req, res) => {
+export const Search = async (req, res) => {
   try {
-    const { id } = req.params;
+    const query = req.query.carSearchQuery || req.body.carSearchQuery;
 
-    // Use Sequelize's destroy method to delete the record.
-    // It returns the number of destroyed rows.
-    const deletedRowCount = await Car.destroy({
-      where: { id },
-    });
-
-    if (deletedRowCount === 0) {
-      // If 0 rows were deleted, the car was not found
-      return res
-        .status(404)
-        .json({ message: 'Car not found or already deleted.' });
+    // console.log('Search query received:', query);
+    if (!query || query.trim() === '') {
+      return res.status(400).json({
+        message: 'Search query cannot be empty.',
+      });
     }
 
-    // Respond with a success message
-    res.status(200).json({ message: 'Car deleted successfully.' });
+    const searchQuery = query.trim().toLowerCase();
+    const isYear = !isNaN(parseInt(searchQuery, 10));
+    const yearQuery = isYear ? parseInt(searchQuery, 10) : null;
+
+    const cars = await Car.findAll({
+      where: {
+        [Op.or]: [
+          { make: { [Op.like]: `%${searchQuery}%` } },
+          { model: { [Op.like]: `%${searchQuery}%` } },
+          ...(isYear ? [{ year: yearQuery }] : []),
+        ],
+      },
+    });
+
+    if (cars.length > 0) {
+      res.status(200).json({ message: 'Cars found successfully', data: cars });
+    } else {
+      res.status(404).json({
+        message: `No cars found matching the query: "${query}"`,
+      });
+    }
   } catch (error) {
-    console.error('Error in deleteCar controller:', error);
-    res
-      .status(500)
-      .json({ message: 'Internal Server Error while deleting the car.' });
+    console.error('Error during car search:', error);
+    res.status(500).json({
+      message: 'An error occurred while searching for cars',
+      error: error.message,
+    });
   }
 };

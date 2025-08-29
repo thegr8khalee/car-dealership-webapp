@@ -6,4 +6,7 @@ export const axiosInstance = axios.create({
       ? 'http://localhost:5000/api'
       : '/api',
   withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });

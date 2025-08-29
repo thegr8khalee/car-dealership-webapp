@@ -1,60 +1,85 @@
+// server.js
 import express from 'express';
-import dotenv from 'dotenv';
-import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import path from 'path';
+import dotenv from 'dotenv';
+import { testConnection } from './models/index.js';
+import cookieParser from 'cookie-parser'
 
-import sequelize from './lib/db.js';
+dotenv.config();
 
 const app = express();
-if (process.env.NODE_ENV !== 'production') {
-  dotenv.config();
-}
+const PORT = process.env.PORT || 3000;
+
+// Middleware
+const corsOptions = {
+  origin: 'http://localhost:5173', // The exact origin of your frontend
+  credentials: true, // This allows cookies and auth headers
+  optionsSuccessStatus: 200 // Some legacy browsers choke on 204
+};
+app.use(cors(corsOptions));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb', extended: true }));
-app.use(
-  cors({
-    origin: 'http://localhost:5173',
-    credentials: true,
-  })
-);
 
-import authRoutes from './routes/auth.routes.js';
-import adminRoutes from './routes/admin.routes.js';
-import carRoutes from './routes/car.routes.js';
-
-app.use('/api/auth', authRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/cars', carRoutes);
-
-const PORT = process.env.PORT || 5000;
-const __dirname = path.resolve();
-
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend/dist')));
-
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend', 'dist', 'index.html'));
+// Basic route
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Car Dealership API is running!',
+    status: 'success',
+    timestamp: new Date().toISOString(),
   });
-}
+});
 
-const startServer = async () => {
+// Health check route
+app.get('/health', async (req, res) => {
   try {
-    sequelize
-      .authenticate()
-      .then(() => console.log('✅ Database connected...'))
-      .catch((err) => console.error('❌ Error: ' + err));
-
-    await sequelize.sync({ alter: true });
-    console.log('✅ Database tables synchronized!');
-
-    app.listen(PORT, () => {
-      console.log('Server running on port: ', PORT);
+    await testConnection();
+    res.json({
+      status: 'healthy',
+      database: 'connected',
+      timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
+    res.status(500).json({
+      status: 'unhealthy',
+      database: 'disconnected',
+      error: error.message,
+      timestamp: new Date().toISOString(),
+    });
+  }
+});
+
+import adminRouts from './routes/admin.auth.routes.js';
+import authRoutes from './routes/user.auth.routes.js';
+import adminOpRoutes from './routes/admin.operations.routes.js';
+import carRoutes from './routes/car.routes.js';
+import blogRoutes from './routes/blog.routes.js';
+
+app.use('/api/admin/auth', adminRouts);
+app.use('/api/user/auth', authRoutes);
+app.use('/api/admin/ops', adminOpRoutes);
+app.use('/api/cars', carRoutes);
+app.use('/api/blogs', blogRoutes);
+
+
+// Start server
+const startServer = async () => {
+  try {
+    // Test database connection
+    await testConnection();
+    console.log('✅ Database connected successfully');
+
+    app.listen(PORT, () => {
+      console.log(`🚀 Server is running on port ${PORT}`);
+      console.log(`📱 Health check: http://localhost:${PORT}/health`);
+      console.log(`🌐 API endpoint: http://localhost:${PORT}/`);
+    });
+  } catch (error) {
+    console.error('❌ Failed to start server:', error);
+    process.exit(1);
   }
 };
 
 startServer();
+
+export default app;

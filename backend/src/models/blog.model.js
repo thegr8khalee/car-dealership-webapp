@@ -24,6 +24,10 @@ const Blog = sequelize.define(
         len: [0, 300],
       },
     },
+    imageUrl: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     authorId: {
       type: DataTypes.UUID,
       allowNull: false,
@@ -52,7 +56,7 @@ const Blog = sequelize.define(
     },
     featuredImage: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
     content: {
       type: DataTypes.TEXT('long'),
@@ -68,14 +72,17 @@ const Blog = sequelize.define(
             throw new Error('carIds must be an array');
           }
           if (value && value.length > 0) {
-            const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-            const invalidIds = value.filter(id => typeof id !== 'string' || !uuidRegex.test(id));
+            const uuidRegex =
+              /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+            const invalidIds = value.filter(
+              (id) => typeof id !== 'string' || !uuidRegex.test(id)
+            );
             if (invalidIds.length > 0) {
               throw new Error('All carIds must be valid UUIDs');
             }
           }
-        }
-      }
+        },
+      },
     },
     tags: {
       type: DataTypes.JSON,
@@ -110,9 +117,6 @@ const Blog = sequelize.define(
     indexes: [
       {
         fields: ['authorId'],
-      },
-      {
-        fields: ['carId'],
       },
       {
         fields: ['category'],

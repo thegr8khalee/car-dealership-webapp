@@ -21,10 +21,6 @@ const Car = sequelize.define(
     model: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        len: [1, 50],
-        notEmpty: true,
-      },
     },
     year: {
       type: DataTypes.INTEGER,
@@ -53,7 +49,17 @@ const Car = sequelize.define(
       allowNull: true,
     },
     fuelType: {
-      type: DataTypes.ENUM('gasoline', 'diesel', 'electric', 'hybrid', 'hydrogen'),
+      type: DataTypes.ENUM(
+        'gasoline',
+        'diesel',
+        'electric',
+        'hybrid',
+        'hydrogen'
+      ),
+      allowNull: true,
+    },
+    condition: {
+      type: DataTypes.ENUM('new', 'used', 'clean', 'accident free'),
       allowNull: true,
     },
     transmission: {
@@ -80,6 +86,14 @@ const Car = sequelize.define(
       type: DataTypes.DECIMAL(10, 2),
       allowNull: true,
     },
+    mileage: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true,
+    },
+    price: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
     description: {
       type: DataTypes.TEXT,
       allowNull: true,
@@ -88,16 +102,20 @@ const Car = sequelize.define(
       type: DataTypes.JSON,
       allowNull: true,
       defaultValue: [],
-      validate: {
-        isArrayOfStrings(value) {
-          if (value && !Array.isArray(value)) {
-            throw new Error('imageUrls must be an array');
-          }
-          if (value && value.some(url => typeof url !== 'string')) {
-            throw new Error('All imageUrls must be strings');
-          }
-        }
-      }
+      // validate: {
+      //   isArrayOfStrings(value) {
+      //     if (value && !Array.isArray(value)) {
+      //       throw new Error('imageUrls must be an array');
+      //     }
+      //     if (value && value.some((url) => typeof url !== 'string')) {
+      //       throw new Error('All imageUrls must be strings');
+      //     }
+      //   },
+      // },
+    },
+    videoUrl: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     sold: {
       type: DataTypes.BOOLEAN,
@@ -112,11 +130,11 @@ const Car = sequelize.define(
           if (value && !Array.isArray(value)) {
             throw new Error('interior must be an array');
           }
-          if (value && value.some(url => typeof url !== 'string')) {
+          if (value && value.some((url) => typeof url !== 'string')) {
             throw new Error('All interior must be strings');
           }
-        }
-      }
+        },
+      },
     },
     exterior: {
       type: DataTypes.JSON,
@@ -127,11 +145,11 @@ const Car = sequelize.define(
           if (value && !Array.isArray(value)) {
             throw new Error('exterior must be an array');
           }
-          if (value && value.some(url => typeof url !== 'string')) {
+          if (value && value.some((url) => typeof url !== 'string')) {
             throw new Error('All exterior must be strings');
           }
-        }
-      }
+        },
+      },
     },
     comfort: {
       type: DataTypes.JSON,
@@ -142,11 +160,11 @@ const Car = sequelize.define(
           if (value && !Array.isArray(value)) {
             throw new Error('comfort must be an array');
           }
-          if (value && value.some(url => typeof url !== 'string')) {
+          if (value && value.some((url) => typeof url !== 'string')) {
             throw new Error('All comfort must be strings');
           }
-        }
-      }
+        },
+      },
     },
     safety: {
       type: DataTypes.JSON,
@@ -157,11 +175,62 @@ const Car = sequelize.define(
           if (value && !Array.isArray(value)) {
             throw new Error('safety must be an array');
           }
-          if (value && value.some(url => typeof url !== 'string')) {
+          if (value && value.some((url) => typeof url !== 'string')) {
             throw new Error('All safety must be strings');
           }
-        }
-      }
+        },
+      },
+    },
+    // New fields
+    door: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      validate: {
+        min: 1,
+        max: 6,
+      },
+    },
+    color: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        len: [1, 50],
+      },
+    },
+    cylinder: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      validate: {
+        min: 1,
+        max: 16,
+      },
+    },
+    length: {
+      type: DataTypes.DECIMAL(6, 2),
+      allowNull: true,
+      comment: 'Length in inches',
+    },
+    width: {
+      type: DataTypes.DECIMAL(6, 2),
+      allowNull: true,
+      comment: 'Width in inches',
+    },
+    trunkCapacity: {
+      type: DataTypes.DECIMAL(4, 2),
+      allowNull: true,
+      comment: 'Trunk capacity in cubic feet',
+    },
+    tireSize: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        len: [1, 20],
+      },
+    },
+    zeroToHundred: {
+      type: DataTypes.DECIMAL(4, 2),
+      allowNull: true,
+      comment: 'Time in seconds to accelerate from 0 to 100km/h',
     },
   },
   {

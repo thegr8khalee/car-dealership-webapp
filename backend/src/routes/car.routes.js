@@ -1,11 +1,10 @@
 import express from 'express';
-import { protectAdminRoute } from '../middleware/protectAdminRoute.js';
-import { addCar, deleteCar, updateCar } from '../controllers/car.controller.js';
+import { getAllCars, getCarById, Search } from '../controllers/car.controller.js';
 
 const router = express.Router();
 
-router.post('/add-car', protectAdminRoute, addCar);
-router.put('/update-car/:id', protectAdminRoute, updateCar);
-router.delete('/delete-car/:id', protectAdminRoute, deleteCar);
+router.get('/get-all', getAllCars);
+router.get('/get/:id', getCarById);
+router.get('/search', Search);
 
 export default router;

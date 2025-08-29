@@ -1,7 +1,7 @@
 // src/pages/AdminLoginPage.jsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom'; // Ensure Link is imported
-import { useAuthStore } from '../store/useAuthStore';
+import { useUserAuthStore } from '../store/useUserAuthStore.js';
 // import { usePasswordStore } from '../store/usePasswordStore'; // NEW: Import usePasswordStore
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 // import toast from 'react-hot-toast'; // Ensure toast is imported for local messages
@@ -23,7 +23,7 @@ const LoginPage = () => {
     isAdmin,
     forgotPassword,
     isRequestingReset,
-  } = useAuthStore(); // Added authUser, isAdmin
+  } = useUserAuthStore(); // Added authUser, isAdmin
   // const { forgotPassword, isRequestingReset } = usePasswordStore(); // NEW: Destructure from usePasswordStore
 
   // NEW: State for Forgot Password form

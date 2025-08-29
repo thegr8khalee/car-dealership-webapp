@@ -1,7 +1,7 @@
 // src/pages/ProfilePage.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../store/useAuthStore';
+// import { useAuthStore } from '../store/useAuthStore';
 // import { usePasswordStore } from '../store/usePasswordStore'; // NEW: Import usePasswordStore
 import {
   Loader2,
@@ -12,6 +12,7 @@ import {
   Eye,
 } from 'lucide-react';
 import toast from 'react-hot-toast'; // Ensure toast is imported for local messages
+import { useUserAuthStore } from '../store/useUserAuthStore';
 
 const ProfilePage = () => {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ const ProfilePage = () => {
     deleteAccount,
     isChangingPassword,
     changePassword,
-  } = useAuthStore();
+  } = useUserAuthStore();
 
   // NEW: From usePasswordStore
   // const { isChangingPassword, changePassword } = usePasswordStore();
