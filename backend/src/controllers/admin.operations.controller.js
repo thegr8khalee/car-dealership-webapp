@@ -306,9 +306,9 @@ export const addBlog = async (req, res) => {
     const {
       title,
       tagline,
-      imageUrl,
+      imageUrls,
       featuredImage,
-      authorId,
+      author,
       category,
       status,
       content,
@@ -321,7 +321,7 @@ export const addBlog = async (req, res) => {
 
     // Prepare Base64 images for upload
     const base64Images = [];
-    if (imageUrl) base64Images.push(imageUrl);
+    if (imageUrls) base64Images.push(imageUrls);
     if (featuredImage) base64Images.push(featuredImage);
 
     // Upload images to Cloudinary
@@ -338,9 +338,9 @@ export const addBlog = async (req, res) => {
     const newBlog = await Blog.create({
       title,
       tagline,
-      imageUrl: savedImageUrl,
+      imageUrls: savedImageUrl,
       featuredImage: savedFeaturedImage,
-      authorId,
+      author,
       category,
       status,
       content,
@@ -370,7 +370,7 @@ export const updateBlog = async (req, res) => {
     const {
       title,
       tagline,
-      imageUrl,
+      imageUrls,
       featuredImage,
       authorId,
       category,
@@ -386,19 +386,19 @@ export const updateBlog = async (req, res) => {
     const blog = await Blog.findByPk(id);
     if (!blog) return res.status(404).json({ message: 'Blog not found.' });
 
-    // --- Handle imageUrl ---
-    let savedImageUrl = blog.imageUrl;
-    if (imageUrl?.startsWith('data:image')) {
-      const uploaded = await uploadImagesToCloudinary([imageUrl]);
+    // --- Handle imageUrls ---
+    let savedImageUrl = blog.imageUrls;
+    if (imageUrls?.startsWith('data:image')) {
+      const uploaded = await uploadImagesToCloudinary([imageUrls]);
       savedImageUrl = uploaded[0].url;
 
       // Delete old image from Cloudinary if exists
-      if (blog.imageUrl) {
-        const publicId = extractPublicIdFromUrl(blog.imageUrl);
+      if (blog.imageUrls) {
+        const publicId = extractPublicIdFromUrl(blog.imageUrls);
         await cloudinary.api.delete_resources([publicId]);
       }
-    } else if (imageUrl) {
-      savedImageUrl = imageUrl; // user passed a new URL
+    } else if (imageUrls) {
+      savedImageUrl = imageUrls; // user passed a new URL
     }
 
     // --- Handle featuredImage ---
@@ -420,7 +420,7 @@ export const updateBlog = async (req, res) => {
     await blog.update({
       title,
       tagline,
-      imageUrl: savedImageUrl,
+      imageUrls: savedImageUrl,
       featuredImage: savedFeaturedImage,
       authorId,
       category,
@@ -443,5 +443,47 @@ export const updateBlog = async (req, res) => {
       message: 'An error occurred while updating the blog post.',
       error: error.message,
     });
+  }
+};
+
+export const deleteBlog = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const blog = await Blog.findByPk(id);
+    if (!blog) {
+      return res.status(404).json({ message: 'Blog not found.' });
+    }
+
+    // Delete associated images from Cloudinary
+    const publicIdsToDelete = [];
+    if (blog.imageUrl) {
+      const publicId = extractPublicIdFromUrl(blog.imageUrl);
+      if (publicId) publicIdsToDelete.push(publicId);
+    }
+    if (blog.featuredImage) {
+      const publicId = extractPublicIdFromUrl(blog.featuredImage);
+      if (publicId) publicIdsToDelete.push(publicId);
+    }
+
+    if (publicIdsToDelete.length > 0) {
+      await cloudinary.api.delete_resources(publicIdsToDelete, {
+        type: 'upload',
+        resource_type: 'image',
+      });
+      console.log(
+        `Deleted blog images from Cloudinary: ${publicIdsToDelete.join(', ')}`
+      );
+    }
+
+    // Delete the blog entry from the database
+    await blog.destroy();
+
+    res.status(200).json({ message: 'Blog deleted successfully.' });
+  } catch (error) {
+    console.error('Error deleting blog post:', error);
+    res
+      .status(500)
+      .json({ message: 'Internal Server Error while deleting the blog.' });
   }
 };

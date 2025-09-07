@@ -38,6 +38,7 @@ import { useEffect } from 'react';
 
 const CarDetails = () => {
   const { id } = useParams();
+  console.log('Car ID from params:', id);
   const { car, getCarById, isGettingCar } = useCarStore();
   // Data for car features and tabs
 

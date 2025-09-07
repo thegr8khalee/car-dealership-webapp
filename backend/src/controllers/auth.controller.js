@@ -180,6 +180,7 @@ export const checkAuth = async (req, res) => {
       ...(role === 'user' && {
         phoneNumber: authenticatedEntity.phoneNumber,
       }),
+      avatarUrl: authenticatedEntity.avatar,
       createdAt: authenticatedEntity.createdAt,
       updatedAt: authenticatedEntity.updatedAt,
     });

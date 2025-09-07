@@ -9,15 +9,16 @@ import Comment from './comment.model.js';
 import Like from './like.model.js';
 import Newsletter from './news.model.js';
 
-// Blog associations
-Blog.belongsTo(Admin, { 
-  foreignKey: 'authorId', 
-  as: 'author',
+// Blog associations - Changed alias from 'author' to 'adminAuthor'
+Blog.belongsTo(Admin, {
+  foreignKey: 'authorId',
+  as: 'adminAuthor',  // Changed from 'author' to avoid collision
   onDelete: 'RESTRICT',
   onUpdate: 'CASCADE'
 });
-Admin.hasMany(Blog, { 
-  foreignKey: 'authorId', 
+
+Admin.hasMany(Blog, {
+  foreignKey: 'authorId',
   as: 'blogs',
   onDelete: 'RESTRICT',
   onUpdate: 'CASCADE'
@@ -54,8 +55,8 @@ const BlogCar = sequelize.define('BlogCar', {
   ],
 });
 
-Blog.belongsToMany(Car, { 
-  through: BlogCar, 
+Blog.belongsToMany(Car, {
+  through: BlogCar,
   foreignKey: 'blogId',
   otherKey: 'carId',
   as: 'cars',
@@ -63,8 +64,8 @@ Blog.belongsToMany(Car, {
   onUpdate: 'CASCADE'
 });
 
-Car.belongsToMany(Blog, { 
-  through: BlogCar, 
+Car.belongsToMany(Blog, {
+  through: BlogCar,
   foreignKey: 'carId',
   otherKey: 'blogId',
   as: 'blogs',
@@ -73,67 +74,72 @@ Car.belongsToMany(Blog, {
 });
 
 // Comment associations
-Comment.belongsTo(Blog, { 
-  foreignKey: 'blogId', 
+Comment.belongsTo(Blog, {
+  foreignKey: 'blogId',
   as: 'blog',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE'
 });
-Blog.hasMany(Comment, { 
-  foreignKey: 'blogId', 
+
+Blog.hasMany(Comment, {
+  foreignKey: 'blogId',
   as: 'comments',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE'
 });
 
-Comment.belongsTo(User, { 
-  foreignKey: 'userId', 
+Comment.belongsTo(User, {
+  foreignKey: 'userId',
   as: 'user',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE'
 });
-User.hasMany(Comment, { 
-  foreignKey: 'userId', 
+
+User.hasMany(Comment, {
+  foreignKey: 'userId',
   as: 'comments',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE'
 });
 
 // Like associations
-Like.belongsTo(User, { 
-  foreignKey: 'userId', 
+Like.belongsTo(User, {
+  foreignKey: 'userId',
   as: 'user',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE'
 });
-User.hasMany(Like, { 
-  foreignKey: 'userId', 
+
+User.hasMany(Like, {
+  foreignKey: 'userId',
   as: 'likes',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE'
 });
 
-Like.belongsTo(Blog, { 
-  foreignKey: 'blogId', 
+Like.belongsTo(Blog, {
+  foreignKey: 'blogId',
   as: 'blog',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE'
 });
-Blog.hasMany(Like, { 
-  foreignKey: 'blogId', 
+
+Blog.hasMany(Like, {
+  foreignKey: 'blogId',
   as: 'likes',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE'
 });
 
-Like.belongsTo(Comment, { 
-  foreignKey: 'commentId', 
+Like.belongsTo(Comment, {
+  foreignKey: 'commentId',
   as: 'comment',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE'
 });
-Comment.hasMany(Like, { 
-  foreignKey: 'commentId', 
+
+Comment.hasMany(Like, {
+  foreignKey: 'commentId',
   as: 'likes',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE'

@@ -24,17 +24,24 @@ const Blog = sequelize.define(
         len: [0, 300],
       },
     },
-    imageUrl: {
+    imageUrls: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    authorId: {
-      type: DataTypes.UUID,
+    author: {
+      type: DataTypes.JSON,
       allowNull: false,
-      references: {
-        model: 'Admins',
-        key: 'id',
+      defaultValue: {
+        id: null,
+        name: 'Unknown Author',
+        avatarUrl: null,
       },
+    },
+    index: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      allowNull: false,
+      unique: true,
     },
     category: {
       type: DataTypes.ENUM(
@@ -115,9 +122,6 @@ const Blog = sequelize.define(
   {
     timestamps: true,
     indexes: [
-      {
-        fields: ['authorId'],
-      },
       {
         fields: ['category'],
       },

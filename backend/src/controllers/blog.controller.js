@@ -4,7 +4,7 @@ import { Op } from 'sequelize';
 export const getAllBlogs = async (req, res) => {
   try {
     const page = parseInt(req.query.page, 10) || 1;
-    const limit = 20;
+    const limit = 1;
     const offset = (page - 1) * limit;
 
     // Use findAndCountAll to get both the blogs and the total count for pagination metadata
@@ -37,15 +37,32 @@ export const getBlogById = async (req, res) => {
   try {
     const { id } = req.params;
 
+    // Find the current blog post by its UUID
     const blog = await Blog.findByPk(id);
 
     if (!blog) {
       return res.status(404).json({ message: 'Blog post not found' });
     }
 
+    // Use the index of the current blog to find the previous and next blogs.
+    // We only need a few fields for the navigation links.
+    const prevBlog = await Blog.findOne({
+      where: { index: blog.index - 1 },
+      attributes: ['id', 'title', 'createdAt'],
+    });
+
+    const nextBlog = await Blog.findOne({
+      where: { index: blog.index + 1 },
+      attributes: ['id', 'title', 'createdAt'],
+    });
+
     res.status(200).json({
       message: 'Blog post retrieved successfully',
-      data: blog,
+      data: {
+        currentBlog: blog,
+        prevBlog: prevBlog || null, // Return null if a previous blog doesn't exist
+        nextBlog: nextBlog || null, // Return null if a next blog doesn't exist
+      },
     });
   } catch (error) {
     console.error('Error fetching blog post by ID:', error);
@@ -107,3 +124,5 @@ export const searchBlogs = async (req, res) => {
     });
   }
 };
+
+export const getBlogIndex = (req, res) => {};

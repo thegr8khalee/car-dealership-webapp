@@ -19,7 +19,7 @@ const CarCard2 = ({
       </figure>
       <div className="px-5 py-4">
         <h2 className="card-title">{title}</h2>
-        <p className='text-sm'>{description}</p>
+        <p className='text-sm truncate'>{description}</p>
 
         {/* Info Grid */}
         <div className="grid grid-cols-2 gap-4 my-4 text-sm">
@@ -33,11 +33,11 @@ const CarCard2 = ({
               alt="Transmission"
               className="mr-2 size-5"
             />
-            <span>{transmission.value}</span>
+            <span className='capitalize'>{transmission.value}</span>
           </div>
           <div className="flex items-center">
             <img src={fuel.icon} alt="Fuel" className="mr-2 size-5" />
-            <span>{fuel.value}</span>
+            <span className='capitalize'>{fuel.value}</span>
           </div>
           <div className="flex items-center">
             <img src={year.icon} alt="Year" className="mr-2 size-5" />

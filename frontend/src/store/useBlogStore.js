@@ -14,10 +14,10 @@ export const useBlogStore = create((set) => ({
     totalBlogs: 0,
   },
 
-  fetchBlogs: async (page = 1) => {
+  fetchBlogs: async (params = {}) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axiosInstance.get(`/blogs/get-all?page=${page}`);
+      const response = await axiosInstance.get(`/blogs/get-all`, { params });
       const { data, currentPage, totalPages, totalBlogs } = response.data;
       set({
         blogs: data,

@@ -53,9 +53,9 @@ const AdminDashboardContent = () => {
     { label: 'Reviews', value: 5, path: 'users', icon: MessageSquareText },
   ];
 
-//   const handleNavigationClick = (sectionId) => {
-//     setActiveSection(sectionId);
-//   };
+  //   const handleNavigationClick = (sectionId) => {
+  //     setActiveSection(sectionId);
+  //   };
 
   const navigate = useNavigate();
 
@@ -63,7 +63,7 @@ const AdminDashboardContent = () => {
     navigate('/admin/cars/new');
   };
 
-  const handleAddNewRecipe = () => {
+  const handleAddNewBlog = () => {
     navigate('/admin/blogs/new');
   };
 
@@ -73,17 +73,17 @@ const AdminDashboardContent = () => {
         Dashboard Overview
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div className="stat shadow-lg rounded-2xl p-4 h-30 bg-primary">
-          <div className="stat-figure text-secondary">
-            <div className="avatar avatar-online">
+        <div className="stat shadow-lg rounded-2xl flex flex-col p-4 h-30 bg-primary">
+          <div className="stat-desc text-white text-lg font-semibold truncate w-full">
+            {authUser?.username}
+          </div>
+          <div className="stat-figure text-secondary w-full justify-end flex">
+            <div className="avatar avatar-online ">
               <div className="w-16 rounded-full">
                 <img src="https://img.daisyui.com/images/profile/demo/anakeen@192.webp" />
               </div>
             </div>
           </div>
-          <div className="stat-value text-white"></div>
-          {/* <div className="stat-title">Tasks done</div> */}
-          <div className="stat-desc text-white text-lg font-semibold">{authUser?.username}</div>
         </div>
         {stats.map((stat, index) => {
           const IconComponent = stat.icon;
@@ -121,9 +121,9 @@ const AdminDashboardContent = () => {
           </button>
           <button
             className="btn btn-outline btn-primary rounded-full text-lg"
-            onClick={handleAddNewRecipe}
+            onClick={handleAddNewBlog}
           >
-            New Post
+            New Blog
           </button>
         </div>
       </div>

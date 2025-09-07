@@ -37,7 +37,8 @@ export const useCarStore = create((set) => ({
         },
       });
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Failed to retrieve cars.';
+      const errorMessage =
+        error.response?.data?.message || 'Failed to retrieve cars.';
       toast.error(errorMessage);
       set({ error: errorMessage });
     } finally {
@@ -53,9 +54,9 @@ export const useCarStore = create((set) => ({
     set({ isSearching: true, error: null });
     try {
       const res = await axiosInstance.get('cars/search', {
-        params: { query }, // Changed parameter name to 'query'
+        params: { carSearchQuery: query }, // Changed parameter name to 'carSearchQuery'
       });
-      set({ searchResults: res.data.data }); // Updated to match API response format
+      set({ searchResults: res.data.data });
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'No cars found.';
       toast.error(errorMessage);
@@ -73,10 +74,11 @@ export const useCarStore = create((set) => ({
     set({ isLoading: true, error: null });
     try {
       const res = await axiosInstance.get(`cars/get/${id}`);
-      set({ car: res.data.data }); // Updated to match API response format
-      return res.data.data;
+      set({ car: res.data }); // Updated to match API response format
+      return res.data;
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Failed to retrieve car.';
+      const errorMessage =
+        error.response?.data?.message || 'Failed to retrieve car.';
       toast.error(errorMessage);
       set({ error: errorMessage });
       return null;

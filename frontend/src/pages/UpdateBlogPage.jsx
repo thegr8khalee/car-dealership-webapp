@@ -24,19 +24,30 @@ import { useBlogStore } from '../store/useBlogStore';
 const UpdateBlogPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { search, isSearching, searchResults } = useCarStore();
+  const { search, isSearching, searchResults, getCarById } = useCarStore();
   const {
     updateBlog,
     isLoading: isBlogLoading,
     error: backendError,
   } = useAdminOpsStore();
   const { authUser } = useUserAuthStore();
-  const { 
-    currentBlog, 
-    fetchBlogById, 
+  const {
+    currentBlog,
+    fetchBlogById,
     isLoading: isFetchingBlog,
-    clearCurrentBlog 
+    clearCurrentBlog,
   } = useBlogStore();
+
+  useEffect(() => {
+    if (id) {
+      fetchBlogById(id);
+    }
+    return () => {
+      clearCurrentBlog();
+    };
+  }, [id, fetchBlogById, clearCurrentBlog]);
+
+  console.log('Current Blog:', currentBlog);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -87,51 +98,60 @@ const UpdateBlogPage = () => {
     { value: 'archived', label: 'Archived' },
   ];
 
-  // Fetch blog data on component mount
-  useEffect(() => {
-    if (id) {
-      fetchBlogById(id);
-    }
-    
-    return () => {
-      clearCurrentBlog();
-    };
-  }, [id, fetchBlogById, clearCurrentBlog]);
-
   // Initialize form data when blog is loaded
   useEffect(() => {
     if (currentBlog && !isInitialized) {
-      const publishedAtValue = currentBlog.publishedAt 
-        ? new Date(currentBlog.publishedAt).toISOString().slice(0, 16)
+      const publishedAtValue = currentBlog.currentBlog.publishedAt
+        ? new Date(currentBlog.currentBlog.publishedAt)
+            .toISOString()
+            .slice(0, 16)
         : '';
 
+      // ✅ Setup form data
       setFormData({
-        title: currentBlog.title || '',
-        tagline: currentBlog.tagline || '',
-        content: currentBlog.content || '',
-        category: currentBlog.category || '',
-        status: currentBlog.status || 'draft',
-        carIds: currentBlog.carIds || [],
-        tags: currentBlog.tags || [],
-        seoTitle: currentBlog.seoTitle || '',
-        seoDescription: currentBlog.seoDescription || '',
+        title: currentBlog.currentBlog.title || '',
+        tagline: currentBlog.currentBlog.tagline || '',
+        content: currentBlog.currentBlog.content || '',
+        category: currentBlog.currentBlog.category || '',
+        status: currentBlog.currentBlog.status || 'draft',
+        carIds: currentBlog.currentBlog.carIds || [],
+        tags: currentBlog.currentBlog.tags || [],
+        seoTitle: currentBlog.currentBlog.seoTitle || '',
+        seoDescription: currentBlog.currentBlog.seoDescription || '',
         publishedAt: publishedAtValue,
-        authorId: currentBlog.authorId || authUser?.id || '',
+        authorId: currentBlog.currentBlog.authorId || authUser?.id || '',
       });
 
+      // ✅ Setup images
       setImagePreviews({
-        imageUrl: currentBlog.imageUrl || '',
-        featuredImage: currentBlog.featuredImage || '',
+        imageUrl: currentBlog.currentBlog.imageUrls || '',
+        featuredImage: currentBlog.currentBlog.featuredImage || '',
       });
 
-      // Set selected cars if they exist
-      if (currentBlog.cars && currentBlog.cars.length > 0) {
-        setSelectedCars(currentBlog.cars);
-      }
+      // ✅ Fetch car details if IDs exist
+      const fetchSelectedCars = async () => {
+        if (!currentBlog.currentBlog.carIds) return;
 
+        const carData = await Promise.all(
+          currentBlog.currentBlog.carIds.map(async (c) => {
+            // console.log("Fetching car for ID:", c);
+            if (typeof c === 'string' || typeof c === 'number') {
+              return await getCarById(c); // fetch car details
+            }
+            return c; // already a car object
+          })
+        );
+
+        console.log("Resolved carData:", carData);
+        setSelectedCars(carData.filter((car) => car)); // filter out nulls
+      };
+
+      fetchSelectedCars();
       setIsInitialized(true);
     }
-  }, [currentBlog, authUser, isInitialized]);
+  }, [currentBlog, authUser, isInitialized, getCarById]);
+
+//   console.log(selectedCars)
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -242,16 +262,17 @@ const UpdateBlogPage = () => {
         ...formData,
         content: htmlContent,
         authorId: authUser.id,
-        publishedAt: formData.status === 'scheduled' ? formData.publishedAt : null,
+        publishedAt:
+          formData.status === 'scheduled' ? formData.publishedAt : null,
         imageUrl: imagePreviews.imageUrl || null,
         featuredImage: imagePreviews.featuredImage || null,
       };
 
       console.log('Updating blog:', submitData);
-      
+
       // Call updateBlog with blog ID and data
       const response = await updateBlog(id, submitData);
-      
+
       if (response) {
         // Navigate back to blog list or blog detail page on success
         navigate('/admin/blogs'); // Adjust route as needed
@@ -264,16 +285,16 @@ const UpdateBlogPage = () => {
 
   const handleSaveAsDraft = async (e) => {
     e.preventDefault();
-    
+
     // Update status to draft and submit
     const updatedFormData = { ...formData, status: 'draft' };
     setFormData(updatedFormData);
-    
+
     // Create a synthetic event for handleSubmit
     const syntheticEvent = {
       preventDefault: () => {},
     };
-    
+
     await handleSubmit(syntheticEvent);
   };
 
@@ -320,9 +341,7 @@ const UpdateBlogPage = () => {
             </button>
             <div>
               <h1 className="text-3xl font-bold">Update Blog Post</h1>
-              <p className="text-gray-600">
-                Edit and update your blog content
-              </p>
+              <p className="text-gray-600">Edit and update your blog content</p>
             </div>
           </div>
 
@@ -406,7 +425,7 @@ const UpdateBlogPage = () => {
                               'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
                           }}
                           onEditorChange={(content) => {
-                            setFormData(prev => ({ ...prev, content }));
+                            setFormData((prev) => ({ ...prev, content }));
                           }}
                         />
                       </div>

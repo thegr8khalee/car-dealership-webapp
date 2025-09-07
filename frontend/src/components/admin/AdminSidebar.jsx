@@ -32,7 +32,7 @@ const AdminSidebar = ({
     <div
       className={`
                 fixed inset-y-0 left-0 z-50
-                w-60 bg-base-300 p-2 shadow-lg flex flex-col justify-between
+                w-70 bg-base-300 p-2 shadow-lg flex flex-col justify-between
                 transform transition-transform duration-300 ease-in-out
                 lg:relative lg:translate-x-0 lg:rounded-r-lg lg:shadow-lg
                 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
@@ -58,7 +58,7 @@ const AdminSidebar = ({
             <li key={item.id}>
               <a
                 className={
-                  activeSection === item.id ? 'active font-semibold' : ''
+                  activeSection === item.id ? 'active font-semibold text-primary' : ''
                 }
                 onClick={() => handleNavigationClick(item.id)}
               >

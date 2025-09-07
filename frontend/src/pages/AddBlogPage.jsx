@@ -40,7 +40,7 @@ const AddBlogPage = () => {
     seoTitle: '',
     seoDescription: '',
     publishedAt: '',
-    authorId: '',
+    author: {},
   });
 
   // eslint-disable-next-line no-unused-vars
@@ -50,7 +50,7 @@ const AddBlogPage = () => {
   });
 
   const [imagePreviews, setImagePreviews] = useState({
-    imageUrl: '',
+    imageUrls: '',
     featuredImage: '',
   });
 
@@ -181,38 +181,48 @@ const AddBlogPage = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setError('');
+    e.preventDefault();
+    setError('');
 
-  try {
-    const htmlContent = editorRef.current?.getContent() || '';
-    if (!htmlContent.replace(/<[^>]*>/g, '').trim()) {
-      setError('Content cannot be empty.');
-      return;
+    try {
+      const htmlContent = editorRef.current?.getContent() || '';
+      if (!htmlContent.replace(/<[^>]*>/g, '').trim()) {
+        setError('Content cannot be empty.');
+        return;
+      }
+
+      // Use Base64 images from imagePreviews
+      const submitData = {
+        ...formData,
+        content: htmlContent,
+        author: {
+          id: authUser.id,
+          name: authUser.username,
+          avatarUrl: authUser.avatarUrl,
+        },
+        publishedAt:
+          formData.status === 'scheduled' ? formData.publishedAt : null,
+        imageUrls: imagePreviews.imageUrls || null,
+        featuredImage: imagePreviews.featuredImage || null,
+      };
+
+      console.log('Submitting blog:', submitData);
+
+      const response = await addBlog(submitData); // backend should accept Base64
+      if (!response.ok) throw new Error('Failed to create blog');
+
+      // Optional: reset form or show success
+    } catch (err) {
+      console.error('Error creating blog:', err);
+      setError(err.message);
     }
+  };
 
-    // Use Base64 images from imagePreviews
-    const submitData = {
-      ...formData,
-      content: htmlContent,
-      authorId: authUser.id,
-      publishedAt: formData.status === 'scheduled' ? formData.publishedAt : null,
-      imageUrl: imagePreviews.imageUrl || null,
-      featuredImage: imagePreviews.featuredImage || null,
+  const handleSearch = (query) => {
+    setSearchData({ carSearchQuery: query });
+    search(query);
+    setShowCarDropdown(true);
     };
-
-    console.log('Submitting blog:', submitData);
-
-    const response = await addBlog(submitData); // backend should accept Base64
-    if (!response.ok) throw new Error('Failed to create blog');
-
-    // Optional: reset form or show success
-  } catch (err) {
-    console.error('Error creating blog:', err);
-    setError(err.message);
-  }
-};
-
 
   const editorRef = useRef(null);
 
@@ -440,16 +450,16 @@ const AddBlogPage = () => {
                       <div className="card-body p-4">
                         <h3 className="font-semibold mb-4">Additional Image</h3>
 
-                        {imagePreviews.imageUrl ? (
+                        {imagePreviews.imageUrls ? (
                           <div className="relative">
                             <img
-                              src={imagePreviews.imageUrl}
+                              src={imagePreviews.imageUrls}
                               alt="Additional"
                               className="w-full h-32 object-cover rounded-lg"
                             />
                             <button
                               type="button"
-                              onClick={() => removeImage('imageUrl')}
+                              onClick={() => removeImage('imageUrls')}
                               className="absolute top-2 right-2 btn btn-circle btn-xs bg-red-500 text-white"
                             >
                               <X className="w-3 h-3" />
@@ -460,7 +470,7 @@ const AddBlogPage = () => {
                             <input
                               type="file"
                               accept="image/*"
-                              onChange={(e) => handleImageUpload(e, 'imageUrl')}
+                              onChange={(e) => handleImageUpload(e, 'imageUrls')}
                               className="hidden"
                               id="additional-image"
                             />
@@ -506,7 +516,7 @@ const AddBlogPage = () => {
                     <button
                       type="button"
                       onClick={() => {
-                        search(searchData.carSearchQuery);
+                        handleSearch(searchData.carSearchQuery);
                         setShowCarDropdown(true);
                       }}
                       className="btn btn-primary rounded-r-full"
@@ -528,7 +538,7 @@ const AddBlogPage = () => {
                           No cars found
                         </div>
                       ) : (
-                        searchResults.data.map((car) => (
+                        searchResults.map((car) => (
                           <button
                             key={car.id}
                             type="button"

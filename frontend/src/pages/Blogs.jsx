@@ -4,9 +4,30 @@ import m4 from '../images/m4.jpg';
 import BlogCard from '../components/BlogCard';
 import { Link } from 'react-router-dom';
 import Breadcrumbs from '../components/BreadCrumbs';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, ChevronLeft, Loader2 } from 'lucide-react';
+import { useBlogStore } from '../store/useBlogStore';
+import { useEffect } from 'react';
 
 const Blogs = () => {
+  const {blogs, fetchBlogs, error, isLoading, pagination} = useBlogStore();
+
+  useEffect(() => {
+    fetchBlogs();
+  }, [fetchBlogs]);
+
+  const handlePageChange = (page) => {
+    // Pass the page number inside an object to match the getCars function's signature
+    fetchBlogs({ page });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader2 className="animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
     <div className="font-[poppins] bg-base-200">
       <div id="mobile" className="w-full">
@@ -36,29 +57,85 @@ const Blogs = () => {
         >
           <div className="w-full max-w-6xl">
             <div className="w-full max-w-6xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              <BlogCard
-                publisher="John Doe"
-                date="March 10, 2023"
-                title="The Future of Electric Cars"
-                tagline="Exploring the latest trends in electric vehicles."
-                image={m4}
-              />
-              <BlogCard
-                publisher="Jane Smith"
-                date="March 12, 2023"
-                title="Top 10 SUVs of 2023"
-                tagline="A comprehensive guide to the best SUVs this year."
-                image={m4}
-              />
-              <BlogCard
-                publisher="Alice Johnson"
-                date="March 15, 2023"
-                title="How to Maintain Your Car"
-                tagline="Essential tips for keeping your vehicle in top shape."
-                image={m4}
-              />
+              {!isLoading && !error ? (
+                blogs && blogs.length > 0 ? (
+                  blogs.map((blog) => (
+                    <BlogCard
+                      key={blog.id}
+                      publisher={blog.author || 'Unknown'}
+                      date={new Date(blog.createdAt).toLocaleDateString()}
+                      title={blog.title}
+                      tagline={blog.tagline}
+                      image={blog.imageUrl || m4}
+                      link={`/blog/${blog.id}`}
+                    />
+                  ))
+                ) : (
+                  <p className="text-center col-span-full">
+                    No blogs available.
+                  </p>
+                )
+              ) : null}
             </div>
           </div>
+        </section>
+        <section className='w-full py-8 flex justify-center'>
+          {/* Pagination Controls */}
+          {pagination && pagination.totalPages > 1 && (
+            <div className="flex items-center gap-2">
+              {/* Go to Page 1 button */}
+              {pagination.totalPages > 3 && pagination.currentPage > 3 && (
+                <button
+                  onClick={() => handlePageChange(1)}
+                  className="btn btn-circle btn-primary"
+                >
+                  1
+                </button>
+              )}
+
+              {/* Prev Button */}
+              {pagination.currentPage > 1 && (
+                <button
+                  onClick={() => handlePageChange(pagination.currentPage - 1)}
+                  className="btn btn-circle btn-primary"
+                >
+                  <ChevronLeft className="size-5 text-white" />
+                </button>
+              )}
+
+              {/* Page Numbers */}
+              {[...Array(pagination.totalPages)]
+                .map((_, index) => index + 1)
+                .filter(
+                  (page) =>
+                    page >= pagination.currentPage - 2 &&
+                    page <= pagination.currentPage + 2
+                )
+                .map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => handlePageChange(page)}
+                    className={`btn btn-circle ${
+                      page === pagination.currentPage
+                        ? 'btn-primary text-white btn-circle'
+                        : 'bg-gray-200 hover:bg-gray-300'
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+
+              {/* Next Button */}
+              {pagination.currentPage < pagination.totalPages && (
+                <button
+                  onClick={() => handlePageChange(pagination.currentPage + 1)}
+                  className="btn rounded-full btn-primary"
+                >
+                  Next
+                </button>
+              )}
+            </div>
+          )}
         </section>
       </div>
     </div>

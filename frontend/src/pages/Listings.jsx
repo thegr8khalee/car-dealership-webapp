@@ -16,7 +16,7 @@ import bmw from '../images/bmw.png';
 import audi from '../images/audi.png';
 import toyota from '../images/toyota.png';
 import honda from '../images/honda.png';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, ChevronLeft, Loader2 } from 'lucide-react';
 import Breadcrumbs from '../components/BreadCrumbs';
 import m4 from '../images/m4.jpg';
 import mileage from '../images/mileage.png';
@@ -24,8 +24,16 @@ import transmission from '../images/transmission.png';
 import date from '../images/date.png';
 import CarCard from '../components/CarCard';
 import CarCard2 from '../components/CarCard2';
+import { useCarStore } from '../store/useCarStore';
+import { useEffect } from 'react';
 
 const Listings = () => {
+  const { cars, isLoading, error, getCars, pagination } = useCarStore();
+
+  useEffect(() => {
+    getCars(); // Fetch cars when the component mounts
+  }, [getCars]);
+
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   // Ref to the dropdown element to detect clicks outside
   const filterRef = useRef(null);
@@ -98,22 +106,46 @@ const Listings = () => {
     );
   };
 
+  const handlePageChange = (page) => {
+    // Pass the page number inside an object to match the getCars function's signature
+    getCars({ page });
+  };
+
   const years = Array.from({ length: 26 }, (_, i) => (2025 - i).toString());
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-96">
+        <Loader2 className="animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
-    <div className='font-[poppins] bg-base-200'>
+    <div className="font-[poppins] bg-base-200">
       <div id="mobile" className="w-full">
         <section className="w-full bg-secondary pt-16 px-4 h-40 sticky top-0 z-50">
           <hr className="border-t border-gray-500" />
           <div className="fixed top-20 inset-x-0 text-center w-full px-4 z-50 justify-center flex">
-            <div className={`items-center justify-between p-1 flex w-full max-w-4xl rounded-full h-15 z-50 relative ${isFilterOpen ? 'bg-secondary/30 sm:bg-white' : 'bg-white'}`}>
+            <div
+              className={`items-center justify-between p-1 flex w-full max-w-4xl rounded-full h-15 z-50 relative ${
+                isFilterOpen ? 'bg-secondary/30 sm:bg-white' : 'bg-white'
+              }`}
+            >
               <div
-                className={`relative text-secondary items-center flex h-full px-4 border-r-2 cursor-pointer text-sm transition-all duration-300 ${isFilterOpen ? 'text-white border-r-white sm:text-secondary sm:border-r-black' : 'text-secondary border-r-secondary/50'}`}
+                className={`relative text-secondary items-center flex h-full px-4 border-r-2 cursor-pointer text-sm transition-all duration-300 ${
+                  isFilterOpen
+                    ? 'text-white border-r-white sm:text-secondary sm:border-r-black'
+                    : 'text-secondary border-r-secondary/50'
+                }`}
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
                 ref={filterRef} // Attach the ref to this element
               >
                 <ChevronDown
                   className={`size-5 mr-1 transform transition-transform duration-300 ${
-                    isFilterOpen ? 'rotate-180 text-white sm:text-secondary' : 'rotate-0'
+                    isFilterOpen
+                      ? 'rotate-180 text-white sm:text-secondary'
+                      : 'rotate-0'
                   }`}
                 />
                 Filters
@@ -122,7 +154,11 @@ const Listings = () => {
                 <input
                   type="text"
                   placeholder="Search for a car..."
-                  className={`input w-full border-none bg-transparent text-white sm:placeholder:text-secondary shadow-none ${isFilterOpen ? 'placeholder:text-white' : 'placeholder:text-secondary'}`}
+                  className={`input w-full border-none bg-transparent text-white sm:placeholder:text-secondary shadow-none ${
+                    isFilterOpen
+                      ? 'placeholder:text-white'
+                      : 'placeholder:text-secondary'
+                  }`}
                 />
               </div>
               <div className="h-full w-full flex justify-end">
@@ -599,74 +635,108 @@ const Listings = () => {
             )}
           </div>
         </section>
-        <section className='w-full p-4'>
-            <div className='w-full max-w-6xl mx-auto'>
-                <Breadcrumbs />
-                <div className='w-full flex justify-between items-end'>
-                    <h1 className=' text-3xl font-bold'>Listings</h1>
-                    <div className='flex flex-shrink-0 items-center'>
-                        <p className='text-sm text-gray-600 flex-shrink-0 pr-1'>Sort by</p>
-                        <select className='select border-0 bg-gray-200 select-xs max-w-30 sm:max-w-50'>
-                            <option value="price-asc">Price: Low to High</option>
-                            <option value="price-desc">Price: High to Low</option>
-                            <option value="year-asc">Year: Oldest to Newest</option>
-                            <option value="year-desc">Year: Newest to Oldest</option>
-                        </select>
-                    </div>
-                </div>
+        <section className="w-full p-4">
+          <div className="w-full max-w-6xl mx-auto">
+            <Breadcrumbs />
+            <div className="w-full flex justify-between items-end">
+              <h1 className=" text-3xl font-bold">Listings</h1>
+              <div className="flex flex-shrink-0 items-center">
+                <p className="text-sm text-gray-600 flex-shrink-0 pr-1">
+                  Sort by
+                </p>
+                <select className="select border-0 bg-gray-200 select-xs max-w-30 sm:max-w-50">
+                  <option value="price-asc">Price: Low to High</option>
+                  <option value="price-desc">Price: High to Low</option>
+                  <option value="year-asc">Year: Oldest to Newest</option>
+                  <option value="year-desc">Year: Newest to Oldest</option>
+                </select>
+              </div>
             </div>
+          </div>
         </section>
-        <section id='listings' className='w-full justify-center flex'>
-            <div className="w-full max-w-6xl px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              <CarCard2
-                // className="flex-shrink-0"
-                image={m4}
-                title="BMW M4"
-                description="425-hp twin-turbo inline-six, r..."
-                mileage={{ icon: mileage, value: '2000km' }}
-                transmission={{ icon: transmission, value: 'Automatic' }}
-                fuel={{ icon: gas, value: 'Gas' }}
-                year={{ icon: date, value: '2019' }}
-                price="N35,000,000"
-                link="/cars/bmw-m4"
-              />
-              <CarCard2
-                // className="flex-shrink-0"
-                image={m4}
-                title="BMW M4"
-                description="425-hp twin-turbo inline-six, r..."
-                mileage={{ icon: mileage, value: '2000km' }}
-                transmission={{ icon: transmission, value: 'Automatic' }}
-                fuel={{ icon: gas, value: 'Gas' }}
-                year={{ icon: date, value: '2019' }}
-                price="N35,000,000"
-                link="/cars/bmw-m4"
-              />
-              <CarCard2
-                // className="flex-shrink-0"
-                image={m4}
-                title="BMW M4"
-                description="425-hp twin-turbo inline-six, r..."
-                mileage={{ icon: mileage, value: '2000km' }}
-                transmission={{ icon: transmission, value: 'Automatic' }}
-                fuel={{ icon: gas, value: 'Gas' }}
-                year={{ icon: date, value: '2019' }}
-                price="N35,000,000"
-                link="/cars/bmw-m4"
-              />
-              <CarCard2
-                // className="flex-shrink-0"
-                image={m4}
-                title="BMW M4"
-                description="425-hp twin-turbo inline-six, r..."
-                mileage={{ icon: mileage, value: '2000km' }}
-                transmission={{ icon: transmission, value: 'Automatic' }}
-                fuel={{ icon: gas, value: 'Gas' }}
-                year={{ icon: date, value: '2019' }}
-                price="N35,000,000"
-                link="/cars/bmw-m4"
-              />
+        <section id="listings" className="w-full justify-center flex">
+          <div className="w-full max-w-6xl px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {isLoading ? (
+              <p>Loading cars...</p>
+            ) : (
+              cars.map((car) => (
+                <CarCard2
+                  key={car.id}
+                  image={
+                    car.imageUrls && car.imageUrls.length > 0
+                      ? car.imageUrls[0]
+                      : m4
+                  }
+                  title={`${car.make} ${car.model}`}
+                  description={car.description}
+                  mileage={{ icon: mileage, value: `${car.mileage}km` }}
+                  transmission={{ icon: transmission, value: car.transmission }}
+                  fuel={{ icon: gas, value: car.fuelType }}
+                  year={{ icon: date, value: car.year }}
+                  price={formatPrice(car.price)}
+                  link={`/car/${car.id}`}
+                />
+              ))
+            )}
+          </div>
+        </section>
+        <section className='w-full py-8 flex justify-center'>
+          {/* Pagination Controls */}
+          {pagination && pagination.totalPages > 1 && (
+            <div className="flex items-center gap-2">
+              {/* Go to Page 1 button */}
+              {pagination.totalPages > 3 && pagination.currentPage > 3 && (
+                <button
+                  onClick={() => handlePageChange(1)}
+                  className="btn btn-circle btn-primary"
+                >
+                  1
+                </button>
+              )}
+
+              {/* Prev Button */}
+              {pagination.currentPage > 1 && (
+                <button
+                  onClick={() => handlePageChange(pagination.currentPage - 1)}
+                  className="btn btn-circle btn-primary"
+                >
+                  <ChevronLeft className="size-5 text-white" />
+                </button>
+              )}
+
+              {/* Page Numbers */}
+              {[...Array(pagination.totalPages)]
+                .map((_, index) => index + 1)
+                .filter(
+                  (page) =>
+                    page >= pagination.currentPage - 2 &&
+                    page <= pagination.currentPage + 2
+                )
+                .map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => handlePageChange(page)}
+                    className={`btn btn-circle ${
+                      page === pagination.currentPage
+                        ? 'btn-primary text-white btn-circle'
+                        : 'bg-gray-200 hover:bg-gray-300'
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+
+              {/* Next Button */}
+              {pagination.currentPage < pagination.totalPages && (
+                <button
+                  onClick={() => handlePageChange(pagination.currentPage + 1)}
+                  className="btn rounded-full btn-primary"
+                >
+                  Next
+                </button>
+              )}
             </div>
+          )}
         </section>
       </div>
     </div>
