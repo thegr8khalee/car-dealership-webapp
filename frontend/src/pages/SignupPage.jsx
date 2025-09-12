@@ -19,7 +19,7 @@ const SignupPage = () => {
   //   const navigate = useNavigate();
 
   // Access authUser and isAdmin from the store to handle redirection if already logged in as admin
-  const { signup, isLoading } = useUserAuthStore
+  const { signup, isLoading } = useUserAuthStore()
   // Effect to redirect if an admin is already logged in
   // This handles cases where an admin manually navigates to /admin/login while already authenticated
 

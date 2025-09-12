@@ -6,54 +6,58 @@ import Admin from './admin.model.js';
 import Car from './car.model.js';
 import Blog from './blog.model.js';
 import Comment from './comment.model.js';
-import Like from './like.model.js';
 import Newsletter from './news.model.js';
+import Review from './review.model.js';
 
 // Blog associations - Changed alias from 'author' to 'adminAuthor'
 Blog.belongsTo(Admin, {
   foreignKey: 'authorId',
-  as: 'adminAuthor',  // Changed from 'author' to avoid collision
+  as: 'adminAuthor', // Changed from 'author' to avoid collision
   onDelete: 'RESTRICT',
-  onUpdate: 'CASCADE'
+  onUpdate: 'CASCADE',
 });
 
 Admin.hasMany(Blog, {
   foreignKey: 'authorId',
   as: 'blogs',
   onDelete: 'RESTRICT',
-  onUpdate: 'CASCADE'
+  onUpdate: 'CASCADE',
 });
 
 // Many-to-Many association between Blog and Car (using carIds array)
-const BlogCar = sequelize.define('BlogCar', {
-  id: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
-    primaryKey: true,
-  },
-  blogId: {
-    type: DataTypes.UUID,
-    references: {
-      model: 'Blogs',
-      key: 'id',
+const BlogCar = sequelize.define(
+  'BlogCar',
+  {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+    },
+    blogId: {
+      type: DataTypes.UUID,
+      references: {
+        model: 'Blogs',
+        key: 'id',
+      },
+    },
+    carId: {
+      type: DataTypes.UUID,
+      references: {
+        model: 'Cars',
+        key: 'id',
+      },
     },
   },
-  carId: {
-    type: DataTypes.UUID,
-    references: {
-      model: 'Cars',
-      key: 'id',
-    },
-  },
-}, {
-  timestamps: true,
-  indexes: [
-    {
-      unique: true,
-      fields: ['blogId', 'carId'],
-    },
-  ],
-});
+  {
+    timestamps: true,
+    indexes: [
+      {
+        unique: true,
+        fields: ['blogId', 'carId'],
+      },
+    ],
+  }
+);
 
 Blog.belongsToMany(Car, {
   through: BlogCar,
@@ -61,7 +65,7 @@ Blog.belongsToMany(Car, {
   otherKey: 'carId',
   as: 'cars',
   onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
+  onUpdate: 'CASCADE',
 });
 
 Car.belongsToMany(Blog, {
@@ -70,7 +74,7 @@ Car.belongsToMany(Blog, {
   otherKey: 'blogId',
   as: 'blogs',
   onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
+  onUpdate: 'CASCADE',
 });
 
 // Comment associations
@@ -78,84 +82,44 @@ Comment.belongsTo(Blog, {
   foreignKey: 'blogId',
   as: 'blog',
   onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
+  onUpdate: 'CASCADE',
 });
 
 Blog.hasMany(Comment, {
   foreignKey: 'blogId',
   as: 'comments',
   onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
+  onUpdate: 'CASCADE',
 });
 
 Comment.belongsTo(User, {
   foreignKey: 'userId',
   as: 'user',
   onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
+  onUpdate: 'CASCADE',
 });
 
 User.hasMany(Comment, {
   foreignKey: 'userId',
   as: 'comments',
   onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
+  onUpdate: 'CASCADE',
 });
 
-// Like associations
-Like.belongsTo(User, {
-  foreignKey: 'userId',
-  as: 'user',
-  onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
+Car.hasMany(Review, {
+  foreignKey: 'carId',
+  as: 'reviews', // This alias allows us to include reviews when querying a Car
+  onDelete: 'CASCADE', // Optional: if a Car is deleted, all its Reviews are also deleted
 });
 
-User.hasMany(Like, {
-  foreignKey: 'userId',
-  as: 'likes',
-  onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
-});
-
-Like.belongsTo(Blog, {
-  foreignKey: 'blogId',
-  as: 'blog',
-  onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
-});
-
-Blog.hasMany(Like, {
-  foreignKey: 'blogId',
-  as: 'likes',
-  onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
-});
-
-Like.belongsTo(Comment, {
-  foreignKey: 'commentId',
-  as: 'comment',
-  onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
-});
-
-Comment.hasMany(Like, {
-  foreignKey: 'commentId',
-  as: 'likes',
-  onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
+// A Review belongs to a Car
+Review.belongsTo(Car, {
+  foreignKey: 'carId',
+  as: 'car', // This alias allows us to include the car when querying a Review
 });
 
 // Export all models and the junction table
-export {
-  User,
-  Admin,
-  Car,
-  Blog,
-  Comment,
-  Like,
-  Newsletter,
-  BlogCar
-};
+export { User, Admin, Car, Blog, Comment, Newsletter, BlogCar };
 
 // Export a function to initialize all associations
 export const initializeAssociations = () => {
@@ -168,8 +132,7 @@ export default {
   Car,
   Blog,
   Comment,
-  Like,
   Newsletter,
   BlogCar,
-  initializeAssociations
+  initializeAssociations,
 };

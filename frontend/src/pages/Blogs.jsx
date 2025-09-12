@@ -62,11 +62,11 @@ const Blogs = () => {
                   blogs.map((blog) => (
                     <BlogCard
                       key={blog.id}
-                      publisher={blog.author || 'Unknown'}
+                      publisher={blog.author.name || 'Unknown'}
                       date={new Date(blog.createdAt).toLocaleDateString()}
                       title={blog.title}
                       tagline={blog.tagline}
-                      image={blog.imageUrl || m4}
+                      image={blog.featuredImage || m4}
                       link={`/blog/${blog.id}`}
                     />
                   ))

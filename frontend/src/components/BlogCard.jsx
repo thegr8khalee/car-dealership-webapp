@@ -1,7 +1,16 @@
 import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
+import { useInteractStore } from '../store/useInteractStore';
 
 const BlogCard = ({ publisher, date, title, tagline, image, link }) => {
+  const { viewBlog } = useInteractStore();
+  const handleViewBlog = () => {
+    if (link) {
+      const blogId = link.split('/').pop(); // Extract blog ID from the link
+      viewBlog(blogId); // Call the viewBlog function to increment view count
+    }
+  };
+  
   return (
     <div className="min-w-60 my-4 font-[poppins]">
       <figure>
@@ -14,13 +23,13 @@ const BlogCard = ({ publisher, date, title, tagline, image, link }) => {
       <div className="flex w-full justify-between items-center">
         <div className=" py-2">
           <div className="flex space-x-4">
-            <p className="text-sm">{publisher}</p>
+            <p className="text-sm capitalize">{publisher}</p>
             <p className="text-sm">{date}</p>
           </div>
 
-          <div className="space-x-4">
-            <b className="text-md">{title}:</b>{' '}
-            <p className="line-clamp-1 text-md">{tagline}</p>
+          <div className="space-x-2 flex flex-col">
+            <b className="text-md capitalize">{title}</b>{' '}
+            <span className="line-clamp-1 text-md capitalize">{tagline}</span>
           </div>
         </div>
         <div>
@@ -29,6 +38,7 @@ const BlogCard = ({ publisher, date, title, tagline, image, link }) => {
             onClick={() => {
               if (link) {
                 window.location.href = link;
+                handleViewBlog();
               }
             }}
           >

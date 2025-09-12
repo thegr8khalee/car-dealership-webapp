@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 export const useBlogStore = create((set) => ({
   // State
   blogs: [],
+  relatedBlogs: [],
   currentBlog: null,
   isLoading: false,
   error: null,
@@ -53,14 +54,28 @@ export const useBlogStore = create((set) => ({
   searchBlogs: async (query) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axiosInstance.get(
-        `/blogs/search?query=${query}`
-      );
+      const response = await axiosInstance.get(`/blogs/search?query=${query}`);
       set({ blogs: response.data.data });
     } catch (error) {
       console.error('Error searching blogs:', error);
       const errorMessage = error.response?.data?.message || 'No blogs found.';
       set({ blogs: [] }); // Clear blogs on no results
+      set({ error: errorMessage });
+      toast.error(errorMessage);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  getRelatedBlogsById: async (id) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await axiosInstance.get(`/blogs/getRelated/${id}`);
+      set({ relatedBlogs: response.data.data.relatedBlogs });
+    } catch (error) {
+      console.error('Error fetching related blogs:', error);
+      const errorMessage =
+        error.response?.data?.message || 'Failed to fetch related blogs.';
       set({ error: errorMessage });
       toast.error(errorMessage);
     } finally {

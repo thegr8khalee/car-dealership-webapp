@@ -1,6 +1,10 @@
 import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
 
+import electric from '../images/electric.png';
+import gas from '../images/gas.png';
+import hybrid from '../images/hybrid.png';
+
 const CarCard = ({
   image,
   title,
@@ -12,6 +16,22 @@ const CarCard = ({
   price,
   link = '#',
 }) => {
+
+  const returnFuelIcon = (fuelType) => {
+    switch (fuelType.toLowerCase()) {
+      case 'gasoline':
+        return gas;
+      case 'diesel':
+        return gas;
+      case 'electric':
+        return electric;
+      case 'hybrid':
+        return hybrid;
+      default:
+        return gas;
+    }
+  };
+
   return (
     <div className="card rounded-2xl bg-base-100 min-w-70 shadow-lg my-4">
       <figure>
@@ -19,7 +39,7 @@ const CarCard = ({
       </figure>
       <div className="px-5 py-4">
         <h2 className="card-title">{title}</h2>
-        <p>{description}</p>
+        <p className='text-gray-600 text-sm truncate whitespace-nowrap overflow-hidden'>{description}</p>
 
         {/* Info Grid */}
         <div className="grid grid-cols-2 gap-4 my-4 text-sm">
@@ -33,15 +53,15 @@ const CarCard = ({
               alt="Transmission"
               className="mr-2 size-5"
             />
-            <span>{transmission.value}</span>
+            <span className='capitalize'>{transmission.value}</span>
           </div>
           <div className="flex items-center">
-            <img src={fuel.icon} alt="Fuel" className="mr-2 size-5" />
-            <span>{fuel.value}</span>
+            <img src={returnFuelIcon(fuel.value)} alt="Fuel" className="mr-2 size-5" />
+            <span className='capitalize'>{fuel.value}</span>
           </div>
           <div className="flex items-center">
             <img src={year.icon} alt="Year" className="mr-2 size-5" />
-            <span>{year.value}</span>
+            <span className='capitalize'>{year.value}</span>
           </div>
         </div>
 
@@ -49,7 +69,7 @@ const CarCard = ({
 
         {/* Price + Link */}
         <div className="flex justify-between items-center">
-          <h1 className="font-semibold">{price}</h1>
+          <h1 className="font-semibold">N{price}</h1>
           <div className="flex items-center">
             <Link to={link} className="text-primary text-sm">
               View Details

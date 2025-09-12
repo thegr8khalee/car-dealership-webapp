@@ -35,7 +35,7 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
       validate: {
-        is: /^[\+]?[1-9][\d]{0,15}$/,
+        is: /^[\+]?[0-9]{10,15}$/,   
       },
     },
     passwordResetToken: {

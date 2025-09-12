@@ -157,7 +157,7 @@ export { setupDatabase };
 
 // utils/query-helpers.js - Useful query utilities
 import { Op } from 'sequelize';
-import { Blog, Admin, Car, Comment, Like, User } from '../models/index.js';
+import { Blog, Admin, Car, Comment, User } from '../models/index.js';
 
 export const QueryHelpers = {
   // Get published blogs with author and car info
@@ -312,22 +312,6 @@ export const QueryHelpers = {
             }
           ]
         },
-        {
-          model: Like,
-          as: 'likes',
-          include: [
-            {
-              model: Blog,
-              as: 'blog',
-              attributes: ['id', 'title']
-            },
-            {
-              model: Comment,
-              as: 'comment',
-              attributes: ['id', 'content']
-            }
-          ]
-        }
       ]
     });
   }

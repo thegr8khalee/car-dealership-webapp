@@ -1,14 +1,21 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../lib/db.js';
 
-const Comment = sequelize.define(
-  'Comment',
+const Review = sequelize.define(
+  'Review',
   {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
       allowNull: false,
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        len: [1, 100],
+      },
     },
     content: {
       type: DataTypes.TEXT,
@@ -18,11 +25,43 @@ const Comment = sequelize.define(
         notEmpty: true,
       },
     },
-    blogId: {
+    interiorRating: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      validate: {
+        min: 1,
+        max: 5,
+      },
+    },
+    exteriorRating: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      validate: {
+        min: 1,
+        max: 5,
+      },
+    },
+    comfortRating: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      validate: {
+        min: 1,
+        max: 5,
+      },
+    },
+    performanceRating: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      validate: {
+        min: 1,
+        max: 5,
+      },
+    },
+    carId: {
       type: DataTypes.UUID,
       allowNull: false,
       references: {
-        model: 'Blogs',
+        model: 'Cars',
         key: 'id',
       },
     },
@@ -34,13 +73,9 @@ const Comment = sequelize.define(
         key: 'id',
       },
     },
-    username: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     status: {
       type: DataTypes.ENUM('pending', 'approved', 'rejected', 'spam'),
-      defaultValue: 'pending',
+      defaultValue: 'approved',
     },
     isEdited: {
       type: DataTypes.BOOLEAN,
@@ -55,7 +90,7 @@ const Comment = sequelize.define(
     timestamps: true,
     indexes: [
       {
-        fields: ['blogId'],
+        fields: ['carId'],
       },
       {
         fields: ['userId'],
@@ -67,4 +102,4 @@ const Comment = sequelize.define(
   }
 );
 
-export default Comment
+export default Review;

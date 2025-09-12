@@ -35,18 +35,35 @@ import date from '../images/date.png';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCarStore } from '../store/useCarStore';
 import { useEffect } from 'react';
+import Review from '../components/Review';
+import toast from 'react-hot-toast';
+import { useInteractStore } from '../store/useInteractStore';
+import { useUserAuthStore } from '../store/useUserAuthStore';
 
 const CarDetails = () => {
   const { id } = useParams();
-  console.log('Car ID from params:', id);
-  const { car, getCarById, isGettingCar } = useCarStore();
+  // console.log('Car ID from params:', id);
+  const { car: currentCar, getCarById, isGettingCar } = useCarStore();
+  const { authUser } = useUserAuthStore();
   // Data for car features and tabs
 
   useEffect(() => {
     getCarById(id);
   }, [getCarById, id]);
 
-  console.log('Car Details:', car);
+  const car = currentCar?.car;
+  const reviews = currentCar?.reviews || [];
+  const averageRatings = currentCar?.averageRatings || {
+    interior: 0,
+    exterior: 0,
+    comfort: 0,
+    performance: 0,
+    overall: 0,
+  };
+
+  // console.log('Current Car relatedCars:', currentCar?.relatedCars);
+
+  console.log('Car Details:', currentCar);
 
   const [activeTab, setActiveTab] = useState('overview');
   const tabs = ['overview', 'description', 'features'];
@@ -96,6 +113,108 @@ const CarDetails = () => {
       alert('Link copied to clipboard!');
     });
   };
+
+  const getRatingStatus = (score) => {
+    if (score >= 4.5) return 'Excellent';
+    if (score >= 3.5) return 'Good';
+    if (score >= 2.5) return 'Average';
+    return 'Needs Improvement';
+  };
+
+  const carId = id;
+
+  const Star1 = ({ filled, onClick }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill={filled ? '#FF1A1A' : 'none'}
+      stroke="#FF1A1A"
+      strokeWidth="1.5"
+      className="size-5 transition-transform duration-200 cursor-pointer text-yellow-400"
+      onClick={onClick}
+    >
+      <path d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.6l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.6l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+    </svg>
+  );
+
+  const { reviewCar, updateReview } = useInteractStore();
+
+  const [formData, setFormData] = useState({
+    exterior: 0,
+    interior: 0,
+    comfort: 0,
+    performance: 0,
+    content: '',
+  });
+  const [loading, setLoading] = useState(false);
+
+  // Function to handle rating input
+  const handleRatingChange = (category, rating) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [category]: rating,
+    }));
+  };
+
+  // Function to handle content input
+  const handleContentChange = (e) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      content: e.target.value,
+    }));
+  };
+
+  const userReviewed = reviews.some((review) => review.userId === authUser?.id);
+
+  console.log('User Reviewed:', userReviewed);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!authUser) {
+      toast.error('You must be logged in to submit a review.');
+      return;
+    }
+    if (userReviewed) {
+      await updateReview(
+        reviews.find((review) => review.userId === authUser?.id).id,
+        formData
+      );
+      return;
+    }
+    setLoading(true);
+
+    // Check if any rating is 0
+    if (Object.values(formData).some((value) => value === 0)) {
+      toast.error('Please provide a rating for all categories.');
+      setLoading(false);
+      return;
+    }
+
+    // Check if the content is empty
+    if (!formData.content.trim()) {
+      toast.error('Please write a review message.');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await reviewCar(carId, formData);
+
+      if (response) {
+        console.log('Review response:', response);
+        toast.success(response.data.message);
+      }
+    } catch (error) {
+      console.error('Error submitting review:', error);
+      const errorMessage =
+        error.response?.data?.message || 'Failed to submit review.';
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const ratingCategories = ['Exterior', 'Interior', 'Comfort', 'Performance'];
 
   if (isGettingCar) {
     return (
@@ -450,7 +569,7 @@ const CarDetails = () => {
                           alt="Sedan"
                           className="inline mr-2 size-6"
                         />
-                        <span className="text-sm text-primary">
+                        <span className="text-sm text-primary capitalize">
                           {car?.bodyType}
                         </span>
                       </div>
@@ -470,7 +589,7 @@ const CarDetails = () => {
                           alt="Sedan"
                           className="inline mr-2 size-6"
                         />
-                        <span className="text-sm text-primary">
+                        <span className="text-sm text-primary capitalize">
                           {car?.fuelType}
                         </span>
                       </div>
@@ -480,7 +599,7 @@ const CarDetails = () => {
                           alt="Sedan"
                           className="inline mr-2 size-6"
                         />
-                        <span className="text-sm text-primary">
+                        <span className="text-sm text-primary capitalize">
                           {car?.transmission}
                         </span>
                       </div>
@@ -496,17 +615,17 @@ const CarDetails = () => {
                       </div>{' '}
                       <div className="flex items-center">
                         <UserRound className="inline mr-2 size-6" />
-                        <span className="text-sm text-primary">
+                        <span className="text-sm text-primary capitalize">
                           {car?.condition}
                         </span>
                       </div>
-                      <div className="flex items-center">
+                      <div className="flex items-center ">
                         <img
                           src={engine}
                           alt="Sedan"
                           className="inline mr-2 size-6"
                         />
-                        <span className="text-sm text-primary">
+                        <span className="text-sm text-primary capitalize">
                           {car?.engineSize}L
                         </span>
                       </div>
@@ -748,190 +867,104 @@ const CarDetails = () => {
               <h2 className="text-2xl font-semibold mb-2">Customer Reviews</h2>
               {/* <h1 className="font-medium mb-2">Very Good</h1> */}
               <div className="flex items-center justify-between space-x-2 my-2">
-                <div className="w-32 h-32 rounded-full border-4 borderprimary flex flex-col items-center justify-center text-red-500">
-                  <span className="text-3xl font-semibold">5.0</span>
-                  <span className="text-sm">Out of 5.0</span>
-                </div>
+                <OverallRatingDisplay overallRating={averageRatings.overall} />
                 <div className="grid grid-cols-2 gap-4 flex-2">
                   <div className="flex flex-col">
                     <span className="font-medium">Exterior</span>
                     <div className="flex items-center w-full">
                       <Star className="fill-primary stroke-0 size-4" />
-                      <span className="text-gray-500">5.0</span>
+                      <span className="text-gray-500">
+                        {averageRatings.exterior}
+                      </span>
                     </div>
                   </div>
                   <div className="flex flex-col">
                     <span className="font-medium">Interior</span>
                     <div className="flex items-center w-full">
                       <Star className="fill-primary stroke-0 size-4" />
-                      <span className="text-gray-500">5.0</span>
+                      <span className="text-gray-500">
+                        {averageRatings.interior}
+                      </span>
                     </div>
                   </div>
                   <div className="flex flex-col">
                     <span className="font-medium">Comfort</span>
                     <div className="flex items-center w-full">
                       <Star className="fill-primary stroke-0 size-4" />
-                      <span className="text-gray-500">5.0</span>
+                      <span className="text-gray-500">
+                        {averageRatings.comfort}
+                      </span>
                     </div>
                   </div>
                   <div className="flex flex-col">
                     <span className="font-medium">Performance</span>
                     <div className="flex items-center w-full">
                       <Star className="fill-primary stroke-0 size-4" />
-                      <span className="text-gray-500">5.0</span>
+                      <span className="text-gray-500">
+                        {averageRatings.performance}
+                      </span>
                     </div>
                   </div>
                 </div>
               </div>
               <p>
-                Based on <b>100 reviews</b>
+                Based on{' '}
+                <b>
+                  {reviews.length} Review{reviews.length > 1 ? 's' : ''}
+                </b>
               </p>
               <div className="flex flex-col space-y-6 mt-4">
-                <div>
-                  <div className="flex w-full justify-between items-center">
-                    <h1 className="font-medium text-lg">Name Surname</h1>
-                    <p>Date</p>
-                  </div>
-                  <div className="flex space-x-2 my-1">
-                    <Star className="fill-primary stroke-0 size-4" />
-                    <Star className="fill-primary stroke-0 size-4" />
-                    <Star className="fill-primary stroke-0 size-4" />
-                    <Star className="fill-primary stroke-0 size-4" />
-                    <Star className="fill-primary stroke-0 size-4" />
-                  </div>
-                  <p className=" text-sm">
-                    Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                    Exercitationem libero tempora autem totam incidunt
-                    cupiditate consequatur? Ratione excepturi doloribus ipsum
-                    quo eaque. Cumque asperiores quas perspiciatis quisquam
-                    possimus officiis et.
-                  </p>
-                </div>
-                <div>
-                  <div className="flex w-full justify-between items-center">
-                    <h1 className="font-medium text-lg">Name Surname</h1>
-                    <p>Date</p>
-                  </div>
-                  <div className="flex space-x-2 my-1">
-                    <Star className="fill-primary stroke-0 size-4" />
-                    <Star className="fill-primary stroke-0 size-4" />
-                    <Star className="fill-primary stroke-0 size-4" />
-                    <Star className="fill-primary stroke-0 size-4" />
-                    <Star className="fill-primary stroke-0 size-4" />
-                  </div>
-                  <p className=" text-sm">
-                    Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                    Exercitationem libero tempora autem totam incidunt
-                    cupiditate consequatur? Ratione excepturi doloribus ipsum
-                    quo eaque. Cumque asperiores quas perspiciatis quisquam
-                    possimus officiis et.
-                  </p>
-                </div>
+                {reviews.map((review, index) => (
+                  <Review key={index} review={review} />
+                ))}
               </div>
-              <h1 className="font-semibold text-xl mt-6 mb-4">
-                Leave a Review
-              </h1>
-              <div className="grid grid-cols-2 gap-2 flex-2">
-                <div className="flex flex-col gap-1">
-                  <span className="font-medium">Exterior</span>
-                  <div className="flex w-full justify-start">
-                    <Star className="fill-primary stroke-0 size-4" />
-                    <Star className="fill-primary stroke-0 size-4" />
-                    <Star className="fill-primary stroke-0 size-4" />
-                    <Star className="fill-primary stroke-0 size-4" />
-                    <Star className="fill-primary stroke-0 size-4" />
-                  </div>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <span className="font-medium">Interior</span>
-                  <div className="flex w-full justify-start">
-                    <Star className="fill-primary stroke-0 size-4" />
-                    <Star className="fill-primary stroke-0 size-4" />
-                    <Star className="fill-primary stroke-0 size-4" />
-                    <Star className="fill-primary stroke-0 size-4" />
-                    <Star className="fill-primary stroke-0 size-4" />
-                  </div>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <span className="font-medium">Comfort</span>
-                  <div className="flex w-full justify-start">
-                    <Star className="fill-primary stroke-0 size-4" />
-                    <Star className="fill-primary stroke-0 size-4" />
-                    <Star className="fill-primary stroke-0 size-4" />
-                    <Star className="fill-primary stroke-0 size-4" />
-                    <Star className="fill-primary stroke-0 size-4" />
-                  </div>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <span className="font-medium">Performance</span>
-                  <div className="flex w-full justify-start">
-                    <Star className="fill-primary stroke-0 size-4" />
-                    <Star className="fill-primary stroke-0 size-4" />
-                    <Star className="fill-primary stroke-0 size-4" />
-                    <Star className="fill-primary stroke-0 size-4" />
-                    <Star className="fill-primary stroke-0 size-4" />
-                  </div>
-                </div>
-              </div>
-              <form action="" className="space-y-4 mt-6">
-                <div className="relative">
-                  <input
-                    type="number"
-                    name="Name"
-                    value={calcFormData.price}
-                    onChange={handleCalcChange}
-                    className="peer w-full px-3 pt-6 pb-2 text-lg font-medium border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200"
-                    placeholder=" "
-                  />
-                  <label
-                    htmlFor="name"
-                    className={`absolute left-3 transition-all duration-300 text-gray-400 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary ${
-                      calcFormData.price && 'top-2 text-xs text-primary'
-                    }`}
-                  >
-                    Name
-                  </label>
-                </div>
-                <div className="relative">
-                  <input
-                    type="email"
-                    name="email"
-                    value={calcFormData.years}
-                    onChange={handleCalcChange}
-                    className="peer w-full px-3 pt-6 pb-2 text-lg font-medium border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200"
-                    placeholder=" "
-                  />
-                  <label
-                    htmlFor="email"
-                    className={`absolute left-3 transition-all duration-300 text-gray-400 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary ${
-                      calcFormData.years && 'top-2 text-xs text-primary'
-                    }`}
-                  >
-                    Email
-                  </label>
+              <h1 className="font-semibold text-xl mt-6">Leave a Review</h1>
+
+              <form className="space-y-4 mt-4" onSubmit={handleSubmit}>
+                <div className="grid grid-cols-2 gap-4">
+                  {ratingCategories.map((category) => (
+                    <div key={category} className="flex flex-col gap-1">
+                      <span className="font-medium">{category}</span>
+                      <div className="flex w-full justify-start">
+                        {[1, 2, 3, 4, 5].map((rating) => (
+                          <Star1
+                            key={rating}
+                            filled={formData[category.toLowerCase()] >= rating}
+                            onClick={() =>
+                              handleRatingChange(category.toLowerCase(), rating)
+                            }
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  ))}
                 </div>
                 <div className="relative">
                   <textarea
-                    name="message"
-                    value={calcFormData.message}
-                    onChange={handleCalcChange}
+                    name="content"
+                    value={formData.content}
+                    onChange={handleContentChange}
                     className="peer w-full px-3 pt-6 pb-2 text-lg font-medium border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200"
+                    rows="4"
+                    placeholder=" "
                   />
-
                   <label
-                    htmlFor="message"
-                    className={`absolute left-3 transition-all duration-300 text-gray-400 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary ${
-                      calcFormData.message && 'top-2 text-xs text-primary'
-                    }`}
+                    htmlFor="content"
+                    className="absolute left-3 transition-all duration-300 text-gray-400 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary"
                   >
-                    Message
+                    Review Message
                   </label>
                 </div>
                 <button
-                  type="button"
-                  className="w-full h-15 mt-2 text-white btn-primary btn-lg text-lg rounded-xl font-semibold"
+                  type="submit"
+                  className="w-full h-15 mt-2 text-white btn-primary btn-lg text-lg rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={loading}
                 >
-                  Submit
+                  {loading
+                    ? 'Submitting...'
+                    : userReviewed
+                    ? 'Update Review'
+                    : 'Submit Review'}
                 </button>
               </form>
             </div>
@@ -939,30 +972,23 @@ const CarDetails = () => {
           <section id="related-cars" className="w-full my-8">
             <h1 className="text-2xl font-bold">Related Cars</h1>
             <div className="flex overflow-x-auto w-full space-x-2 pl-1">
-              <CarCard
-                className="flex-shrink-0"
-                image={m4}
-                title="BMW M4"
-                description="425-hp twin-turbo inline-six, r..."
-                mileage={{ icon: mileage, value: '2000km' }}
-                transmission={{ icon: transmission, value: 'Automatic' }}
-                fuel={{ icon: gas, value: 'Gas' }}
-                year={{ icon: date, value: '2019' }}
-                price="N35,000,000"
-                link="/cars/bmw-m4"
-              />
-              <CarCard
-                className="flex-shrink-0"
-                image={m4}
-                title="BMW M4"
-                description="425-hp twin-turbo inline-six, r..."
-                mileage={{ icon: mileage, value: '2000km' }}
-                transmission={{ icon: transmission, value: 'Automatic' }}
-                fuel={{ icon: gas, value: 'Gas' }}
-                year={{ icon: date, value: '2019' }}
-                price="N35,000,000"
-                link="/cars/bmw-m4"
-              />
+              {currentCar?.relatedCars.map((relatedCar) => (
+                <CarCard
+                  className="flex-shrink-0"
+                  image={relatedCar.featuredImage}
+                  title={relatedCar.title}
+                  description={relatedCar.description}
+                  mileage={{ icon: mileage, value: relatedCar.mileage }}
+                  transmission={{
+                    icon: transmission,
+                    value: relatedCar.transmission,
+                  }}
+                  fuel={{ icon: gas, value: relatedCar.fuelType }}
+                  year={{ icon: date, value: relatedCar.year }}
+                  price={relatedCar.price}
+                  link={`/cars/${relatedCar.id}`}
+                />
+              ))}
             </div>
             <div className="w-full flex justify-end pr-2">
               <button
@@ -1251,7 +1277,7 @@ const CarDetails = () => {
                             alt="Sedan"
                             className="inline mr-2 size-6"
                           />
-                          <span className="text-sm text-primary">
+                          <span className="text-sm text-primary capitalize">
                             {car?.bodyType}
                           </span>
                         </div>
@@ -1271,7 +1297,7 @@ const CarDetails = () => {
                             alt="Sedan"
                             className="inline mr-2 size-6"
                           />
-                          <span className="text-sm text-primary">
+                          <span className="text-sm text-primary capitalize">
                             {car?.fuelType}
                           </span>
                         </div>
@@ -1281,7 +1307,7 @@ const CarDetails = () => {
                             alt="Sedan"
                             className="inline mr-2 size-6"
                           />
-                          <span className="text-sm text-primary">
+                          <span className="text-sm text-primary capitalize">
                             {car?.transmission}
                           </span>
                         </div>
@@ -1297,7 +1323,7 @@ const CarDetails = () => {
                         </div>{' '}
                         <div className="flex items-center">
                           <UserRound className="inline mr-2 size-6" />
-                          <span className="text-sm text-primary">
+                          <span className="text-sm text-primary capitalize">
                             {car?.condition}
                           </span>
                         </div>
@@ -1323,7 +1349,7 @@ const CarDetails = () => {
                         </div>
                         <div className="flex items-center">
                           <PaintBucket className="inline mr-2 size-6" />
-                          <span className="text-sm text-primary">
+                          <span className="text-sm text-primary capitalize">
                             {car?.color}
                           </span>
                         </div>
@@ -1637,236 +1663,152 @@ const CarDetails = () => {
             <h2 className="text-2xl font-semibold mb-2">Customer Reviews</h2>
             {/* <h1 className="font-medium mb-2">Very Good</h1> */}
             <div className="flex items-center justify-between space-x-4 my-2">
-              <div className="w-45 h-45 rounded-full border-4 borderprimary flex flex-col items-center justify-center text-red-500">
-                <span className="text-5xl font-semibold">5.0</span>
-                <span className="text">Out of 5.0</span>
-              </div>
+              <OverallRatingDisplay overallRating={averageRatings.overall} />
               <div className="grid grid-cols-2 gap-4 flex-2">
                 <div className="flex w-full justify-between border-b-2 border-gray-300 pb-2">
                   <div>
                     <h1 className="font-medium">Exterior</h1>
-                    <p className="text-gray-500">Perfect</p>
+                    <p className="text-gray-500">
+                      {getRatingStatus(averageRatings.exterior)}
+                    </p>
                   </div>
 
                   <div className="flex items-center ">
                     <Star className="fill-primary stroke-0 size-4" />
-                    <span className="text-gray-500">5.0</span>
+                    <span className="text-gray-500">
+                      {averageRatings.exterior}
+                    </span>
                   </div>
                 </div>
 
                 <div className="flex w-full justify-between border-b-2 border-gray-300 pb-2">
                   <div>
                     <h1 className="font-medium">Interior</h1>
-                    <p className="text-gray-500">Perfect</p>
+                    <p className="text-gray-500">
+                      {getRatingStatus(averageRatings.interior)}
+                    </p>
                   </div>
 
                   <div className="flex items-center ">
                     <Star className="fill-primary stroke-0 size-4" />
-                    <span className="text-gray-500">5.0</span>
+                    <span className="text-gray-500">
+                      {averageRatings.interior}
+                    </span>
                   </div>
                 </div>
                 <div className="flex w-full justify-between border-b-2 border-gray-300 pb-2">
                   <div>
                     <h1 className="font-medium">Comfort</h1>
-                    <p className="text-gray-500">Perfect</p>
+                    <p className="text-gray-500">
+                      {getRatingStatus(averageRatings.comfort)}
+                    </p>
                   </div>
 
                   <div className="flex items-center ">
                     <Star className="fill-primary stroke-0 size-4" />
-                    <span className="text-gray-500">5.0</span>
+                    <span className="text-gray-500">
+                      {averageRatings.comfort}
+                    </span>
                   </div>
                 </div>
                 <div className="flex w-full justify-between border-b-2 border-gray-300 pb-2">
                   <div>
                     <h1 className="font-medium">Performance</h1>
-                    <p className="text-gray-500">Perfect</p>
+                    <p className="text-gray-500">
+                      {getRatingStatus(averageRatings.performance)}
+                    </p>
                   </div>
 
                   <div className="flex items-center ">
                     <Star className="fill-primary stroke-0 size-4" />
-                    <span className="text-gray-500">5.0</span>
+                    <span className="text-gray-500">
+                      {averageRatings.performance}
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
             <p>
-              Based on <b>100 reviews</b>
+              Based on{' '}
+              <b>
+                {reviews.length} Review{reviews.length > 1 ? 's' : ''}
+              </b>
             </p>
             <div className="flex flex-col space-y-6 mt-4">
-              <div>
-                <div className="flex max-w-md justify-between items-center">
-                  <h1 className="font-medium text-lg">Name Surname</h1>
-                  <p>Date</p>
-                </div>
-                <div className="flex space-x-2 my-1">
-                  <Star className="fill-primary stroke-0 size-4" />
-                  <Star className="fill-primary stroke-0 size-4" />
-                  <Star className="fill-primary stroke-0 size-4" />
-                  <Star className="fill-primary stroke-0 size-4" />
-                  <Star className="fill-primary stroke-0 size-4" />
-                </div>
-                <p className=" text-sm max-w-lg">
-                  Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                  Exercitationem libero tempora autem totam incidunt cupiditate
-                  consequatur? Ratione excepturi doloribus ipsum quo eaque.
-                  Cumque asperiores quas perspiciatis quisquam possimus officiis
-                  et.
-                </p>
-              </div>
-              <div>
-                <div className="flex w-full max-w-md justify-between items-center">
-                  <h1 className="font-medium text-lg">Name Surname</h1>
-                  <p>Date</p>
-                </div>
-                <div className="flex space-x-2 my-1">
-                  <Star className="fill-primary stroke-0 size-4" />
-                  <Star className="fill-primary stroke-0 size-4" />
-                  <Star className="fill-primary stroke-0 size-4" />
-                  <Star className="fill-primary stroke-0 size-4" />
-                  <Star className="fill-primary stroke-0 size-4" />
-                </div>
-                <p className=" text-sm max-w-lg">
-                  Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                  Exercitationem libero tempora autem totam incidunt cupiditate
-                  consequatur? Ratione excepturi doloribus ipsum quo eaque.
-                  Cumque asperiores quas perspiciatis quisquam possimus officiis
-                  et.
-                </p>
-              </div>
+              {reviews.map((review, index) => (
+                <Review key={index} review={review} />
+              ))}
             </div>
             <hr className="border-t border-gray-300 my-8" />
             <h1 className="font-semibold text-xl mt-6 mb-4">Leave a Review</h1>
-            <div className="grid grid-cols-2 gap-2 flex-2">
-              <div className="flex flex-col gap-1">
-                <span className="font-medium">Exterior</span>
-                <div className="flex w-full justify-start">
-                  <Star className="fill-primary stroke-0 size-4" />
-                  <Star className="fill-primary stroke-0 size-4" />
-                  <Star className="fill-primary stroke-0 size-4" />
-                  <Star className="fill-primary stroke-0 size-4" />
-                  <Star className="fill-primary stroke-0 size-4" />
-                </div>
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="font-medium">Interior</span>
-                <div className="flex w-full justify-start">
-                  <Star className="fill-primary stroke-0 size-4" />
-                  <Star className="fill-primary stroke-0 size-4" />
-                  <Star className="fill-primary stroke-0 size-4" />
-                  <Star className="fill-primary stroke-0 size-4" />
-                  <Star className="fill-primary stroke-0 size-4" />
-                </div>
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="font-medium">Comfort</span>
-                <div className="flex w-full justify-start">
-                  <Star className="fill-primary stroke-0 size-4" />
-                  <Star className="fill-primary stroke-0 size-4" />
-                  <Star className="fill-primary stroke-0 size-4" />
-                  <Star className="fill-primary stroke-0 size-4" />
-                  <Star className="fill-primary stroke-0 size-4" />
-                </div>
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="font-medium">Performance</span>
-                <div className="flex w-full justify-start">
-                  <Star className="fill-primary stroke-0 size-4" />
-                  <Star className="fill-primary stroke-0 size-4" />
-                  <Star className="fill-primary stroke-0 size-4" />
-                  <Star className="fill-primary stroke-0 size-4" />
-                  <Star className="fill-primary stroke-0 size-4" />
-                </div>
-              </div>
-            </div>
-            <form action="" className="space-y-4 mt-6">
-              <div className="relative">
-                <input
-                  type="number"
-                  name="Name"
-                  value={calcFormData.price}
-                  onChange={handleCalcChange}
-                  className="peer w-full px-3 pt-6 pb-2 text-lg font-medium border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200"
-                  placeholder=" "
-                />
-                <label
-                  htmlFor="name"
-                  className={`absolute left-3 transition-all duration-300 text-gray-400 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary ${
-                    calcFormData.price && 'top-2 text-xs text-primary'
-                  }`}
-                >
-                  Name
-                </label>
-              </div>
-              <div className="relative">
-                <input
-                  type="email"
-                  name="email"
-                  value={calcFormData.years}
-                  onChange={handleCalcChange}
-                  className="peer w-full px-3 pt-6 pb-2 text-lg font-medium border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200"
-                  placeholder=" "
-                />
-                <label
-                  htmlFor="email"
-                  className={`absolute left-3 transition-all duration-300 text-gray-400 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary ${
-                    calcFormData.years && 'top-2 text-xs text-primary'
-                  }`}
-                >
-                  Email
-                </label>
+            <form className="space-y-4 mt-4" onSubmit={handleSubmit}>
+              <div className="grid grid-cols-2 gap-4">
+                {ratingCategories.map((category) => (
+                  <div key={category} className="flex flex-col gap-1">
+                    <span className="font-medium">{category}</span>
+                    <div className="flex w-full justify-start">
+                      {[1, 2, 3, 4, 5].map((rating) => (
+                        <Star1
+                          key={rating}
+                          filled={formData[category.toLowerCase()] >= rating}
+                          onClick={() =>
+                            handleRatingChange(category.toLowerCase(), rating)
+                          }
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ))}
               </div>
               <div className="relative">
                 <textarea
-                  name="message"
-                  value={calcFormData.message}
-                  onChange={handleCalcChange}
+                  name="content"
+                  value={formData.content}
+                  onChange={handleContentChange}
                   className="peer w-full px-3 pt-6 pb-2 text-lg font-medium border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200"
+                  rows="4"
+                  placeholder=" "
                 />
-
                 <label
-                  htmlFor="message"
-                  className={`absolute left-3 transition-all duration-300 text-gray-400 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary ${
-                    calcFormData.message && 'top-2 text-xs text-primary'
-                  }`}
+                  htmlFor="content"
+                  className="absolute left-3 transition-all duration-300 text-gray-400 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary"
                 >
-                  Message
+                  Review Message
                 </label>
               </div>
               <button
-                type="button"
-                className="btn w-full max-w-70 mt-2 text-white btn-primary btn-lg text-lg rounded-xl font-semibold"
+                type="submit"
+                className="w-full h-15 mt-2 text-white btn-primary btn-lg text-lg rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={loading}
               >
-                Submit
+                {loading
+                  ? 'Submitting...'
+                  : userReviewed
+                  ? 'Update Review'
+                  : 'Submit Review'}
               </button>
             </form>
           </section>
           <section id="related-cars" className="w-full my-8">
             <h1 className="text-2xl font-bold">Related Cars</h1>
             <div className="flex overflow-x-auto w-full space-x-2 pl-1">
-              <CarCard
-                className="flex-shrink-0"
-                image={m4}
-                title="BMW M4"
-                description="425-hp twin-turbo inline-six, r..."
-                mileage={{ icon: mileage, value: '2000km' }}
-                transmission={{ icon: transmission, value: 'Automatic' }}
-                fuel={{ icon: gas, value: 'Gas' }}
-                year={{ icon: date, value: '2019' }}
-                price="N35,000,000"
-                link="/cars/bmw-m4"
-              />
-              <CarCard
-                className="flex-shrink-0"
-                image={m4}
-                title="BMW M4"
-                description="425-hp twin-turbo inline-six, r..."
-                mileage={{ icon: mileage, value: '2000km' }}
-                transmission={{ icon: transmission, value: 'Automatic' }}
-                fuel={{ icon: gas, value: 'Gas' }}
-                year={{ icon: date, value: '2019' }}
-                price="N35,000,000"
-                link="/cars/bmw-m4"
-              />
+              {currentCar?.relatedCars.map((relatedCar) => (
+                <CarCard
+                  className="flex-shrink-0"
+                  image={relatedCar.featuredImage}
+                  title={relatedCar.title}
+                  description={relatedCar.description}
+                  mileage={{ icon: mileage, value: relatedCar.mileage }}
+                  transmission={{
+                    icon: transmission,
+                    value: relatedCar.transmission,
+                  }}
+                  fuel={{ icon: gas, value: relatedCar.fuelType }}
+                  year={{ icon: date, value: relatedCar.year }}
+                  price={relatedCar.price}
+                  link={`/cars/${relatedCar.id}`}
+                />
+              ))}
             </div>
             <div className="w-full flex justify-end pr-2">
               <button
@@ -1879,6 +1821,81 @@ const CarDetails = () => {
             </div>
           </section>
         </div>
+      </div>
+    </div>
+  );
+};
+
+const OverallRatingDisplay = ({ overallRating }) => {
+  // Define SVG properties
+  const size = 180;
+  const strokeWidth = 10;
+  const radius = size / 2 - strokeWidth / 2;
+  const circumference = 2 * Math.PI * radius;
+
+  // Calculate the stroke-dashoffset based on the rating
+  // A rating of 5.0 means 0 offset (fully drawn circle)
+  // A rating of 0 means full offset (empty circle)
+  const offset = circumference - (overallRating / 5) * circumference;
+
+  // Determine the color based on the rating value
+  let strokeColor = '#9CA3AF'; // Gray-400
+  let textColor = 'text-gray-500';
+
+  if (overallRating > 0) {
+    if (overallRating >= 4) {
+      strokeColor = '#FF1A1A'; // Green-500
+      textColor = '#FF1A1A';
+    } else if (overallRating >= 3) {
+      strokeColor = '#FF1A1A'; // Yellow-400
+      textColor = '#FF1A1A';
+    } else {
+      strokeColor = '#FF1A1A'; // Rose-400
+      textColor = '#FF1A1A';
+    }
+  }
+
+  return (
+    <div className="relative w-32 h-32 sm:w-44 sm:h-44 flex-shrink-0">
+      {/* SVG Container */}
+      <svg
+        className="w-full h-full transform -rotate-90"
+        viewBox={`0 0 ${size} ${size}`}
+      >
+        {/* Background circle track */}
+        <circle
+          className="text-gray-200"
+          stroke="currentColor"
+          strokeWidth={strokeWidth}
+          fill="transparent"
+          r={radius}
+          cx={size / 2}
+          cy={size / 2}
+        />
+        {/* Dynamic progress circle with rounded ends */}
+        <circle
+          stroke={strokeColor}
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          fill="transparent"
+          r={radius}
+          cx={size / 2}
+          cy={size / 2}
+          style={{
+            transition: 'stroke-dashoffset 0.5s ease-in-out',
+            strokeDasharray: circumference,
+            strokeDashoffset: offset,
+          }}
+        />
+      </svg>
+      {/* Inner text content */}
+      <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center">
+        <span className={`text-3xl sm:text-4xl font-bold text-primary`}>
+          {overallRating.toFixed(1)}
+        </span>
+        <span className="text-xs sm:text-sm font-medium text-primary">
+          Out of 5.0
+        </span>
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import Car from '../models/car.model.js';
 import { Op } from 'sequelize';
+import Review from '../models/review.model.js';
 
 export const getAllCars = async (req, res) => {
   try {
@@ -58,19 +59,86 @@ export const getCarById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Use findByPk (find by primary key) for an efficient lookup
+    // Find the primary car by ID
     const car = await Car.findByPk(id);
 
     if (!car) {
-      return res.status(404).json({ message: 'Car not found.' });
+      return res.status(404).json({ message: 'Car not found' });
     }
 
-    res.status(200).json(car);
+    // Find up to 4 related cars that share similar attributes.
+    // The query uses Op.or to find matches on any of the criteria.
+    const relatedCars = await Car.findAll({
+      where: {
+        id: { [Op.ne]: car.id }, // Exclude the current car
+        [Op.or]: [
+          { make: car.make },
+          { bodyType: car.bodyType },
+          { year: car.year },
+          { fuelType: car.fuelType },
+        ],
+      },
+      limit: 4, // Limit the number of related cars
+    });
+
+    // Find all approved reviews for the primary car
+    const reviews = await Review.findAll({
+      where: {
+        carId: id,
+        status: 'approved', // Only show approved reviews
+      },
+    });
+
+    // Initialize average ratings
+    let averageRatings = {
+      interior: 0,
+      exterior: 0,
+      comfort: 0,
+      performance: 0,
+      overall: 0,
+    };
+
+    // Calculate average ratings if reviews exist
+    if (reviews.length > 0) {
+      const totalRatings = reviews.reduce(
+        (acc, review) => {
+          acc.interior += review.interiorRating;
+          acc.exterior += review.exteriorRating;
+          acc.comfort += review.comfortRating;
+          acc.performance += review.performanceRating;
+          return acc;
+        },
+        { interior: 0, exterior: 0, comfort: 0, performance: 0 }
+      );
+
+      const count = reviews.length;
+      const avgInterior = totalRatings.interior / count;
+      const avgExterior = totalRatings.exterior / count;
+      const avgComfort = totalRatings.comfort / count;
+      const avgPerformance = totalRatings.performance / count;
+      const avgOverall =
+        (avgInterior + avgExterior + avgComfort + avgPerformance) / 4;
+
+      averageRatings = {
+        interior: parseFloat(avgInterior.toFixed(2)),
+        exterior: parseFloat(avgExterior.toFixed(2)),
+        comfort: parseFloat(avgComfort.toFixed(2)),
+        performance: parseFloat(avgPerformance.toFixed(2)),
+        overall: parseFloat(avgOverall.toFixed(2)),
+      };
+    }
+
+    res.status(200).json({
+      car,
+      relatedCars,
+      reviews,
+      averageRatings,
+    });
   } catch (error) {
-    console.error('Error in getCarById controller:', error);
+    console.error('Error in getCarDetail controller:', error);
     res
       .status(500)
-      .json({ message: 'Internal Server Error while retrieving the car.' });
+      .json({ message: 'Internal Server Error while retrieving car details.' });
   }
 };
 
