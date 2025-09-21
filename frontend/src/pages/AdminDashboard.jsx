@@ -4,9 +4,16 @@ import React, { useState, useEffect } from 'react';
 import AdminDashboardContent from '../components/admin/AdminDashboardContent';
 import AdminSidebar from '../components/admin/AdminSidebar';
 import { MenuIcon, PanelLeftOpen, Sidebar } from 'lucide-react';
+import AdminListings from '../components/admin/AdminListings';
+import AdminBlogs from '../components/admin/AdminBlogs';
+import AdminStaff from '../components/admin/AdminStaff';
+import AdminUsers from '../components/admin/AdminUsers';
+import AdminNewsTeller from '../components/admin/AdminNewsTeller';
+import AdminComments from '../components/admin/AdminComments';
+import Adminreviews from '../components/admin/Adminreviews';
 
 const AdminDashboard = () => {
-//   const { authUser } = useUserAuthStore();
+  //   const { authUser } = useUserAuthStore();
   const [activeSection, setActiveSection] = useState('dashboard');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -21,18 +28,22 @@ const AdminDashboard = () => {
 
   const renderContent = () => {
     switch (activeSection) {
-      case 'dashboard':
+      case 'overview':
         return <AdminDashboardContent setActiveSection={setActiveSection} />;
-      //   case 'products':
-      //     return <ProductManagement />;
-      //   case 'recipe': // Corrected case to match the path from AdminDashboardContent
-      //     return <RecipeManagement />;
-      //   case 'users':
-      //     return <Users />;
-      // case 'orders':
-      //     return <Orders />;
-      // case 'newOrders':
-      //     return <NewOrders />;
+      case 'Listings':
+        return <AdminListings />;
+      case 'Blogs':
+        return <AdminBlogs />;
+      case 'Staffs':
+        return <AdminStaff />;
+      case 'Users':
+        return <AdminUsers />;
+      case 'Newsteller':
+        return <AdminNewsTeller />;
+      case 'Comments':
+        return <AdminComments />;
+      case 'Reviews':
+        return <Adminreviews />;
       default:
         return <AdminDashboardContent setActiveSection={setActiveSection} />;
     }
@@ -60,7 +71,7 @@ const AdminDashboard = () => {
           className="btn lg:hidden bg-transparent my-4 btn-circle"
           onClick={() => setIsSidebarOpen(true)}
         >
-         <PanelLeftOpen />
+          <PanelLeftOpen />
         </button>
         {/* <h1 className="text-3xl lg:text-4xl font-bold mb-4 lg:mb-8 mt-6 lg:mt-0 font-['inter']">
           Welcome, {authUser.username || authUser.email}!

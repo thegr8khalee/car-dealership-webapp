@@ -55,6 +55,8 @@ import adminOpRoutes from './routes/admin.operations.routes.js';
 import carRoutes from './routes/car.routes.js';
 import blogRoutes from './routes/blog.routes.js';
 import interactRoutes from './routes/interactions.routes.js';
+import dashboardRoutes from './routes/dashboard.routes.js';
+import { globalErrorHandler, notFound } from './middleware/error.middleware.js';
 
 app.use('/api/admin/auth', adminRouts);
 app.use('/api/user/auth', authRoutes);
@@ -62,6 +64,9 @@ app.use('/api/admin/ops', adminOpRoutes);
 app.use('/api/cars', carRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/interactions', interactRoutes);
+app.use('/api/admin/dashboard', dashboardRoutes);
+app.use(notFound);
+app.use(globalErrorHandler);
 
 
 // Start server

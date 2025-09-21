@@ -11,13 +11,14 @@ const AdminSidebar = ({
   //   const logout = useAuthStore((state) => state.logout);
 
   const navItems = [
-    { id: 'newOrders', name: 'Listings' },
-    { id: 'orders', name: 'Blogs' },
-    { id: 'products', name: 'Staffs' },
-    { id: 'recipe', name: 'Users' },
-    { id: 'users', name: 'Newsteller' },
-    { id: 'users', name: 'Comments' },
-    { id: 'users', name: 'Reviews' },
+    {id: 'Overview', name: 'Overview'},
+    { id: 'Listings', name: 'Listings' },
+    { id: 'Blogs', name: 'Blogs' },
+    { id: 'Staffs', name: 'Staffs' },
+    { id: 'Users', name: 'Users' },
+    { id: 'Newsteller', name: 'Newsteller' },
+    { id: 'Comments', name: 'Comments' },
+    { id: 'Reviews', name: 'Reviews' },
   ];
 
   // Function to handle navigation item click and close sidebar on mobile

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 import Navbar from './components/Navbar';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import Footer from './components/Footer';
 import Listings from './pages/Listings';
@@ -24,12 +24,16 @@ import UpdateBlogPage from './pages/UpdateBlogPage';
 
 function App() {
   const { checkAuth, authUser } = useUserAuthStore();
+  const location = useLocation(); // Get the current location
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
   console.log('Authenticated User:', authUser);
+
+  // Determine if the footer should be visible
+  const showFooter = !location.pathname.startsWith('/admin');
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -50,8 +54,6 @@ function App() {
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/blog/:id" element={<BlogDetail />} />
 
-
-
           {/** admin routes */}
           <Route element={<AdminLoginProtectedRoute />}>
             <Route path="/admin/login" element={<AdminLoginPage />} />
@@ -68,7 +70,7 @@ function App() {
 
         <Toaster />
       </main>
-      <Footer />
+      {showFooter && <Footer />}
     </div>
   );
 }

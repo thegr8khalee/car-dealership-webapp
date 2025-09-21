@@ -54,3 +54,43 @@ export const protectAdminRoute = async (req, res, next) => {
       .json({ message: 'Internal Server Error during token verification.' });
   }
 };
+
+export const authenticateAdmin = async (req, res, next) => {
+  try {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+
+    if (!token) {
+      return res
+        .status(401)
+        .json({ error: 'Access denied. No token provided.' });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const admin = await Admin.findByPk(decoded.id);
+
+    if (!admin) {
+      return res.status(401).json({ error: 'Invalid token.' });
+    }
+
+    req.admin = admin;
+    next();
+  } catch (error) {
+    res.status(401).json({ error: 'Invalid token.' });
+  }
+};
+
+export const requireRole = (allowedRoles) => {
+  return [
+    protectAdminRoute,
+    (req, res, next) => {
+      if (!req.admin || !allowedRoles.includes(req.admin.role)) {
+        return res.status(403).json({
+          error:
+            'Insufficient permissions. Required roles: ' +
+            allowedRoles.join(', '),
+        });
+      }
+      next();
+    },
+  ];
+};

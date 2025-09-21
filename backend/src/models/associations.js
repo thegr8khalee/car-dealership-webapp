@@ -106,6 +106,7 @@ User.hasMany(Comment, {
   onUpdate: 'CASCADE',
 });
 
+// Car and Review associations
 Car.hasMany(Review, {
   foreignKey: 'carId',
   as: 'reviews', // This alias allows us to include reviews when querying a Car
@@ -118,12 +119,62 @@ Review.belongsTo(Car, {
   as: 'car', // This alias allows us to include the car when querying a Review
 });
 
+// User and Review associations (added for dashboard functionality)
+User.hasMany(Review, {
+  foreignKey: 'userId',
+  as: 'reviews',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
+
+Review.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'user',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
+
+// Additional associations for dashboard analytics
+
+// Admin activity tracking associations (if you want to track which admin created what)
+Admin.hasMany(Car, {
+  foreignKey: 'createdBy', // You might want to add this field to Car model
+  as: 'createdCars',
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
+
+// Newsletter associations (if you want to track subscription sources)
+// Newsletter doesn't need direct associations since it's standalone
+
 // Export all models and the junction table
-export { User, Admin, Car, Blog, Comment, Newsletter, BlogCar };
+export { User, Admin, Car, Blog, Comment, Newsletter, Review, BlogCar };
 
 // Export a function to initialize all associations
 export const initializeAssociations = () => {
   console.log('All model associations have been initialized');
+
+  // Log association summary for debugging
+  console.log('Association Summary:');
+  console.log('- Admin hasMany Blogs, Blogs belongsTo Admin');
+  console.log('- Blog belongsToMany Car through BlogCar');
+  console.log('- Blog hasMany Comments, Comment belongsTo Blog');
+  console.log('- User hasMany Comments, Comment belongsTo User');
+  console.log('- Car hasMany Reviews, Review belongsTo Car');
+  console.log('- User hasMany Reviews, Review belongsTo User');
+  console.log('- Admin hasMany Cars (for tracking creator)');
+};
+
+// Export models with their associations for easy access
+export const Models = {
+  User,
+  Admin,
+  Car,
+  Blog,
+  Comment,
+  Newsletter,
+  Review,
+  BlogCar,
 };
 
 export default {
@@ -133,6 +184,8 @@ export default {
   Blog,
   Comment,
   Newsletter,
+  Review,
   BlogCar,
   initializeAssociations,
+  Models,
 };
