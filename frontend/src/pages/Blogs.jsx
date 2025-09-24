@@ -2,9 +2,7 @@ import React from 'react';
 // eslint-disable-next-line no-unused-vars
 import m4 from '../images/m4.jpg';
 import BlogCard from '../components/BlogCard';
-import { Link } from 'react-router-dom';
-import Breadcrumbs from '../components/BreadCrumbs';
-import { ArrowUpRight, ChevronLeft, Loader2 } from 'lucide-react';
+import { ChevronLeft, Loader2 } from 'lucide-react';
 import { useBlogStore } from '../store/useBlogStore';
 import { useEffect } from 'react';
 
@@ -34,7 +32,7 @@ const Blogs = () => {
         <section className="w-full bg-secondary pt-16 px-4 h-16 sticky top-0 z-50"></section>
         <section className="w-full px-4 pt-4">
           <div className="w-full max-w-6xl mx-auto">
-            <Breadcrumbs />
+            {/* <Breadcrumbs /> */}
             <div className="w-full flex justify-between items-end">
               <h1 className=" text-3xl font-bold">Blogs</h1>
               <div className="flex flex-shrink-0 items-center">

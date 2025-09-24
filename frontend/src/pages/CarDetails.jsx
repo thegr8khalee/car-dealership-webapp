@@ -21,7 +21,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 // Using placeholder URLs for images and Breadcrumbs component
 // const Breadcrumbs = () => <div className="text-sm text-gray-500 mb-2">Home &gt; BMW &gt; M3</div>;
-import m4 from '../images/m4.jpg';
 import mileage from '../images/mileage.png';
 import transmission from '../images/transmission.png';
 import sedan from '../images/sedan.png';
@@ -1851,6 +1850,7 @@ const OverallRatingDisplay = ({ overallRating }) => {
       textColor = '#FF1A1A';
     } else {
       strokeColor = '#FF1A1A'; // Rose-400
+      // eslint-disable-next-line no-unused-vars
       textColor = '#FF1A1A';
     }
   }

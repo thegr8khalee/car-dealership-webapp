@@ -1,8 +1,9 @@
 import Blog from '../models/blog.model.js';
-import { Op } from 'sequelize';
+import { Op, fn, col, literal } from 'sequelize';
 import Car from '../models/car.model.js';
 import Comment from '../models/comment.model.js';
 import Review from '../models/review.model.js';
+import User from '../models/user.model.js';
 
 export const viewBlog = async (req, res) => {
   try {
@@ -114,12 +115,20 @@ export const reviewCar = async (req, res) => {
     }
 
     // Get review data from the request body, but not the userId or name
-    const { content, interior, exterior, comfort, performance } = req.body.content;
+    const { content, interior, exterior, comfort, performance } =
+      req.body.content;
 
     console.log('Request body:', req.body);
     const carId = req.params.id;
 
-    console.log('Received review data:', { content, interior, exterior, comfort, performance, carId });
+    console.log('Received review data:', {
+      content,
+      interior,
+      exterior,
+      comfort,
+      performance,
+      carId,
+    });
 
     // Get the user's ID and name directly from the authenticated request object
     const userId = req.user.id;
@@ -168,7 +177,8 @@ export const reviewCar = async (req, res) => {
 export const updateReview = async (req, res) => {
   try {
     const { id } = req.params;
-    const { content, interior, exterior, comfort, performance } = req.body.content;
+    const { content, interior, exterior, comfort, performance } =
+      req.body.content;
     const userId = req.user.id;
 
     // Find the review by ID and ensure it belongs to the authenticated user
@@ -207,5 +217,90 @@ export const updateReview = async (req, res) => {
     res
       .status(500)
       .json({ message: 'Internal Server Error while updating review.' });
+  }
+};
+
+export const getAllReviews = async (req, res) => {
+  try {
+    const {
+      carId,
+      userId,
+      page = 1,
+      limit = 10,
+      status = 'approved',
+    } = req.query;
+    const offset = (page - 1) * limit;
+
+    // Build the query's where clause
+    const whereClause = {
+      status, // By default, only retrieve 'approved' reviews
+    };
+    if (carId) {
+      whereClause.carId = carId;
+    }
+    if (userId) {
+      whereClause.userId = userId;
+    }
+
+    // 1. Fetch reviews with pagination and included models
+    const { count, rows: reviews } = await Review.findAndCountAll({
+      where: whereClause,
+      limit: parseInt(limit, 10),
+      offset: parseInt(offset, 10),
+      order: [['createdAt', 'DESC']],
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'username', 'email'],
+        },
+        {
+          model: Car,
+          as: 'car',
+          attributes: ['id', 'make', 'model', 'year', 'imageUrls'],
+        },
+      ],
+    });
+
+    // 2. Calculate the single overall average rating
+    const avgOverallRating = await Review.findOne({
+      where: whereClause,
+      attributes: [
+        [
+          fn(
+            'AVG',
+            literal(
+              '(interiorRating + exteriorRating + comfortRating + performanceRating) / 4'
+            )
+          ),
+          'averageOverallRating',
+        ],
+      ],
+      raw: true, // Returns a plain data object
+    });
+
+    // Handle case where no reviews are found
+    if (reviews.length === 0) {
+      return res.status(404).json({
+        message: 'No reviews found.',
+        totalItems: 0,
+        averageOverallRating: 0,
+        reviews: [],
+      });
+    }
+
+    // 3. Prepare and send the final response
+    res.status(200).json({
+      totalItems: count,
+      totalPages: Math.ceil(count / limit),
+      currentPage: parseInt(page, 10),
+      averageRatings: parseFloat(
+        avgOverallRating.averageOverallRating
+      ).toFixed(2),
+      reviews,
+    });
+  } catch (error) {
+    console.error('Error fetching reviews:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };

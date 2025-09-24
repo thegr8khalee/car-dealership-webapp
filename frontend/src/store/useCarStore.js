@@ -50,19 +50,42 @@ export const useCarStore = create((set) => ({
    * Searches for cars based on a single query string.
    * @param {string} query - The search term.
    */
-  search: async (query) => {
+  search: async (params = {}) => {
     set({ isSearching: true, error: null });
+
     try {
-      const res = await axiosInstance.get('cars/search', {
-        params: { carSearchQuery: query }, // Changed parameter name to 'carSearchQuery'
+      // Convert params object to URL search params
+      const searchParams = new URLSearchParams();
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+          searchParams.append(key, value);
+        }
       });
-      set({ searchResults: res.data.data });
+
+      const response = await axiosInstance.get(`/cars/search?${searchParams.toString()}`);
+      const data = response.data;
+
+      if (response.status === 200) {
+        set({
+          searchResults: data.data,
+          cars: data.data, // Update both for compatibility
+          isSearching: false,
+        });
+      } else {
+        set({
+          searchResults: [],
+          cars: [],
+          error: data.message,
+          isSearching: false,
+        });
+      }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'No cars found.';
-      toast.error(errorMessage);
-      set({ error: errorMessage, searchResults: [] });
-    } finally {
-      set({ isSearching: false });
+      set({
+        error: error.message,
+        isSearching: false,
+        searchResults: [],
+        cars: [],
+      });
     }
   },
 
@@ -86,4 +109,6 @@ export const useCarStore = create((set) => ({
       set({ isLoading: false });
     }
   },
+
+  clearSearchResults: () => set({ searchResults: [] }),
 }));
