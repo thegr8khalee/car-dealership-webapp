@@ -33,7 +33,7 @@ const CarSearchBar = () => {
   const { search, isSearching, searchResults, clearSearchResults } =
     useCarStore();
 
-  // console.log(searchResults);
+  console.log(searchResults);
 
   // console.log('Search results count:', searchResults.length);
   // UI States
@@ -55,6 +55,7 @@ const CarSearchBar = () => {
   const [selectedFuelType, setSelectedFuelType] = useState([]);
   const [selectedMake, setSelectedMake] = useState([]);
   const [selectedYear, setSelectedYear] = useState([]);
+  const [isSearched, setIsSearched] = useState(false);
 
   // Generate years array (current year down to 2000)
   const currentYear = new Date().getFullYear();
@@ -207,6 +208,7 @@ const CarSearchBar = () => {
   // Handle search submission
   const handleSearch = async () => {
     try {
+      setIsSearched(true);
       const searchParams = buildSearchParams();
       console.log('Unified search params:', searchParams);
 
@@ -245,6 +247,7 @@ const CarSearchBar = () => {
   // Clear all filters and search
   const clearAllFilters = async () => {
     try {
+      setIsSearched(false);
       setValues([SLIDER_MIN, SLIDER_MAX]);
       setSelectedCondition([]);
       setSelectedBodyType([]);
@@ -510,7 +513,7 @@ const CarSearchBar = () => {
                       key={bodyType.name}
                       className={`rounded-xl border-2 p-3 flex flex-col items-center min-w-[90px] cursor-pointer transition-all ${
                         selectedBodyType.includes(bodyType.name)
-                          ? 'bg-primary text-white border-primary shadow-md transform scale-105'
+                          ? 'bg-primary text-white border-primary shadow-md transform'
                           : 'border-gray-200 text-gray-600 bg-white hover:bg-gray-50 hover:border-gray-300'
                       }`}
                       onClick={() => toggleSelectBodyType(bodyType.name)}
@@ -584,7 +587,7 @@ const CarSearchBar = () => {
                       key={make.name}
                       className={`rounded-xl border-2 p-4 flex flex-col items-center min-w-[100px] cursor-pointer transition-all ${
                         selectedMake.includes(make.name)
-                          ? 'bg-primary border-primary shadow-md transform scale-105'
+                          ? 'bg-primary border-primary shadow-md transform text-white'
                           : 'border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300'
                       }`}
                       onClick={() => toggleSelectMake(make.name)}
@@ -594,7 +597,7 @@ const CarSearchBar = () => {
                         alt={make.displayName}
                         className="h-12 w-auto object-contain"
                       />
-                      <span className="text-xs font-medium text-gray-600 mt-1">
+                      <span className="text-xs font-medium  mt-1">
                         {make.displayName}
                       </span>
                     </div>
@@ -659,54 +662,80 @@ const CarSearchBar = () => {
       </AnimatePresence>
 
       {/* Results Summary */}
-      {searchResults.length > 0 && isHome && (
+      {isHome && isSearched && (
         <div className="mt-4 bg-white/90 backdrop-blur-sm rounded-2xl p-3 shadow-md w-full">
-          <div className="flex justify-between items-center text-sm">
-            <span className="text-gray-700">
-              {searchQuery ? (
-                <>
-                  Showing results for "{searchQuery}" ({searchResults.length}{' '}
-                  found)
-                </>
-              ) : (
-                <>Showing filtered results ({searchResults.length} found)</>
-              )}
-            </span>
-            <button
-              onClick={clearAllFilters}
-              className="text-primary hover:text-primary/80 font-medium"
-            >
-              Clear Search
-            </button>
-          </div>
-          <div className="flex flex-col gap-2 mt-3 max-h-[60vh] overflow-y-auto">
-            {searchResults.map((relatedCar) => (
-              <CarList
-                className=""
-                image={relatedCar.featuredImage}
-                title={`${relatedCar.make} ${relatedCar.model}`}
-                description={relatedCar.description}
-                mileage={{ icon: mileage, value: relatedCar.mileage }}
-                transmission={{
-                  icon: transmission,
-                  value: relatedCar.transmission,
-                }}
-                fuel={{ icon: gas, value: relatedCar.fuelType }}
-                year={{ icon: date, value: relatedCar.year }}
-                price={relatedCar.price}
-                link={`/cars/${relatedCar.id}`}
-              />
-            ))}
-          </div>
-          <div>
-            <button
-              onClick={() => handleListingsClick()}
-              className="text-primary font-medium mt-2 hover:underline items-center justify-center flex mx-auto"
-            >
-              View All Results
-              <ArrowUpRight className="size-4 inline-block ml-1" />
-            </button>
-          </div>
+          {searchResults.length > 0 ? (
+            <>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-700">
+                  {searchQuery ? (
+                    <>
+                      Showing results for "{searchQuery}" (
+                      {searchResults.length} found)
+                    </>
+                  ) : (
+                    <>Showing filtered results ({searchResults.length} found)</>
+                  )}
+                </span>
+                <button
+                  onClick={clearAllFilters}
+                  className="text-primary hover:text-primary/80 font-medium"
+                >
+                  Clear Search
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-2 mt-3 max-h-[60vh] overflow-y-auto">
+                {searchResults.map((relatedCar) => (
+                  <CarList
+                    key={relatedCar.id}
+                    image={relatedCar.featuredImage}
+                    title={`${relatedCar.make} ${relatedCar.model}`}
+                    description={relatedCar.description}
+                    mileage={{ icon: mileage, value: relatedCar.mileage }}
+                    transmission={{
+                      icon: transmission,
+                      value: relatedCar.transmission,
+                    }}
+                    fuel={{ icon: gas, value: relatedCar.fuelType }}
+                    year={{ icon: date, value: relatedCar.year }}
+                    price={relatedCar.price}
+                    link={`/cars/${relatedCar.id}`}
+                  />
+                ))}
+              </div>
+
+              <div>
+                <button
+                  onClick={handleListingsClick}
+                  className="text-primary font-medium mt-2 hover:underline items-center justify-center flex mx-auto"
+                >
+                  View All Results
+                  <ArrowUpRight className="size-4 inline-block ml-1" />
+                </button>
+              </div>
+            </>
+          ) : (
+            <div>
+              <div className="w-full flex justify-end">
+                <button
+                  onClick={clearAllFilters}
+                  className="text-primary hover:text-primary/80 font-medium"
+                >
+                  <X />
+                </button>
+              </div>
+              <p className="text-gray-500 text-center">
+                No cars found for your search.
+              </p>
+              <button
+                onClick={handleListingsClick}
+                className="mt-4 text-primary hover:text-primary/80 font-medium"
+              >
+                Browse all cars
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>

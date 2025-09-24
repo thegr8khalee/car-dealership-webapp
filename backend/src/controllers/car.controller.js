@@ -142,13 +142,11 @@ export const getCarById = async (req, res) => {
   }
 };
 
+// Alternative approach: Get all results first, then sort in JavaScript
 export const Search = async (req, res) => {
   try {
-    // Get search query from multiple sources
     const query =
       req.query.carSearchQuery || req.body.carSearchQuery || req.query.query;
-
-    // Get filter parameters
     const {
       minPrice,
       maxPrice,
@@ -163,120 +161,129 @@ export const Search = async (req, res) => {
       limit = 50,
     } = req.query;
 
-    // Build the where clause
     const whereClause = {};
-    const orConditions = [];
+    whereClause.sold = false;
 
-    // Text search logic (if query exists)
+    // Build where clause (same as before)
     if (query && query.trim() !== '') {
       const searchQuery = query.trim().toLowerCase();
       const isYear = !isNaN(parseInt(searchQuery, 10));
       const yearQuery = isYear ? parseInt(searchQuery, 10) : null;
 
-      orConditions.push(
-        { make: { [Op.iLike]: `%${searchQuery}%` } },
-        { model: { [Op.iLike]: `%${searchQuery}%` } },
-        { description: { [Op.iLike]: `%${searchQuery}%` } },
-        { color: { [Op.iLike]: `%${searchQuery}%` } }
-      );
+      const textSearchConditions = [
+        { make: { [Op.like]: `%${searchQuery}%` } },
+        { model: { [Op.like]: `%${searchQuery}%` } },
+        { description: { [Op.like]: `%${searchQuery}%` } },
+        { color: { [Op.like]: `%${searchQuery}%` } },
+      ];
 
       if (isYear) {
-        orConditions.push({ year: yearQuery });
+        textSearchConditions.push({ year: yearQuery });
       }
+
+      whereClause[Op.or] = textSearchConditions;
     }
 
-    // Price filters
-    if (minPrice) {
-      whereClause.price = {
-        ...whereClause.price,
-        [Op.gte]: parseInt(minPrice),
-      };
+    // Apply all other filters (same as before)
+    if (minPrice || maxPrice) {
+      whereClause.price = {};
+      if (minPrice) whereClause.price[Op.gte] = parseInt(minPrice);
+      if (maxPrice) whereClause.price[Op.lte] = parseInt(maxPrice);
     }
-    if (maxPrice) {
-      whereClause.price = {
-        ...whereClause.price,
-        [Op.lte]: parseInt(maxPrice),
-      };
-    }
-
-    // Condition filter (can be comma-separated)
     if (condition) {
       const conditions = condition.split(',').map((c) => c.trim());
-      whereClause.condition = {
-        [Op.in]: conditions,
-      };
+      whereClause.condition = { [Op.in]: conditions };
     }
-
-    // Body type filter (can be comma-separated)
     if (bodyType) {
       const bodyTypes = bodyType.split(',').map((bt) => bt.trim());
-      whereClause.bodyType = {
-        [Op.in]: bodyTypes,
-      };
+      whereClause.bodyType = { [Op.in]: bodyTypes };
     }
-
-    // Fuel type filter (can be comma-separated)
     if (fuelType) {
       const fuelTypes = fuelType.split(',').map((ft) => ft.trim());
-      whereClause.fuelType = {
-        [Op.in]: fuelTypes,
-      };
+      whereClause.fuelType = { [Op.in]: fuelTypes };
     }
-
-    // Make filter (can be comma-separated)
     if (make) {
       const makes = make.split(',').map((m) => m.trim().toLowerCase());
-      whereClause.make = {
-        [Op.in]: makes,
-      };
+      whereClause.make = { [Op.in]: makes };
     }
-
-    // Year filter (can be comma-separated)
     if (year) {
       const years = year.split(',').map((y) => parseInt(y.trim()));
-      whereClause.year = {
-        [Op.in]: years,
-      };
+      whereClause.year = { [Op.in]: years };
     }
-
-    // Transmission filter
     if (transmission) {
       const transmissions = transmission.split(',').map((t) => t.trim());
-      whereClause.transmission = {
-        [Op.in]: transmissions,
-      };
+      whereClause.transmission = { [Op.in]: transmissions };
     }
-
-    // Drivetrain filter
     if (drivetrain) {
       const drivetrains = drivetrain.split(',').map((d) => d.trim());
-      whereClause.drivetrain = {
-        [Op.in]: drivetrains,
-      };
+      whereClause.drivetrain = { [Op.in]: drivetrains };
     }
 
-    // Always exclude sold cars
-    whereClause.sold = false;
-
-    // Combine OR conditions with AND conditions
-    if (orConditions.length > 0) {
-      whereClause[Op.and] = [
-        { [Op.or]: orConditions },
-        // All other filters are already in whereClause
-      ];
-    }
-
-    // Calculate pagination
-    const offset = (parseInt(page) - 1) * parseInt(limit);
-
-    // Execute the search
-    const { count, rows: cars } = await Car.findAndCountAll({
+    // Get all matching cars first (without limit for proper sorting)
+    const { count, rows: allCars } = await Car.findAndCountAll({
       where: whereClause,
-      limit: parseInt(limit),
-      offset: offset,
-      order: [['createdAt', 'DESC']], // Most recent first
-      // You can add more sophisticated ordering here
+      order: [['createdAt', 'DESC']], // Basic ordering
     });
+
+    // Function to calculate relevance score
+    const calculateRelevanceScore = (car, searchTerm) => {
+      if (!searchTerm) return 0;
+
+      const term = searchTerm.toLowerCase();
+      const make = (car.make || '').toLowerCase();
+      const model = (car.model || '').toLowerCase();
+      const description = (car.description || '').toLowerCase();
+      const color = (car.color || '').toLowerCase();
+      const year = car.year ? car.year.toString() : '';
+
+      let score = 1000; // Base score (lower is better)
+
+      // Model relevance (highest priority)
+      if (model === term) score -= 500;
+      else if (model.startsWith(term)) score -= 400;
+      else if (model.includes(term)) score -= 300;
+
+      // Make relevance (second priority)
+      if (make === term) score -= 200;
+      else if (make.startsWith(term)) score -= 150;
+      else if (make.includes(term)) score -= 100;
+
+      // Year relevance (third priority)
+      if (year === term) score -= 80;
+
+      // Description relevance
+      if (description.includes(term)) score -= 50;
+
+      // Color relevance
+      if (color.includes(term)) score -= 30;
+
+      // Boost score for newer cars (tie-breaker)
+      const currentYear = new Date().getFullYear();
+      const ageBonus = car.year ? (car.year - currentYear + 10) * 2 : 0;
+      score -= ageBonus;
+
+      return score;
+    };
+
+    // Sort cars by relevance if there's a search query
+    let sortedCars = allCars;
+    if (query && query.trim() !== '') {
+      sortedCars = allCars.sort((a, b) => {
+        const scoreA = calculateRelevanceScore(a, query.trim());
+        const scoreB = calculateRelevanceScore(b, query.trim());
+
+        if (scoreA !== scoreB) {
+          return scoreA - scoreB; // Lower score = higher relevance
+        }
+
+        // Tie-breaker: newer cars first
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      });
+    }
+
+    // Apply pagination to sorted results
+    const offset = (parseInt(page) - 1) * parseInt(limit);
+    const paginatedCars = sortedCars.slice(offset, offset + parseInt(limit));
 
     // Prepare response
     const totalPages = Math.ceil(count / parseInt(limit));
@@ -284,7 +291,7 @@ export const Search = async (req, res) => {
 
     const response = {
       message: count > 0 ? 'Cars found successfully' : 'No cars found',
-      data: cars,
+      data: paginatedCars,
       pagination: {
         currentPage: parseInt(page),
         totalPages,
@@ -294,12 +301,11 @@ export const Search = async (req, res) => {
       },
     };
 
-    // Add search context to response
+    // Add search context and filters (same as before)
     if (query && query.trim() !== '') {
       response.searchQuery = query.trim();
     }
 
-    // Add active filters to response
     const activeFilters = {};
     if (minPrice) activeFilters.minPrice = parseInt(minPrice);
     if (maxPrice) activeFilters.maxPrice = parseInt(maxPrice);
@@ -314,10 +320,9 @@ export const Search = async (req, res) => {
     if (Object.keys(activeFilters).length > 0) {
       response.activeFilters = activeFilters;
     }
-    
-    console.log('Search response:', response);
 
-    // Return appropriate status code
+    console.log('Search response count:', count);
+
     if (count > 0) {
       res.status(200).json(response);
     } else {

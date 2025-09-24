@@ -60,7 +60,7 @@ const Home = () => {
     getAllReviews();
   }, [getCars, fetchBlogs, getAllReviews]);
 
-  console.log(reviews);
+  // console.log(reviews);
 
   const selectBodyType = (bodyType) => {
     navigate('/listings', { state: { bodyType } });
