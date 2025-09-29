@@ -317,7 +317,7 @@ const UpdateBlogPage = () => {
         <div className="text-center">
           <p className="text-red-500 mb-4">Blog not found</p>
           <button
-            onClick={() => navigate('/admin/blogs')}
+            onClick={() => navigate(-1)}
             className="btn btn-primary"
           >
             Go Back
@@ -335,7 +335,7 @@ const UpdateBlogPage = () => {
           <div className="flex items-center gap-4 mb-8">
             <button
               className="btn btn-ghost rounded-full"
-              onClick={() => navigate('/admin/blogs')}
+              onClick={() => navigate(-1)}
             >
               <ArrowLeft className="h-5 w-5" />
             </button>

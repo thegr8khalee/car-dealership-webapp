@@ -85,4 +85,22 @@ export const useAdminOpsStore = create((set) => ({
       set({ isLoading: false });
     }
   },
+
+  deleteBlog: async (id) => {
+    try {
+      set({ isLoading: true });
+      const res = await axiosInstance.delete(`admin/ops/delete-blog/${id}`);
+
+      if (res.data.success) {
+        toast.success('Blog deleted successfully');
+        return res.data;
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Failed to delete blog';
+      toast.error(errorMessage);
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
 }));

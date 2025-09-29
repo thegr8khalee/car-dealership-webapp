@@ -15,6 +15,18 @@ export const useDashboardStore = create((set, get) => ({
   isLoading: false,
   error: null,
   lastUpdated: null,
+  listings: [],
+  totalItems: 0,
+  totalPages: 1,
+  currentPage: 1,
+  isFetchingListings: false,
+  listingError: null,
+  blogs: [],
+  totalBlogItems: 0,
+  totalBlogPages: 1,
+  currentBlogPage: 1,
+  isFetchingBlogs: false,
+  blogError: null,
 
   // Actions
 
@@ -25,16 +37,17 @@ export const useDashboardStore = create((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const res = await axiosInstance.get('admin/dashboard/stats');
-      
+
       if (res.data.success) {
-        set({ 
+        set({
           dashboardStats: res.data.data,
-          lastUpdated: new Date().toISOString()
+          lastUpdated: new Date().toISOString(),
         });
         return res.data.data;
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Failed to fetch dashboard stats';
+      const errorMessage =
+        error.response?.data?.message || 'Failed to fetch dashboard stats';
       toast.error(errorMessage);
       set({ error: errorMessage });
     } finally {
@@ -49,13 +62,14 @@ export const useDashboardStore = create((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const res = await axiosInstance.get('admin/dashboard/cars/stats');
-      
+
       if (res.data.success) {
         set({ carStats: res.data.data });
         return res.data.data;
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Failed to fetch car statistics';
+      const errorMessage =
+        error.response?.data?.message || 'Failed to fetch car statistics';
       toast.error(errorMessage);
       set({ error: errorMessage });
     } finally {
@@ -70,13 +84,14 @@ export const useDashboardStore = create((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const res = await axiosInstance.get('admin/dashboard/blogs/stats');
-      
+
       if (res.data.success) {
         set({ blogStats: res.data.data });
         return res.data.data;
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Failed to fetch blog statistics';
+      const errorMessage =
+        error.response?.data?.message || 'Failed to fetch blog statistics';
       toast.error(errorMessage);
       set({ error: errorMessage });
     } finally {
@@ -91,13 +106,14 @@ export const useDashboardStore = create((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const res = await axiosInstance.get('admin/dashboard/users/stats');
-      
+
       if (res.data.success) {
         set({ userStats: res.data.data });
         return res.data.data;
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Failed to fetch user statistics';
+      const errorMessage =
+        error.response?.data?.message || 'Failed to fetch user statistics';
       toast.error(errorMessage);
       set({ error: errorMessage });
     } finally {
@@ -112,13 +128,15 @@ export const useDashboardStore = create((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const res = await axiosInstance.get('admin/dashboard/moderation/stats');
-      
+
       if (res.data.success) {
         set({ moderationStats: res.data.data });
         return res.data.data;
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Failed to fetch moderation statistics';
+      const errorMessage =
+        error.response?.data?.message ||
+        'Failed to fetch moderation statistics';
       toast.error(errorMessage);
       set({ error: errorMessage });
     } finally {
@@ -133,13 +151,14 @@ export const useDashboardStore = create((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const res = await axiosInstance.get('admin/dashboard/revenue/stats');
-      
+
       if (res.data.success) {
         set({ revenueStats: res.data.data });
         return res.data.data;
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Failed to fetch revenue statistics';
+      const errorMessage =
+        error.response?.data?.message || 'Failed to fetch revenue statistics';
       toast.error(errorMessage);
       set({ error: errorMessage });
     } finally {
@@ -154,14 +173,17 @@ export const useDashboardStore = create((set, get) => ({
   getRecentActivity: async (params = {}) => {
     set({ isLoading: true, error: null });
     try {
-      const res = await axiosInstance.get('admin/dashboard/activity/recent', { params });
-      
+      const res = await axiosInstance.get('admin/dashboard/activity/recent', {
+        params,
+      });
+
       if (res.data.success) {
         set({ recentActivity: res.data.data });
         return res.data.data;
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Failed to fetch recent activity';
+      const errorMessage =
+        error.response?.data?.message || 'Failed to fetch recent activity';
       toast.error(errorMessage);
       set({ error: errorMessage });
     } finally {
@@ -176,13 +198,14 @@ export const useDashboardStore = create((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const res = await axiosInstance.get('admin/dashboard/performance/top');
-      
+
       if (res.data.success) {
         set({ topPerformers: res.data.data });
         return res.data.data;
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Failed to fetch top performers';
+      const errorMessage =
+        error.response?.data?.message || 'Failed to fetch top performers';
       toast.error(errorMessage);
       set({ error: errorMessage });
     } finally {
@@ -196,7 +219,7 @@ export const useDashboardStore = create((set, get) => ({
    */
   refreshAllStats: async (adminRole = 'editor') => {
     set({ isLoading: true, error: null });
-    
+
     try {
       // Always fetch basic stats
       const promises = [
@@ -216,18 +239,15 @@ export const useDashboardStore = create((set, get) => ({
 
       // Super admin only stats
       if (adminRole === 'super_admin') {
-        promises.push(
-          get().getUserStats(),
-          get().getRevenueStats()
-        );
+        promises.push(get().getUserStats(), get().getRevenueStats());
       }
 
       await Promise.allSettled(promises);
-      
+
       set({ lastUpdated: new Date().toISOString() });
       toast.success('Dashboard data refreshed');
-      
-    // eslint-disable-next-line no-unused-vars
+
+      // eslint-disable-next-line no-unused-vars
     } catch (error) {
       const errorMessage = 'Failed to refresh dashboard data';
       toast.error(errorMessage);
@@ -242,7 +262,7 @@ export const useDashboardStore = create((set, get) => ({
    */
   getStatsSummary: () => {
     const { dashboardStats } = get();
-    
+
     if (!dashboardStats) return null;
 
     return {
@@ -254,7 +274,8 @@ export const useDashboardStore = create((set, get) => ({
       totalUsers: dashboardStats.users?.total || 0,
       pendingComments: dashboardStats.engagement?.pendingComments || 0,
       pendingReviews: dashboardStats.engagement?.pendingReviews || 0,
-      newsletterSubscribers: dashboardStats.engagement?.newsletterSubscribers || 0,
+      newsletterSubscribers:
+        dashboardStats.engagement?.newsletterSubscribers || 0,
       totalRevenue: dashboardStats.revenue?.totalRevenue || 'N/A',
       monthlyRevenue: dashboardStats.revenue?.monthlyRevenue || 'N/A',
     };
@@ -266,7 +287,7 @@ export const useDashboardStore = create((set, get) => ({
   needsRefresh: () => {
     const { lastUpdated } = get();
     if (!lastUpdated) return true;
-    
+
     const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
     return new Date(lastUpdated) < fiveMinutesAgo;
   },
@@ -303,5 +324,73 @@ export const useDashboardStore = create((set, get) => ({
    */
   clearError: () => {
     set({ error: null });
+  },
+
+  getListings: async () => {
+    set({ isFetchingListings: true, listingError: null });
+
+    const { currentPage } = get();
+
+    // You can add more filters here based on your UI state
+    const params = {
+      page: currentPage,
+      limit: 20, // Customize as needed
+      // make: get().makeFilter,
+      // sold: get().soldFilter,
+    };
+
+    try {
+      const res = await axiosInstance.get('admin/dashboard/getListings', { params });
+
+      set({
+        listings: res.data.listings,
+        totalItems: res.data.totalItems,
+        totalPages: res.data.totalPages,
+        currentPage: res.data.currentPage,
+        isFetchingListings: false,
+      });
+
+      toast.success('Car listings loaded successfully!');
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || 'Failed to fetch listings.';
+
+      set({
+        listings: [],
+        listingError: errorMessage,
+        isFetchingListings: false,
+      });
+
+      toast.error(errorMessage);
+    }
+  },
+
+  getBlogs: async (params = {}) => {
+    set({ isFetchingBlogs: true, blogError: null });
+
+    try {
+      const res = await axiosInstance.get('admin/dashboard/getBlogs', { params });
+
+      set({
+        blogs: res.data.data,
+        totalBlogItems: res.data.totalItems,
+        totalBlogPages: res.data.totalPages,
+        currentBlogPage: res.data.currentPage,
+        isFetchingBlogs: false,
+      });
+
+      toast.success('Blogs loaded successfully!');
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || 'Failed to fetch blogs.';
+
+      set({
+        blogs: [],
+        blogError: errorMessage,
+        isFetchingBlogs: false,
+      });
+
+      toast.error(errorMessage);
+    }
   },
 }));

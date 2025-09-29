@@ -1,9 +1,8 @@
 // src/pages/AdminDashboard.jsx
 import React, { useState, useEffect } from 'react';
-// import { useUserAuthStore } from '../store/useUserAuthStore';
 import AdminDashboardContent from '../components/admin/AdminDashboardContent';
 import AdminSidebar from '../components/admin/AdminSidebar';
-import { MenuIcon, PanelLeftOpen, Sidebar } from 'lucide-react';
+import { PanelLeftOpen } from 'lucide-react';
 import AdminListings from '../components/admin/AdminListings';
 import AdminBlogs from '../components/admin/AdminBlogs';
 import AdminStaff from '../components/admin/AdminStaff';
@@ -13,11 +12,10 @@ import AdminComments from '../components/admin/AdminComments';
 import Adminreviews from '../components/admin/Adminreviews';
 
 const AdminDashboard = () => {
-  //   const { authUser } = useUserAuthStore();
   const [activeSection, setActiveSection] = useState('dashboard');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Handle URL changes to update the active section
+  // Read from URL when page loads
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const section = params.get('section');
@@ -26,10 +24,18 @@ const AdminDashboard = () => {
     }
   }, []);
 
+  // Function to update state + URL together
+  const handleSetActiveSection = (section) => {
+    setActiveSection(section);
+    const params = new URLSearchParams(window.location.search);
+    params.set('section', section);
+    window.history.replaceState({}, '', `${window.location.pathname}?${params}`);
+  };
+
   const renderContent = () => {
     switch (activeSection) {
       case 'overview':
-        return <AdminDashboardContent setActiveSection={setActiveSection} />;
+        return <AdminDashboardContent setActiveSection={handleSetActiveSection} />;
       case 'Listings':
         return <AdminListings />;
       case 'Blogs':
@@ -45,7 +51,7 @@ const AdminDashboard = () => {
       case 'Reviews':
         return <Adminreviews />;
       default:
-        return <AdminDashboardContent setActiveSection={setActiveSection} />;
+        return <AdminDashboardContent setActiveSection={handleSetActiveSection} />;
     }
   };
 
@@ -61,7 +67,7 @@ const AdminDashboard = () => {
 
       <AdminSidebar
         activeSection={activeSection}
-        setActiveSection={setActiveSection}
+        setActiveSection={handleSetActiveSection}
         isSidebarOpen={isSidebarOpen}
         closeSidebar={() => setIsSidebarOpen(false)}
       />
@@ -73,9 +79,7 @@ const AdminDashboard = () => {
         >
           <PanelLeftOpen />
         </button>
-        {/* <h1 className="text-3xl lg:text-4xl font-bold mb-4 lg:mb-8 mt-6 lg:mt-0 font-['inter']">
-          Welcome, {authUser.username || authUser.email}!
-        </h1> */}
+
         <div className="bg-base-200 p-4 lg:p-6 rounded-2xl shadow-xl overflow-hidden">
           {renderContent()}
         </div>
