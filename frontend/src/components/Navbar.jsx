@@ -65,8 +65,8 @@ const Navbar = ({ className = '' }) => {
               <Link to={'/'}>Home</Link>
               <Link to={'/listings'}>Listing</Link>
               <Link>Makes</Link>
-              <Link>Blogs</Link>
-              <Link>Contact</Link>
+              <Link to={'/blogs'}>Blogs</Link>
+              {isAdmin ? <Link to={'/admin/dashboard'}>Dashboard</Link> : null}
             </div>
           </div>
 
@@ -130,10 +130,28 @@ const Navbar = ({ className = '' }) => {
               </button>
             </li>
             <li className="p-2">
-              <button className={getButtonClass('/makes')}>Makes</button>
+              <button 
+               onClick={() => {
+                  navigate('/makes');
+                  closeDrawer();
+                }}
+              className={getButtonClass('/makes')}>Makes</button>
             </li>
             <li className="p-2">
-              <button className={getButtonClass('/blogs')}>Blogs</button>
+              <button 
+               onClick={() => {
+                  navigate('/blogs');
+                  closeDrawer();
+                }}
+              className={getButtonClass('/blogs')}>Blogs</button>
+            </li>
+            <li className="p-2">
+              <button 
+               onClick={() => {
+                  navigate('/admin/dashboard');
+                  closeDrawer();
+                }}
+              className={getButtonClass('/admin/dashboard')}>Dashboard</button>
             </li>
           </ul>
           <div>

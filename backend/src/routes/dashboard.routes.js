@@ -9,8 +9,16 @@ import {
   getRecentActivity,
   getTopPerformers,
   getListings,
+  getStaffs,
+  getUsers,
+  getCommentsStats,
+  getComments,
+  updateCommentStatus,
+  getReviewsStats,
+  getReviews,
+  updateReviewStatus,
 } from '../controllers/dashboard.controller.js';
-import { protectAdminRoute, requireRole } from '../middleware/protectAdminRoute.js'; 
+import { protectAdminRoute, requireRole } from '../middleware/protectAdminRoute.js';
 import { getAllBlogs } from '../controllers/blog.controller.js';
 
 const router = express.Router();
@@ -64,5 +72,12 @@ router.get(
   requireRole(['super_admin', 'editor', 'moderator']),
   getListings
 );
-
+router.get('/getStaffs', protectAdminRoute, requireRole(['super_admin']), getStaffs);
+router.get('/getUsers', protectAdminRoute, requireRole(['super_admin', 'editor', 'moderator']), getUsers);
+router.get('/comments/stats', protectAdminRoute, requireRole(['super_admin', 'editor', 'moderator']), getCommentsStats);
+router.get('/comments', protectAdminRoute, requireRole(['super_admin', 'editor', 'moderator']), getComments);
+router.patch('/comments/:id/status', protectAdminRoute, requireRole(['super_admin', 'editor', 'moderator']), updateCommentStatus);
+router.get('/reviews/stats', protectAdminRoute, requireRole(['super_admin', 'editor', 'moderator']), getReviewsStats);
+router.get('/reviews', protectAdminRoute, requireRole(['super_admin', 'editor', 'moderator']), getReviews);
+router.patch('/reviews/:id/status', protectAdminRoute, requireRole(['super_admin', 'editor', 'moderator']), updateReviewStatus);
 export default router;

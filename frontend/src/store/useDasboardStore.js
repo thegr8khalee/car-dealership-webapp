@@ -3,7 +3,6 @@ import { axiosInstance } from '../lib/axios.js';
 import toast from 'react-hot-toast';
 
 export const useDashboardStore = create((set, get) => ({
-  // State
   dashboardStats: null,
   carStats: null,
   blogStats: null,
@@ -27,12 +26,37 @@ export const useDashboardStore = create((set, get) => ({
   currentBlogPage: 1,
   isFetchingBlogs: false,
   blogError: null,
+  staffs: [],
+  totalStaffs: 0,
+  totalStaffPages: 1,
+  currentStaffPage: 1,
+  isFetchingStaffs: false,
+  staffError: null,
+  users: [],
+  totalUsers: 0,
+  totalUserPages: 1,
+  currentUserPage: 1,
+  isFetchingUsers: false,
+  userError: null,
+  commentsStats: null,
+  comments: [],
+  totalComments: 0,
+  totalCommentPages: 1,
+  currentCommentPage: 1,
+  commentFilter: 'all',
+  isFetchingComments: false,
+  commentError: null,
+  isUpdatingComment: false,
+  reviewsStats: null,
+  reviews: [],
+  totalReviews: 0,
+  totalReviewPages: 1,
+  currentReviewPage: 1,
+  reviewFilter: 'all',
+  isFetchingReviews: false,
+  reviewError: null,
+  isUpdatingReview: false,
 
-  // Actions
-
-  /**
-   * Get main dashboard overview stats
-   */
   getDashboardStats: async () => {
     set({ isLoading: true, error: null });
     try {
@@ -55,9 +79,6 @@ export const useDashboardStore = create((set, get) => ({
     }
   },
 
-  /**
-   * Get detailed car statistics
-   */
   getCarStats: async () => {
     set({ isLoading: true, error: null });
     try {
@@ -77,9 +98,6 @@ export const useDashboardStore = create((set, get) => ({
     }
   },
 
-  /**
-   * Get blog performance statistics
-   */
   getBlogStats: async () => {
     set({ isLoading: true, error: null });
     try {
@@ -99,9 +117,6 @@ export const useDashboardStore = create((set, get) => ({
     }
   },
 
-  /**
-   * Get user statistics (Super Admin only)
-   */
   getUserStats: async () => {
     set({ isLoading: true, error: null });
     try {
@@ -121,9 +136,6 @@ export const useDashboardStore = create((set, get) => ({
     }
   },
 
-  /**
-   * Get content moderation statistics
-   */
   getModerationStats: async () => {
     set({ isLoading: true, error: null });
     try {
@@ -144,9 +156,6 @@ export const useDashboardStore = create((set, get) => ({
     }
   },
 
-  /**
-   * Get revenue statistics (Super Admin only)
-   */
   getRevenueStats: async () => {
     set({ isLoading: true, error: null });
     try {
@@ -166,10 +175,6 @@ export const useDashboardStore = create((set, get) => ({
     }
   },
 
-  /**
-   * Get recent activity feed
-   * @param {Object} params - Query parameters (limit, etc.)
-   */
   getRecentActivity: async (params = {}) => {
     set({ isLoading: true, error: null });
     try {
@@ -191,9 +196,6 @@ export const useDashboardStore = create((set, get) => ({
     }
   },
 
-  /**
-   * Get top performers (cars, blogs, etc.)
-   */
   getTopPerformers: async () => {
     set({ isLoading: true, error: null });
     try {
@@ -213,10 +215,6 @@ export const useDashboardStore = create((set, get) => ({
     }
   },
 
-  /**
-   * Refresh all dashboard data
-   * @param {string} adminRole - Current admin role to determine which stats to fetch
-   */
   refreshAllStats: async (adminRole = 'editor') => {
     set({ isLoading: true, error: null });
 
@@ -257,9 +255,6 @@ export const useDashboardStore = create((set, get) => ({
     }
   },
 
-  /**
-   * Get stats summary for quick overview
-   */
   getStatsSummary: () => {
     const { dashboardStats } = get();
 
@@ -281,9 +276,6 @@ export const useDashboardStore = create((set, get) => ({
     };
   },
 
-  /**
-   * Check if stats need refresh (older than 5 minutes)
-   */
   needsRefresh: () => {
     const { lastUpdated } = get();
     if (!lastUpdated) return true;
@@ -292,9 +284,7 @@ export const useDashboardStore = create((set, get) => ({
     return new Date(lastUpdated) < fiveMinutesAgo;
   },
 
-  /**
-   * Clear all dashboard data
-   */
+
   clearStats: () => {
     set({
       dashboardStats: null,
@@ -311,17 +301,10 @@ export const useDashboardStore = create((set, get) => ({
     });
   },
 
-  /**
-   * Set loading state manually
-   * @param {boolean} loading - Loading state
-   */
   setLoading: (loading) => {
     set({ isLoading: loading });
   },
 
-  /**
-   * Clear error state
-   */
   clearError: () => {
     set({ error: null });
   },
@@ -391,6 +374,239 @@ export const useDashboardStore = create((set, get) => ({
       });
 
       toast.error(errorMessage);
+    }
+  },
+
+  getStaffs: async (page, limit = 20) => {
+    set({ isFetchingStaffs: true, staffError: null });
+    try {
+      const params = { page, limit };
+      const res = await axiosInstance.get('admin/dashboard/getStaffs', { params });
+
+      set({
+        staffs: res.data.data.staffs, // FIX: was res.staffs
+        totalStaffs: res.data.data.pagination.totalStaffs,
+        totalStaffPages: res.data.data.pagination.totalPages,
+        currentStaffPage: res.data.data.pagination.currentPage,
+        isFetchingStaffs: false,
+      });
+
+      toast.success('Staffs loaded successfully!');
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || 'Failed to fetch staffs.';
+
+      set({
+        staffs: [],
+        staffError: errorMessage,
+        isFetchingStaffs: false,
+      });
+
+      toast.error(errorMessage);
+    }
+  },
+
+  getUsers: async (params = {}) => {
+    set({ isFetchingUsers: true, userError: null });
+    try {
+      const { page = 1, limit = 10, search } = params;
+      const queryParams = { page, limit };
+      if (search) queryParams.search = search;
+
+      const res = await axiosInstance.get('admin/dashboard/getUsers', {
+        params: queryParams
+      });
+
+      set({
+        users: res.data.data.users,
+        totalUsers: res.data.data.pagination.totalUsers,
+        totalUserPages: res.data.data.pagination.totalPages,
+        currentUserPage: res.data.data.pagination.currentPage,
+        isFetchingUsers: false,
+      });
+
+      toast.success('Users loaded successfully!');
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || 'Failed to fetch users.';
+
+      set({
+        users: [],
+        userError: errorMessage,
+        isFetchingUsers: false,
+      });
+
+      toast.error(errorMessage);
+    }
+  },
+
+  getCommentsStats: async () => {
+    set({ isFetchingComments: true, commentError: null });
+    try {
+      const res = await axiosInstance.get('admin/dashboard/comments/stats');
+
+      set({
+        commentsStats: res.data.data,
+        isFetchingComments: false,
+      });
+
+      return res.data.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || 'Failed to fetch comments stats';
+
+      set({
+        commentError: errorMessage,
+        isFetchingComments: false,
+      });
+
+      toast.error(errorMessage);
+    }
+  },
+
+  getComments: async (params = {}) => {
+    set({ isFetchingComments: true, commentError: null });
+    try {
+      const { page = 1, limit = 10, status = 'all' } = params;
+      const res = await axiosInstance.get('admin/dashboard/comments', {
+        params: { page, limit, status },
+      });
+
+      set({
+        comments: res.data.data.comments,
+        totalComments: res.data.data.pagination.total,
+        totalCommentPages: res.data.data.pagination.totalPages,
+        currentCommentPage: res.data.data.pagination.currentPage,
+        commentFilter: status,
+        isFetchingComments: false,
+      });
+
+      return res.data.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || 'Failed to fetch comments';
+
+      set({
+        commentError: errorMessage,
+        isFetchingComments: false,
+      });
+
+      toast.error(errorMessage);
+    }
+  },
+
+  updateCommentStatus: async (commentId, status) => {
+    set({ isUpdatingComment: true, commentError: null });
+    try {
+      const res = await axiosInstance.patch(`admin/dashboard/comments/${commentId}/status`, {
+        status,
+      });
+
+      toast.success('Comment status updated successfully');
+
+      // Refresh comments list
+      const { currentCommentPage, commentFilter } = get();
+      get().getComments({ page: currentCommentPage, limit: 10, status: commentFilter });
+      get().getCommentsStats();
+
+      set({ isUpdatingComment: false });
+      return res.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || 'Failed to update comment status';
+
+      set({
+        commentError: errorMessage,
+        isUpdatingComment: false,
+      });
+
+      toast.error(errorMessage);
+      throw error;
+    }
+  },
+
+  getReviewsStats: async () => {
+    set({ isFetchingReviews: true, reviewError: null });
+    try {
+      const res = await axiosInstance.get('admin/dashboard/reviews/stats');
+
+      set({
+        reviewsStats: res.data.data,
+        isFetchingReviews: false,
+      });
+
+      return res.data.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || 'Failed to fetch reviews stats';
+
+      set({
+        reviewError: errorMessage,
+        isFetchingReviews: false,
+      });
+
+      toast.error(errorMessage);
+    }
+  },
+
+  getReviews: async (params = {}) => {
+    set({ isFetchingReviews: true, reviewError: null });
+    try {
+      const { page = 1, limit = 10, status = 'all' } = params;
+      const res = await axiosInstance.get('admin/dashboard/reviews', {
+        params: { page, limit, status },
+      });
+
+      set({
+        reviews: res.data.data.reviews,
+        totalReviews: res.data.data.pagination.total,
+        totalReviewPages: res.data.data.pagination.totalPages,
+        currentReviewPage: res.data.data.pagination.currentPage,
+        reviewFilter: status,
+        isFetchingReviews: false,
+      });
+
+      return res.data.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || 'Failed to fetch reviews';
+
+      set({
+        reviewError: errorMessage,
+        isFetchingReviews: false,
+      });
+
+      toast.error(errorMessage);
+    }
+  },
+
+  updateReviewStatus: async (reviewId, status) => {
+    set({ isUpdatingReview: true, reviewError: null });
+    try {
+      const res = await axiosInstance.patch(`admin/dashboard/reviews/${reviewId}/status`, {
+        status,
+      });
+
+      toast.success('Review status updated successfully');
+
+      // Refresh reviews list
+      const { currentReviewPage, reviewFilter } = get();
+      get().getReviews({ page: currentReviewPage, limit: 10, status: reviewFilter });
+      get().getReviewsStats();
+
+      set({ isUpdatingReview: false });
+      return res.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || 'Failed to update review status';
+
+      set({
+        reviewError: errorMessage,
+        isUpdatingReview: false,
+      });
+
+      toast.error(errorMessage);
+      throw error;
     }
   },
 }));

@@ -7,6 +7,7 @@ import Comment from './comment.model.js';
 import Newsletter from './news.model.js';
 import { initializeAssociations, BlogCar } from './associations.js';
 import Review from './review.model.js';
+import NewsletterBroadcast from './broadcast.model.js';
 
 // Initialize associations
 initializeAssociations();
@@ -20,6 +21,7 @@ const models = {
   Comment,
   Newsletter,
   BlogCar,
+  NewsletterBroadcast,
   sequelize,
 };
 

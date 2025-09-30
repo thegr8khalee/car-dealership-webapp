@@ -3,6 +3,9 @@ import Car from '../models/car.model.js';
 import Blog from '../models/blog.model.js';
 import { Op } from 'sequelize';
 import cloudinary from '../lib/cloudinary.js';
+import Newsletter from '../models/news.model.js';
+import NewsletterBroadcast from '../models/broadcast.model.js';
+import { sendEmail } from '../services/gmail.service.js';
 
 const uploadImagesToCloudinary = async (base64Images) => {
   if (!base64Images || base64Images.length === 0) {
@@ -485,5 +488,197 @@ export const deleteBlog = async (req, res) => {
     res
       .status(500)
       .json({ message: 'Internal Server Error while deleting the blog.' });
+  }
+};
+
+
+export const getNewsletterStats = async (req, res) => {
+  try {
+    // Get total subscribers (not unsubscribed)
+    const totalSubscribers = await Newsletter.count({
+      where: {
+        unsubscribedAt: null,
+      },
+    });
+
+    // Get new subscribers this month
+    const startOfMonth = new Date();
+    startOfMonth.setDate(1);
+    startOfMonth.setHours(0, 0, 0, 0);
+
+    const newThisMonth = await Newsletter.count({
+      where: {
+        createdAt: {
+          [Op.gte]: startOfMonth,
+        },
+        unsubscribedAt: null,
+      },
+    });
+
+    // Get total broadcasts sent
+    const totalBroadcasts = await NewsletterBroadcast.count({
+      where: {
+        status: 'completed',
+      },
+    });
+
+    // Get unsubscribed count
+    const unsubscribedCount = await Newsletter.count({
+      where: {
+        unsubscribedAt: {
+          [Op.not]: null,
+        },
+      },
+    });
+
+    return res.status(200).json({
+      status: 'success',
+      data: {
+        totalSubscribers,
+        newThisMonth,
+        totalBroadcasts,
+        unsubscribedCount,
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching newsletter stats:', error);
+    return res.status(500).json({
+      status: 'error',
+      message: 'Failed to fetch newsletter statistics',
+      error: error.message,
+    });
+  }
+};
+
+export const getRecentBroadcasts = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = (page - 1) * limit;
+
+    const { count, rows: broadcasts } = await NewsletterBroadcast.findAndCountAll({
+      limit,
+      offset,
+      order: [['createdAt', 'DESC']],
+      attributes: [
+        'id',
+        'subject',
+        'recipientCount',
+        'successCount',
+        'failureCount',
+        'status',
+        'sentAt',
+        'createdAt',
+      ],
+    });
+
+    const totalPages = Math.ceil(count / limit);
+
+    return res.status(200).json({
+      status: 'success',
+      data: {
+        broadcasts,
+        pagination: {
+          total: count,
+          currentPage: page,
+          totalPages,
+          limit,
+        },
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching broadcasts:', error);
+    return res.status(500).json({
+      status: 'error',
+      message: 'Failed to fetch broadcasts',
+      error: error.message,
+    });
+  }
+};
+
+export const sendNewsletter = async (req, res) => {
+  try {
+    const { subject, content, htmlContent } = req.body;
+    const adminId = req.admin.id;
+
+    if (!subject || !content) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Subject and content are required',
+      });
+    }
+
+    // Get all active subscribers
+    const subscribers = await Newsletter.findAll({
+      where: {
+        unsubscribedAt: null,
+      },
+      attributes: ['email', 'userName'],
+    });
+
+    if (subscribers.length === 0) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'No active subscribers found',
+      });
+    }
+
+    // Create broadcast record
+    const broadcast = await NewsletterBroadcast.create({
+      subject,
+      content,
+      htmlContent,
+      sentBy: adminId,
+      recipientCount: subscribers.length,
+      status: 'sending',
+    });
+
+    // Send emails asynchronously
+    let successCount = 0;
+    let failureCount = 0;
+
+    const sendPromises = subscribers.map(async (subscriber) => {
+      try {
+        await sendEmail({
+          to: subscriber.email,
+          subject,
+          text: content,
+          html: htmlContent || content,
+          from: `"PixelsPulse Newsletter" <${process.env.EMAIL_USER}>`,
+        });
+        successCount++;
+      } catch (error) {
+        console.error(`Failed to send to ${subscriber.email}:`, error.message);
+        failureCount++;
+      }
+    });
+
+    // Wait for all emails to be sent
+    await Promise.allSettled(sendPromises);
+
+    // Update broadcast status
+    await broadcast.update({
+      successCount,
+      failureCount,
+      status: failureCount === 0 ? 'completed' : 'completed',
+      sentAt: new Date(),
+    });
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'Newsletter sent successfully',
+      data: {
+        broadcastId: broadcast.id,
+        totalSent: successCount,
+        totalFailed: failureCount,
+      },
+    });
+  } catch (error) {
+    console.error('Error sending newsletter:', error);
+    return res.status(500).json({
+      status: 'error',
+      message: 'Failed to send newsletter',
+      error: error.message,
+    });
   }
 };
