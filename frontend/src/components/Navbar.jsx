@@ -130,29 +130,40 @@ const Navbar = ({ className = '' }) => {
               </button>
             </li>
             <li className="p-2">
-              <button 
-               onClick={() => {
+              <button
+                onClick={() => {
                   navigate('/makes');
                   closeDrawer();
                 }}
-              className={getButtonClass('/makes')}>Makes</button>
+                className={getButtonClass('/makes')}
+              >
+                Makes
+              </button>
             </li>
             <li className="p-2">
-              <button 
-               onClick={() => {
+              <button
+                onClick={() => {
                   navigate('/blogs');
                   closeDrawer();
                 }}
-              className={getButtonClass('/blogs')}>Blogs</button>
+                className={getButtonClass('/blogs')}
+              >
+                Blogs
+              </button>
             </li>
-            <li className="p-2">
-              <button 
-               onClick={() => {
-                  navigate('/admin/dashboard');
-                  closeDrawer();
-                }}
-              className={getButtonClass('/admin/dashboard')}>Dashboard</button>
-            </li>
+            {isAdmin ? (
+              <li className="p-2">
+                <button
+                  onClick={() => {
+                    navigate('/admin/dashboard');
+                    closeDrawer();
+                  }}
+                  className={getButtonClass('/admin/dashboard')}
+                >
+                  Dashboard
+                </button>
+              </li>
+            ) : null}
           </ul>
           <div>
             <div className="divider"></div>

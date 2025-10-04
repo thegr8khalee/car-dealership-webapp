@@ -28,7 +28,7 @@ return (
                             className="input w-full border-none bg-transparent text-white placeholder:text-white shadow-none"
                         />
                     </div>
-                    <div className="h-full w-full flex justify-end">
+                    <div className="h-full flex justify-end">
                         <button className="btn px-6 btn-primary rounded-full h-full font-normal">
                             Join
                         </button>

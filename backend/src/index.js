@@ -56,6 +56,8 @@ import carRoutes from './routes/car.routes.js';
 import blogRoutes from './routes/blog.routes.js';
 import interactRoutes from './routes/interactions.routes.js';
 import dashboardRoutes from './routes/dashboard.routes.js';
+import sellRoutes from './routes/sell.routes.js';
+import sellSubmissionRoutes from './routes/sellSubmission.routes.js';
 import { globalErrorHandler, notFound } from './middleware/error.middleware.js';
 
 app.use('/api/admin/auth', adminRouts);
@@ -65,6 +67,8 @@ app.use('/api/cars', carRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/interactions', interactRoutes);
 app.use('/api/admin/dashboard', dashboardRoutes);
+app.use('/api/sell', sellRoutes);
+app.use('/api/admin/dashboard/sell-submissions', sellSubmissionRoutes);
 app.use(notFound);
 app.use(globalErrorHandler);
 

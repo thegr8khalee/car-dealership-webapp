@@ -11,11 +11,12 @@ import {
   calculatePercentageChange,
 } from '../lib/dashboard.utils.js';
 import Admin from '../models/admin.model.js';
+import SellNow from '../models/sell.model.js';
 
 // Main dashboard overview stats
 export const getDashboardStats = async (req, res) => {
   try {
-    const { thisMonth, lastMonth, thisYear } = calculateDateRanges();
+    const { thisMonth, lastMonth, thisYear, lastYear } = calculateDateRanges();
 
     // Car inventory stats
     const totalCars = await Car.count();
@@ -23,6 +24,52 @@ export const getDashboardStats = async (req, res) => {
     const availableCars = totalCars - soldCars;
     const carsAddedThisMonth = await Car.count({
       where: { createdAt: { [Op.gte]: thisMonth.start } },
+    });
+    const carsAddedLastMonth = await Car.count({
+      where: { createdAt: { [Op.gte]: lastMonth.start } },
+    });
+    const inventoryRate = ((availableCars / totalCars) * 100).toFixed(1);
+    const soldThisMonth = await Car.count({
+      where: { createdAt: { [Op.gte]: thisMonth.start }, sold: true },
+    });
+    const soldLastMonth = await Car.count({
+      where: { createdAt: { [Op.gte]: lastMonth.start }, sold: true },
+    });
+    const salesChange = calculatePercentageChange(soldThisMonth, soldLastMonth);
+
+    //selling to us stats
+    const sellingToUsThisYear = await SellNow.count({
+      where: { createdAt: { [Op.gte]: thisYear.start } },
+    });
+    const sellingToUsLastYear = await SellNow.count({
+      where: { createdAt: { [Op.gte]: lastYear.start } },
+    });
+    const sellingToUsLastMonth = await SellNow.count({
+      where: { createdAt: { [Op.gte]: lastMonth.start } },
+    });
+    const sellingToUsThisMonth = await SellNow.count({
+      where: { createdAt: { [Op.gte]: thisMonth.start } },
+    });
+    const sellingToUsChange = calculatePercentageChange(
+      sellingToUsThisMonth,
+      sellingToUsLastMonth
+    );
+    const sellingToUsYearlyChange = calculatePercentageChange(
+      sellingToUsThisYear,
+      sellingToUsLastYear
+    );
+    const sellingToUsTotal = await SellNow.count();
+    const SellingToUsPending = await SellNow.count({
+      where: { OfferStatus: 'Pending' },
+    });
+    const SellingToUsOfferSent = await SellNow.count({
+      where: { OfferStatus: 'Offer Sent' },
+    });
+    const SellingToUsAccepted = await SellNow.count({
+      where: { OfferStatus: 'Accepted' },
+    });
+    const SellingToUsRejected = await SellNow.count({
+      where: { OfferStatus: 'Rejected' },
     });
 
     // Blog stats
@@ -95,6 +142,22 @@ export const getDashboardStats = async (req, res) => {
           sold: soldCars,
           addedThisMonth: carsAddedThisMonth,
           inventoryRate: ((availableCars / totalCars) * 100).toFixed(1),
+          soldThisMonth,
+          soldLastMonth,
+          salesChange,
+        },
+        sellingToUs: {
+          thisYear: sellingToUsThisYear,
+          lastYear: sellingToUsLastYear,
+          thisMonth: sellingToUsThisMonth,
+          lastMonth: sellingToUsLastMonth,
+          change: sellingToUsChange,
+          yearlyChange: sellingToUsYearlyChange,
+          total: sellingToUsTotal,
+          pending: SellingToUsPending,
+          offerSent: SellingToUsOfferSent,
+          accepted: SellingToUsAccepted,
+          rejected: SellingToUsRejected,
         },
         blogs: {
           total: totalBlogs,

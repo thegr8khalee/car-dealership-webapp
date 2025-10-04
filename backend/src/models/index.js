@@ -8,6 +8,7 @@ import Newsletter from './news.model.js';
 import { initializeAssociations, BlogCar } from './associations.js';
 import Review from './review.model.js';
 import NewsletterBroadcast from './broadcast.model.js';
+import SellNow from './sell.model.js';
 
 // Initialize associations
 initializeAssociations();
@@ -436,6 +437,25 @@ export const seedData = async () => {
         status: 'approved',
       },
     ];
+
+    const sellNowEntry = {
+      fullName: 'Robert Smith',
+      phoneNumber: '5551234567',
+      emailAddress: 'robert.smith@sellcar.com',
+      carMake: 'Toyota',
+      carModel: 'Camry',
+      yearOfManufacture: 2020,
+      mileageKm: 45000,
+      condition: 'Good',
+      additionalNotes: 'Minor scratch on the passenger side door.',
+      offerStatus: 'Pending',
+    };
+
+    await SellNow.findOrCreate({
+      where: { emailAddress: sellNowEntry.emailAddress },
+      defaults: sellNowEntry,
+    });
+    console.log('✅ Sample SellNow entry created.');
 
     await Review.bulkCreate(reviewsToCreate, { ignoreDuplicates: true });
     console.log('✅ Sample reviews created.');

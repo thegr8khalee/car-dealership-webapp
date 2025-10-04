@@ -10,6 +10,7 @@ import AdminUsers from '../components/admin/AdminUsers';
 import AdminNewsTeller from '../components/admin/AdminNewsTeller';
 import AdminComments from '../components/admin/AdminComments';
 import Adminreviews from '../components/admin/Adminreviews';
+import AdminSellingToUs from '../components/admin/AdminSellingToUs';
 
 const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState('dashboard');
@@ -29,15 +30,23 @@ const AdminDashboard = () => {
     setActiveSection(section);
     const params = new URLSearchParams(window.location.search);
     params.set('section', section);
-    window.history.replaceState({}, '', `${window.location.pathname}?${params}`);
+    window.history.replaceState(
+      {},
+      '',
+      `${window.location.pathname}?${params}`
+    );
   };
 
   const renderContent = () => {
     switch (activeSection) {
       case 'overview':
-        return <AdminDashboardContent setActiveSection={handleSetActiveSection} />;
+        return (
+          <AdminDashboardContent setActiveSection={handleSetActiveSection} />
+        );
       case 'Listings':
         return <AdminListings />;
+      case 'SellingToUs':
+        return <AdminSellingToUs />;
       case 'Blogs':
         return <AdminBlogs />;
       case 'Staffs':
@@ -51,7 +60,9 @@ const AdminDashboard = () => {
       case 'Reviews':
         return <Adminreviews />;
       default:
-        return <AdminDashboardContent setActiveSection={handleSetActiveSection} />;
+        return (
+          <AdminDashboardContent setActiveSection={handleSetActiveSection} />
+        );
     }
   };
 

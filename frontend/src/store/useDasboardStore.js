@@ -56,6 +56,15 @@ export const useDashboardStore = create((set, get) => ({
   isFetchingReviews: false,
   reviewError: null,
   isUpdatingReview: false,
+  sellSubmissionsStats: null,
+  sellSubmissions: [],
+  totalSellSubmissions: 0,
+  totalSellPages: 1,
+  currentSellPage: 1,
+  sellSubmissionFilter: 'all',
+  isFetchingSellSubmissions: false,
+  sellSubmissionError: null,
+  isUpdatingSellSubmission: false,
 
   getDashboardStats: async () => {
     set({ isLoading: true, error: null });
@@ -603,6 +612,165 @@ export const useDashboardStore = create((set, get) => ({
       set({
         reviewError: errorMessage,
         isUpdatingReview: false,
+      });
+
+      toast.error(errorMessage);
+      throw error;
+    }
+  },
+
+  getSellSubmissionsStats: async () => {
+    set({ isFetchingSellSubmissions: true, sellSubmissionError: null });
+    try {
+      const res = await axiosInstance.get('admin/dashboard/sell-submissions/stats');
+
+      set({
+        sellSubmissionsStats: res.data.data,
+        isFetchingSellSubmissions: false,
+      });
+
+      return res.data.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || 'Failed to fetch sell submissions stats';
+
+      set({
+        sellSubmissionError: errorMessage,
+        isFetchingSellSubmissions: false,
+      });
+
+      toast.error(errorMessage);
+    }
+  },
+
+  getSellSubmissions: async (params = {}) => {
+    set({ isFetchingSellSubmissions: true, sellSubmissionError: null });
+    try {
+      const { page = 1, limit = 10, status = 'all' } = params;
+      const res = await axiosInstance.get('admin/dashboard/sell-submissions', {
+        params: { page, limit, status },
+      });
+
+      set({
+        sellSubmissions: res.data.data.submissions,
+        totalSellSubmissions: res.data.data.pagination.total,
+        totalSellPages: res.data.data.pagination.totalPages,
+        currentSellPage: res.data.data.pagination.currentPage,
+        sellSubmissionFilter: status,
+        isFetchingSellSubmissions: false,
+      });
+
+      return res.data.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || 'Failed to fetch sell submissions';
+
+      set({
+        sellSubmissionError: errorMessage,
+        isFetchingSellSubmissions: false,
+      });
+
+      toast.error(errorMessage);
+    }
+  },
+
+  updateSellSubmissionStatus: async (submissionId, status) => {
+    set({ isUpdatingSellSubmission: true, sellSubmissionError: null });
+    try {
+      const res = await axiosInstance.patch(
+        `admin/dashboard/sell-submissions/${submissionId}/status`,
+        { status }
+      );
+
+      toast.success('Submission status updated successfully');
+
+      // Refresh submissions list
+      const { currentSellPage, sellSubmissionFilter } = get();
+      get().getSellSubmissions({
+        page: currentSellPage,
+        limit: 10,
+        status: sellSubmissionFilter
+      });
+      get().getSellSubmissionsStats();
+
+      set({ isUpdatingSellSubmission: false });
+      return res.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || 'Failed to update submission status';
+
+      set({
+        sellSubmissionError: errorMessage,
+        isUpdatingSellSubmission: false,
+      });
+
+      toast.error(errorMessage);
+      throw error;
+    }
+  },
+
+  sendOffer: async (submissionId, offerAmount) => {
+    set({ isUpdatingSellSubmission: true, sellSubmissionError: null });
+    try {
+      const res = await axiosInstance.post(
+        `admin/dashboard/sell-submissions/${submissionId}/offer`,
+        { offerAmount }
+      );
+
+      toast.success('Offer sent successfully');
+
+      // Refresh submissions list
+      const { currentSellPage, sellSubmissionFilter } = get();
+      get().getSellSubmissions({
+        page: currentSellPage,
+        limit: 10,
+        status: sellSubmissionFilter
+      });
+      get().getSellSubmissionsStats();
+
+      set({ isUpdatingSellSubmission: false });
+      return res.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || 'Failed to send offer';
+
+      set({
+        sellSubmissionError: errorMessage,
+        isUpdatingSellSubmission: false,
+      });
+
+      toast.error(errorMessage);
+      throw error;
+    }
+  },
+
+  deleteSellSubmission: async (submissionId) => {
+    set({ isUpdatingSellSubmission: true, sellSubmissionError: null });
+    try {
+      const res = await axiosInstance.delete(
+        `admin/dashboard/sell-submissions/${submissionId}`
+      );
+
+      toast.success('Submission deleted successfully');
+
+      // Refresh submissions list
+      const { currentSellPage, sellSubmissionFilter } = get();
+      get().getSellSubmissions({
+        page: currentSellPage,
+        limit: 10,
+        status: sellSubmissionFilter
+      });
+      get().getSellSubmissionsStats();
+
+      set({ isUpdatingSellSubmission: false });
+      return res.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || 'Failed to delete submission';
+
+      set({
+        sellSubmissionError: errorMessage,
+        isUpdatingSellSubmission: false,
       });
 
       toast.error(errorMessage);

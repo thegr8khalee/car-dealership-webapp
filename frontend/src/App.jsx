@@ -21,6 +21,11 @@ import AddCarPage from './pages/AddCarPage';
 import UpdateCarPage from './pages/UpdateCarPage';
 import AddBlogPage from './pages/AddBlogPage';
 import UpdateBlogPage from './pages/UpdateBlogPage';
+import CompareCars from './pages/CompareCars';
+import Contact from './pages/Contact';
+import Sell from './pages/Sell';
+import SellCarPage from './pages/SellForm';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   const { checkAuth, authUser } = useUserAuthStore();
@@ -37,6 +42,7 @@ function App() {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <ScrollToTop />
       <Navbar className="z-100" />
       <main className="flex-grow">
         <Routes>
@@ -51,8 +57,12 @@ function App() {
           />
           <Route path="/listings" element={<Listings />} />
           <Route path="/car/:id" element={<CarDetails />} />
+          <Route path="/compare" element={<CompareCars />} />
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/blog/:id" element={<BlogDetail />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path='/sell' element={<Sell />} />
+          <Route path='/sell/form' element={<SellCarPage />} />
 
           {/** admin routes */}
           <Route element={<AdminLoginProtectedRoute />}>

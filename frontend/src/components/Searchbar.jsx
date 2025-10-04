@@ -98,6 +98,9 @@ const CarSearchBar = () => {
     selectedFuelType,
     selectedMake,
     selectedYear,
+    searchQuery,
+    isSearched,
+    searchResults,
   ]);
 
   // Toggle functions for multi-select filters
@@ -663,7 +666,7 @@ const CarSearchBar = () => {
 
       {/* Results Summary */}
       {isHome && isSearched && (
-        <div className="mt-4 bg-white/90 backdrop-blur-sm rounded-2xl p-3 shadow-md w-full">
+        <div className="mt-4 bg-white/90 backdrop-blur-sm rounded-2xl p-3 shadow-md w-full max-w-5xl mx-auto">
           {searchResults.length > 0 ? (
             <>
               <div className="flex justify-between items-center text-sm">

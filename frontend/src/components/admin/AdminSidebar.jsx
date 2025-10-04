@@ -11,8 +11,9 @@ const AdminSidebar = ({
   //   const logout = useAuthStore((state) => state.logout);
 
   const navItems = [
-    {id: 'Overview', name: 'Overview'},
+    { id: 'Overview', name: 'Overview' },
     { id: 'Listings', name: 'Listings' },
+    { id: 'SellingToUs', name: 'Selling To Us' },
     { id: 'Blogs', name: 'Blogs' },
     { id: 'Staffs', name: 'Staffs' },
     { id: 'Users', name: 'Users' },
@@ -59,7 +60,9 @@ const AdminSidebar = ({
             <li key={item.id}>
               <a
                 className={
-                  activeSection === item.id ? 'active font-semibold text-primary' : ''
+                  activeSection === item.id
+                    ? 'active font-semibold text-primary'
+                    : ''
                 }
                 onClick={() => handleNavigationClick(item.id)}
               >

@@ -37,6 +37,7 @@ const AdminDashboardContent = () => {
     carStats,
     blogStats,
     userStats,
+    sellingToUs,
     revenueStats,
     recentActivity,
     topPerformers,
@@ -172,6 +173,99 @@ const AdminDashboardContent = () => {
               },
             ]
           : []),
+      ]
+    : [];
+
+  const sellingToUsStats = dashboardStats
+    ? [
+        {
+          label: 'Selling to Us',
+          value: dashboardStats.sellingToUs?.thisMonth || 0,
+          change: sellingToUs?.monthlyTrend
+            ? formatTrend(sellingToUs?.monthlyTrend.percentageChange).change
+            : '+0%',
+          trend: sellingToUs?.monthlyTrend
+            ? formatTrend(sellingToUs?.monthlyTrend.percentageChange).trend
+            : 'up',
+          subtitle: `${dashboardStats.sellingToUs?.lastMonth || 0} last month`,
+          icon: Car,
+          color: 'bg-green-500',
+        },
+        {
+          label: 'Yearly Selling to Us',
+          value: dashboardStats.sellingToUs?.thisYear || 0,
+          change: sellingToUs?.yearlyTrend
+            ? formatTrend(sellingToUs?.yearlyTrend.percentageChange).change
+            : '+0%',
+          trend: sellingToUs?.yearlyTrend
+            ? formatTrend(sellingToUs?.yearlyTrend.percentageChange).trend
+            : 'up',
+          subtitle: `${dashboardStats.sellingToUs?.lastYear || 0} last year`,
+          icon: Car,
+          color: 'bg-green-500',
+        },
+        {
+          label: 'Total Selling to Us',
+          value: dashboardStats.sellingToUs?.total || 0,
+          change: sellingToUs?.totalTrend
+            ? formatTrend(sellingToUs?.totalTrend.percentageChange).change
+            : '+0%',
+          trend: sellingToUs?.totalTrend
+            ? formatTrend(sellingToUs?.totalTrend.percentageChange).trend
+            : 'up',
+          subtitle: `${dashboardStats.sellingToUs?.lastTotal || 0} last year`,
+          icon: Car,
+          color: 'bg-green-500',
+        },
+        {
+          label: 'Pending Submissions',
+          value: dashboardStats.sellingToUs?.pending || 0,
+          change: sellingToUs?.pendingTrend
+            ? formatTrend(sellingToUs?.pendingTrend.percentageChange).change
+            : '+0%',
+          trend: sellingToUs?.pendingTrend
+            ? formatTrend(sellingToUs?.pendingTrend.percentageChange).trend
+            : 'up',
+          subtitle: `${dashboardStats.sellingToUs?.lastPending || 0} last month`,
+          icon: Car,
+          color: 'bg-green-500',
+        },
+        { label: 'Offers Sent',
+          value: dashboardStats.sellingToUs?.offerSent || 0,
+          change: sellingToUs?.offerSentTrend
+            ? formatTrend(sellingToUs?.offerSentTrend.percentageChange).change
+            : '+0%',
+          trend: sellingToUs?.offerSentTrend
+            ? formatTrend(sellingToUs?.offerSentTrend.percentageChange).trend
+            : 'up',
+          subtitle: `${dashboardStats.sellingToUs?.lastOfferSent || 0} last month`,
+          icon: Car,
+          color: 'bg-green-500',
+        },
+        { label: 'Offers Accepted',
+          value: dashboardStats.sellingToUs?.accepted || 0,
+          change: sellingToUs?.acceptedTrend
+            ? formatTrend(sellingToUs?.acceptedTrend.percentageChange).change
+            : '+0%',
+          trend: sellingToUs?.acceptedTrend
+            ? formatTrend(sellingToUs?.acceptedTrend.percentageChange).trend
+            : 'up',
+          subtitle: `${dashboardStats.sellingToUs?.lastAccepted || 0} last month`,
+          icon: Car,
+          color: 'bg-green-500',
+        },
+        { label: 'Offers Rejected',
+          value: dashboardStats.sellingToUs?.rejected || 0,
+          change: sellingToUs?.rejectedTrend
+            ? formatTrend(sellingToUs?.rejectedTrend.percentageChange).change
+            : '+0%',
+          trend: sellingToUs?.rejectedTrend
+            ? formatTrend(sellingToUs?.rejectedTrend.percentageChange).trend
+            : 'up',
+          subtitle: `${dashboardStats.sellingToUs?.lastRejected || 0} last month`,
+          icon: Car,
+          color: 'bg-green-500',
+        },
       ]
     : [];
 
@@ -669,6 +763,20 @@ const AdminDashboardContent = () => {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {primaryStats.map((stat, index) => (
+              <StatCard key={index} stat={stat} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Selling to Us Stats */}
+      {sellingToUsStats.length > 0 && (
+        <div>
+          <h3 className="text-xl font-semibold mb-4 text-base-content">
+            Selling to Us Overview
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {sellingToUsStats.map((stat, index) => (
               <StatCard key={index} stat={stat} />
             ))}
           </div>

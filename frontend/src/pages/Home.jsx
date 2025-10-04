@@ -47,12 +47,68 @@ import CarSearchBar from '../components/Searchbar';
 import { useCarStore } from '../store/useCarStore';
 import { useBlogStore } from '../store/useBlogStore';
 import { useInteractStore } from '../store/useInteractStore';
+import toast from 'react-hot-toast';
 
 const Home = () => {
-  const [isFocused, setIsFocused] = useState(false);
+  const [isFocusedCarPrice, setIsFocusedCarPrice] = useState(false);
+  const [isFocusedTerm, setIsFocusedTerm] = useState(false);
+  const [isFocusedDownPayment, setIsFocusedDownPayment] = useState(false);
   const { cars, isLoading, getCars } = useCarStore();
   const { blogs, fetchBlogs, isLoading: isLoadingBlogs } = useBlogStore();
   const { reviews, getAllReviews, isFetchingReviews } = useInteractStore();
+  const [formData, setFormData] = useState({
+    carPrice: '',
+    term: '',
+    downPayment: '',
+  });
+
+  const [monthlyPayment, setMonthlyPayment] = useState(null);
+
+  const calculateInstallment = () => {
+    // Validate all required fields are filled
+    if (!formData.carPrice || !formData.term || !formData.downPayment) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+
+    const price = parseFloat(formData.carPrice);
+    const down = parseFloat(formData.downPayment);
+    const years = parseFloat(formData.term);
+
+    // Validate values are positive numbers
+    if (price <= 0 || down < 0 || years <= 0) {
+      toast.error('Please enter valid positive numbers');
+      return;
+    }
+
+    // Check if down payment is not greater than car price
+    if (down >= price) {
+      toast.error('Down payment cannot be greater than or equal to car price');
+      return;
+    }
+
+    // Calculate loan amount
+    const loanAmount = price - down;
+
+    // Typical interest rate (you can make this configurable)
+    const annualInterestRate = 0.05; // 5% annual interest rate
+    const monthlyInterestRate = annualInterestRate / 12;
+    const numberOfPayments = years * 12;
+
+    // Calculate monthly payment using the loan payment formula
+    // M = P * [r(1 + r)^n] / [(1 + r)^n - 1]
+    let monthly;
+
+    if (monthlyInterestRate === 0) {
+      // If no interest, simple division
+      monthly = loanAmount / numberOfPayments;
+    } else {
+      const x = Math.pow(1 + monthlyInterestRate, numberOfPayments);
+      monthly = (loanAmount * (monthlyInterestRate * x)) / (x - 1);
+    }
+
+    setMonthlyPayment(monthly);
+  };
 
   useEffect(() => {
     getCars();
@@ -128,7 +184,10 @@ const Home = () => {
             >
               Browse Cars
             </button>
-            <button className="btn backdrop-blur-lg bg-secondary/30 border-none shadow-none text-white rounded-full font-medium">
+            <button
+              onClick={() => navigate('/contact')}
+              className="btn backdrop-blur-lg bg-secondary/30 border-none shadow-none text-white rounded-full font-medium"
+            >
               Contact Us
             </button>
           </div>
@@ -139,501 +198,6 @@ const Home = () => {
             </h1>
           </div>
         </section>
-
-        {/* <div className=" fixed top-20 inset-x-0 text-center w-full px-8 z-50">
-          <div className="items-center justify-between p-1 flex w-full rounded-full backdrop-blur-lg bg-secondary/30 h-15 z-50 relative">
-            <div
-              className="relative text-white items-center flex h-full px-4 border-r-2 border-r-white/70 cursor-pointer text-sm transition-all duration-300"
-              onClick={() => setIsFilterOpen(!isFilterOpen)}
-              ref={filterRef} // Attach the ref to this element
-            >
-              <ChevronDown
-                className={`size-5 mr-1 transform transition-transform duration-300 ${
-                  isFilterOpen ? 'rotate-180' : 'rotate-0'
-                }`}
-              />
-              Filters
-            </div>
-            <div className="h-full items-center flex w-full">
-              <input
-                type="text"
-                placeholder="Search for a car..."
-                className="input w-full border-none bg-transparent text-white placeholder:text-white shadow-none"
-              />
-            </div>
-            <div className="h-full w-full flex justify-end">
-              <button className=" btn btn-primary rounded-full h-full font-normal text-xs">
-                Find Car
-              </button>
-            </div>
-          </div>
-          {isFilterOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-              className="absolute top-[-5px] text-start inset-x-0 w-full px-7 z-40 max-h-[85vh]"
-            >
-              <div className="bg-white text-gray-800 rounded-4xl pt-17 pb-5 p-4 shadow-xl overflow-y-auto max-h-[85vh]">
-                <h1 className="font-semibold font-[poppins] text-lg pt-2">
-                  Filters
-                </h1>
-                <p className="font-[poppins] text-xs text-gray-500">
-                  Personalize your search by selecting the filters below.
-                </p>
-                <h1 className="text-primary font-medium font-[poppins] mt-2 text-sm">
-                  Price Range
-                </h1>
-                <div className="pt-2">
-                  <div className="flex justify-between text-sm text-gray-500 mb-2">
-                    <span>{formatPrice(values[0])}</span>
-                    <span>{formatPrice(values[1])}</span>
-                  </div>
-
-                 
-                  <div className="relative h-1">
-                    
-                    <div className="absolute inset-0 bg-gray-300 rounded-full"></div>
-
-                    
-                    <Range
-                      step={SLIDER_STEP}
-                      min={SLIDER_MIN}
-                      max={SLIDER_MAX}
-                      values={values}
-                      onChange={(vals) => setValues(vals)}
-                      renderTrack={({ props, children }) => (
-                        <div
-                          {...props}
-                          className="h-1 w-full rounded-full relative bg-gray-300"
-                        >
-                          
-                          <div
-                            className="absolute h-1 bg-primary rounded-full"
-                            style={{
-                              left: `${
-                                ((values[0] - SLIDER_MIN) /
-                                  (SLIDER_MAX - SLIDER_MIN)) *
-                                100
-                              }%`,
-                              right: `${
-                                100 -
-                                ((values[1] - SLIDER_MIN) /
-                                  (SLIDER_MAX - SLIDER_MIN)) *
-                                  100
-                              }%`,
-                            }}
-                          />
-                          {children}
-                        </div>
-                      )}
-                      renderThumb={({ props }) => (
-                        <div
-                          {...props}
-                          className="h-4 w-4 rounded-full bg-primary shadow-md"
-                        />
-                      )}
-                    />
-                  </div>
-                </div>
-                <hr className="border-t border-gray-300 my-4" />
-                <h1 className="text-primary font-medium font-[poppins] text-sm mb-2">
-                  Condition
-                </h1>
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    onClick={() => toggleSelectCondition('New')}
-                    className={`btn btn-sm rounded-full font-medium transition ${
-                      selectedCondition.includes('New')
-                        ? 'bg-primary text-white border-primary'
-                        : 'border-gray-500 text-gray-500 bg-transparent'
-                    }`}
-                  >
-                    New
-                  </button>
-
-                  <button
-                    onClick={() => toggleSelectCondition('Used')}
-                    className={`btn btn-sm rounded-full font-medium transition ${
-                      selectedCondition.includes('Used')
-                        ? 'bg-primary text-white border-primary'
-                        : 'border-gray-500 text-gray-500 bg-transparent'
-                    }`}
-                  >
-                    Used
-                  </button>
-
-                  <button
-                    onClick={() => toggleSelectCondition('Clean')}
-                    className={`btn btn-sm rounded-full font-medium transition ${
-                      selectedCondition.includes('Clean')
-                        ? 'bg-primary text-white border-primary'
-                        : 'border-gray-500 text-gray-500 bg-transparent'
-                    }`}
-                  >
-                    Clean
-                  </button>
-
-                  <button
-                    onClick={() => toggleSelectCondition('Accident Free')}
-                    className={`btn btn-sm rounded-full font-medium transition ${
-                      selectedCondition.includes('Accident Free')
-                        ? 'bg-primary text-white border-primary'
-                        : 'border-gray-500 text-gray-500 bg-transparent'
-                    }`}
-                  >
-                    Accident Free
-                  </button>
-                </div>
-                <hr className="border-t border-gray-300 my-4" />
-                <h1 className="text-primary font-medium font-[poppins] text-sm mb-2">
-                  Body
-                </h1>
-                <div className="flex overflow-x-auto w-full space-x-2">
-                  <div
-                    className={`rounded-xl border-1 p-1 px-5 flex flex-col items-center min-w-[100px] text-xs transition ${
-                      selectedBodyType.includes('SUV')
-                        ? 'bg-primary text-secondary border-primary'
-                        : 'border-gray-500 text-gray-500 bg-transparent'
-                    }`}
-                    onClick={() => toggleSelectBodyType('SUV')}
-                  >
-                    <img
-                      src={suv}
-                      alt="Car 1"
-                      className={`size-10 ${
-                        selectedBodyType.includes('SUV')
-                          ? 'invert'
-                          : 'opacity-50'
-                      }`}
-                    />
-                    <h1
-                      className={`text-xs ${
-                        selectedBodyType.includes('SUV')
-                          ? 'text-white font-medium'
-                          : ''
-                      }`}
-                    >
-                      SUV
-                    </h1>
-                  </div>
-
-                  <div
-                    className={`rounded-xl border-1 p-1 px-5 flex flex-col items-center min-w-[100px] text-xs transition ${
-                      selectedBodyType.includes('Sedan')
-                        ? 'bg-primary text-secondary border-primary'
-                        : 'border-gray-500 text-gray-500 bg-transparent'
-                    }`}
-                    onClick={() => toggleSelectBodyType('Sedan')}
-                  >
-                    <img
-                      src={sedan}
-                      alt="Car 2"
-                      className={`size-10 ${
-                        selectedBodyType.includes('Sedan')
-                          ? 'invert'
-                          : 'opacity-50'
-                      }`}
-                    />
-                    <h1
-                      className={`text-xs ${
-                        selectedBodyType.includes('Sedan')
-                          ? 'text-white font-medium'
-                          : ''
-                      }`}
-                    >
-                      Sedan
-                    </h1>
-                  </div>
-
-                  <div
-                    className={`rounded-xl border-1 p-1 px-5 flex flex-col items-center min-w-[100px] text-xs transition ${
-                      selectedBodyType.includes('Coupe')
-                        ? 'bg-primary text-secondary border-primary'
-                        : 'border-gray-500 text-gray-500 bg-transparent'
-                    }`}
-                    onClick={() => toggleSelectBodyType('Coupe')}
-                  >
-                    <img
-                      src={coupe}
-                      alt="Car 3"
-                      className={`size-10 ${
-                        selectedBodyType.includes('Coupe')
-                          ? 'invert'
-                          : 'opacity-50'
-                      }`}
-                    />
-                    <h1
-                      className={`text-xs ${
-                        selectedBodyType.includes('Coupe')
-                          ? 'text-white font-medium'
-                          : ''
-                      }`}
-                    >
-                      Coupe
-                    </h1>
-                  </div>
-
-                  <div
-                    className={`rounded-xl border-1 p-1 px-5 flex flex-col items-center min-w-[100px] text-xs transition ${
-                      selectedBodyType.includes('Truck')
-                        ? 'bg-primary text-secondary border-primary'
-                        : 'border-gray-500 text-gray-500 bg-transparent'
-                    }`}
-                    onClick={() => toggleSelectBodyType('Truck')}
-                  >
-                    <img
-                      src={pickup}
-                      alt="Car 4"
-                      className={`size-10 ${
-                        selectedBodyType.includes('Truck')
-                          ? 'invert'
-                          : 'opacity-50'
-                      }`}
-                    />
-                    <h1
-                      className={`text-xs ${
-                        selectedBodyType.includes('Truck')
-                          ? 'text-white font-medium'
-                          : ''
-                      }`}
-                    >
-                      Truck
-                    </h1>
-                  </div>
-
-                  <div
-                    className={`rounded-xl border-1 p-1 px-5 flex flex-col items-center min-w-[100px] text-xs transition ${
-                      selectedBodyType.includes('Convertible')
-                        ? 'bg-primary text-secondary border-primary'
-                        : 'border-gray-500 text-gray-500 bg-transparent'
-                    }`}
-                    onClick={() => toggleSelectBodyType('Convertible')}
-                  >
-                    <img
-                      src={convertible}
-                      alt="Car 5"
-                      className={`size-10 ${
-                        selectedBodyType.includes('Convertible')
-                          ? 'invert'
-                          : 'opacity-50'
-                      }`}
-                    />
-                    <h1
-                      className={`text-xs ${
-                        selectedBodyType.includes('Convertible')
-                          ? 'text-white font-medium'
-                          : ''
-                      }`}
-                    >
-                      Convertible
-                    </h1>
-                  </div>
-
-                  <div
-                    className={`rounded-xl border-1 p-1 px-5 flex flex-col items-center min-w-[100px] text-xs transition ${
-                      selectedBodyType.includes('Sport')
-                        ? 'bg-primary text-secondary border-primary'
-                        : 'border-gray-500 text-gray-500 bg-transparent'
-                    }`}
-                    onClick={() => toggleSelectBodyType('Sport')}
-                  >
-                    <img
-                      src={sport}
-                      alt="Car 5"
-                      className={`size-10 ${
-                        selectedBodyType.includes('Sport')
-                          ? 'invert'
-                          : 'opacity-50'
-                      }`}
-                    />
-                    <h1
-                      className={`text-xs ${
-                        selectedBodyType.includes('Sport')
-                          ? 'text-white font-medium'
-                          : ''
-                      }`}
-                    >
-                      Sport
-                    </h1>
-                  </div>
-                </div>
-                <hr className="border-t border-gray-300 my-4" />
-                <h1 className="text-primary font-medium font-[poppins] text-sm mb-2">
-                  Fuel Type
-                </h1>
-                <div className="flex space-x-2">
-                  <div
-                    className={`rounded-full border-1 space-x-2 flex flex-1 justify-center items-center transition ${
-                      selectedFuelType.includes('Gas')
-                        ? 'bg-primary text-secondary border-primary'
-                        : 'border-gray-500 text-gray-500 bg-transparent'
-                    }`}
-                    onClick={() => toggleSelectFuelType('Gas')}
-                  >
-                    <img
-                      src={gas}
-                      alt="Gas"
-                      className={`size-5 ${
-                        selectedFuelType.includes('Gas')
-                          ? 'invert'
-                          : 'opacity-50'
-                      }`}
-                    />
-                    <h1
-                      className={` ${
-                        selectedFuelType.includes('Gas')
-                          ? 'text-white font-medium'
-                          : ''
-                      }`}
-                    >
-                      Gas
-                    </h1>
-                  </div>
-                  <div
-                    className={`rounded-full border-1 space-x-2 flex flex-1 justify-center items-center transition ${
-                      selectedFuelType.includes('electric')
-                        ? 'bg-primary text-secondary border-primary'
-                        : 'border-gray-500 text-gray-500 bg-transparent'
-                    }`}
-                    onClick={() => toggleSelectFuelType('electric')}
-                  >
-                    <img
-                      src={electric}
-                      alt="Electric"
-                      className={`size-5 ${
-                        selectedFuelType.includes('electric')
-                          ? 'invert'
-                          : 'opacity-50'
-                      }`}
-                    />
-                    <h1
-                      className={` ${
-                        selectedFuelType.includes('electric')
-                          ? 'text-white font-medium'
-                          : ''
-                      }`}
-                    >
-                      Electric
-                    </h1>
-                  </div>
-                  <div
-                    className={`py-2 rounded-full border-1 space-x-2 flex flex-1 justify-center items-center transition ${
-                      selectedFuelType.includes('hybrid')
-                        ? 'bg-primary text-secondary border-primary'
-                        : 'border-gray-500 text-gray-500 bg-transparent'
-                    }`}
-                    onClick={() => toggleSelectFuelType('hybrid')}
-                  >
-                    <img
-                      src={hybrid}
-                      alt="Hybrid"
-                      className={`size-5 ${
-                        selectedFuelType.includes('hybrid')
-                          ? 'invert'
-                          : 'opacity-50'
-                      }`}
-                    />
-                    <h1
-                      className={` ${
-                        selectedFuelType.includes('hybrid')
-                          ? 'text-white font-medium'
-                          : ''
-                      }`}
-                    >
-                      Hybrid
-                    </h1>
-                  </div>
-                </div>
-                <hr className="border-t border-gray-300 my-4" />
-                <h1 className="text-primary font-medium font-[poppins] text-sm mb-2">
-                  Make
-                </h1>
-                <div className="flex overflow-x-auto w-full space-x-2">
-                  <div
-                    className={`rounded-xl border-1 p-2 flex flex-col items-center min-w-[100px] text-xs transition ${
-                      selectedMake.includes('mercedes')
-                        ? 'bg-primary text-secondary border-primary'
-                        : 'border-gray-500 text-secondary bg-transparent'
-                    }`}
-                    onClick={() => toggleSelectMake('mercedes')}
-                  >
-                    <img src={benz} alt="" className="size-20" />
-                  </div>
-                  <div
-                    className={`rounded-xl border-1 p-2 flex flex-col items-center min-w-[100px] text-xs transition ${
-                      selectedMake.includes('bmw')
-                        ? 'bg-primary text-secondary border-primary'
-                        : 'border-gray-500 text-secondary bg-transparent'
-                    }`}
-                    onClick={() => toggleSelectMake('bmw')}
-                  >
-                    <img src={bmw} alt="" className="size-20" />
-                  </div>
-                  <div
-                    className={`rounded-xl border-1 p-2 flex flex-col items-center min-w-[100px] text-xs transition ${
-                      selectedMake.includes('audi')
-                        ? 'bg-primary text-secondary border-primary'
-                        : 'border-gray-500 text-secondary bg-transparent'
-                    }`}
-                    onClick={() => toggleSelectMake('audi')}
-                  >
-                    <img src={audi} alt="" className="size-20" />
-                  </div>
-                  <div
-                    className={`rounded-xl border-1 p-2 flex flex-col items-center min-w-[100px] text-xs transition ${
-                      selectedMake.includes('toyota')
-                        ? 'bg-primary text-secondary border-primary'
-                        : 'border-gray-500 text-secondary bg-transparent'
-                    }`}
-                    onClick={() => toggleSelectMake('toyota')}
-                  >
-                    <img src={toyota} alt="" className="size-20" />
-                  </div>
-                  <div
-                    className={`rounded-xl border-1 p-2 flex flex-col items-center min-w-[100px] text-xs transition ${
-                      selectedMake.includes('honda')
-                        ? 'bg-primary text-secondary border-primary'
-                        : 'border-gray-500 text-secondary bg-transparent'
-                    }`}
-                    onClick={() => toggleSelectMake('honda')}
-                  >
-                    <img src={honda} alt="" className="size-20" />
-                  </div>
-                </div>
-                <hr className="border-t border-gray-300 my-4" />
-                <h1 className="text-primary font-medium font-[poppins] text-sm mb-2">
-                  Year
-                </h1>
-                <div className="w-full flex overflow-x-auto space-x-2">
-                  {years.map((year) => (
-                    <div
-                      key={year}
-                      className={`rounded-full border p-2 flex justify-center items-center min-w-[100px] text-xs transition cursor-pointer
-            ${
-              selectedYear.includes(year)
-                ? 'bg-primary text-white border-primary'
-                : 'border-gray-500 text-gray-500 bg-transparent'
-            }`}
-                      onClick={() => toggleSelectYear(year)}
-                    >
-                      <h1
-                        className={`text-xs ${
-                          selectedYear.includes(year)
-                            ? 'text-white font-medium'
-                            : ''
-                        }`}
-                      >
-                        {year}
-                      </h1>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </div> */}
 
         <CarSearchBar />
 
@@ -675,24 +239,30 @@ const Home = () => {
               </p>
               <div className="flex flex-col space-y-2 mt-2">
                 <div className="flex space-x-2 text-white">
-                  <CircleCheck className="stroke-white mr-2" /> We are Nigeria’s
-                  largest car dealership
+                  <CircleCheck className="stroke-white mr-2" />
+                  Fast and transparent process
                 </div>
                 <div className="flex space-x-2 text-white">
-                  <CircleCheck className="stroke-white mr-2" /> We are Nigeria’s
-                  largest car dealership
+                  <CircleCheck className="stroke-white mr-2" />
+                  Instant payment, no hidden fees
                 </div>
                 <div className="flex space-x-2 text-white">
-                  <CircleCheck className="stroke-white mr-2" /> We are Nigeria’s
-                  largest car dealership
+                  <CircleCheck className="stroke-white mr-2" />
+                  Trusted by thousands of car owners across Nigeria
                 </div>
               </div>
 
               <div className="flex space-x-2 mt-4 w-full ">
-                <button className="flex-1 btn btn-lg btn-primary rounded-full font-medium w-full">
+                <button
+                  onClick={() => navigate('/sell/form')}
+                  className="flex-1 btn btn-lg btn-primary rounded-full font-medium w-full"
+                >
                   Sell Now
                 </button>
-                <button className="flex-1 btn btn-lg backdrop-blur-lg bg-secondary/30 border-none shadow-none text-white rounded-full font-medium">
+                <button
+                  onClick={() => navigate('/sell')}
+                  className="flex-1 btn btn-lg backdrop-blur-lg bg-secondary/30 border-none shadow-none text-white rounded-full font-medium"
+                >
                   Learn More
                 </button>
               </div>
@@ -703,24 +273,6 @@ const Home = () => {
           <h1 className="text-xl font-semibold font-[poppins] mb-2">
             Explore All Cars
           </h1>
-          <div className="flex space-x-8 border-gray-200">
-            {tabs.map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`relative pb-2 text-sm transition ${
-                  activeTab === tab
-                    ? 'text-black font-semibold'
-                    : 'text-gray-500'
-                }`}
-              >
-                {tab}
-                {activeTab === tab && (
-                  <span className="absolute left-0 -bottom-[1px] w-full h-[2px] bg-red-500 rounded-full"></span>
-                )}
-              </button>
-            ))}
-          </div>
           <div className="flex overflow-x-auto w-full space-x-2 pl-1">
             {isLoading ? (
               <p>Loading cars...</p>
@@ -742,7 +294,7 @@ const Home = () => {
                   fuel={{ icon: gas, value: car.fuelType }}
                   year={{ icon: date, value: car.year }}
                   price={car.price}
-                  link={`/cars/${car.id}`}
+                  link={`/car/${car.id}`}
                 />
               ))
             )}
@@ -808,21 +360,23 @@ const Home = () => {
           <h1 className="font-bold text-white text-2xl font-[poppins]">
             Why Choose Us?
           </h1>
-          <div className="flex flex-col space-y-2 items-center my-8">
-            <img src={discount} alt="discount" className="size-10" />
-            <h1 className="text-white ">Special Financing Offers</h1>
-          </div>
-          <div className="flex flex-col space-y-2 items-center my-8">
-            <img src={trusted} alt="trusted" className="size-10" />
-            <h1 className="text-white ">Trusted by Thousands</h1>
-          </div>
-          <div className="flex flex-col space-y-2 items-center my-8">
-            <img src={price} alt="price" className="size-10" />
-            <h1 className="text-white">Competitive Pricing</h1>
-          </div>
-          <div className="flex flex-col space-y-2 items-center my-8">
-            <img src={service} alt="service" className="size-10" />
-            <h1 className="text-white ">Expert Car Service</h1>
+          <div className="grid grid-cols-2 gap-4 gap-y-12 my-8">
+            <div className="flex flex-col space-y-2 items-center">
+              <img src={discount} alt="discount" className="size-10" />
+              <h1 className="text-white ">Special Financing Offers</h1>
+            </div>
+            <div className="flex flex-col space-y-2 items-center">
+              <img src={trusted} alt="trusted" className="size-10" />
+              <h1 className="text-white ">Trusted by Thousands</h1>
+            </div>
+            <div className="flex flex-col space-y-2 items-center">
+              <img src={price} alt="price" className="size-10" />
+              <h1 className="text-white">Competitive Pricing</h1>
+            </div>
+            <div className="flex flex-col space-y-2 items-center">
+              <img src={service} alt="service" className="size-10" />
+              <h1 className="text-white ">Expert Car Service</h1>
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-4 gap-y-12">
             <div className="flex flex-col items-center">
@@ -999,30 +553,7 @@ const Home = () => {
           </div>
         </section>
         <section id="Calc" className="relative w-full">
-          {/* <div className="flex items-center space-x-4 h-110 bg-black">
-            <img
-              src={calc}
-              alt="Sell"
-              className="absolute inset-0 w-full h-full object-cover opacity-70"
-            />
-            <BlogCard
-              publisher="Jane Smith"
-              date="March 12, 2023"
-              title="Top 10 SUVs of 2023"
-              tagline="A comprehensive guide to the best SUVs this year."
-              image={m4}
-            />
-            <BlogCard
-              publisher="Alice Johnson"
-              date="March 15, 2023"
-              title="How to Maintain Your Car"
-              tagline="Essential tips for keeping your vehicle in top shape."
-              image={m4}
-            />
-          </div> */}
-        </section>
-        <section id="Calc" className="relative w-full">
-          <div className="flex items-center space-x-4 h-110 bg-black">
+          <div className="flex items-center space-x-4 bg-black">
             <img
               src={calc}
               alt="Sell"
@@ -1040,19 +571,23 @@ const Home = () => {
                 <form action="" className="my-2">
                   <div className="relative w-full">
                     <input
-                      type="text"
-                      value={'100,000,000'}
-                      //   onChange={}
-                      onFocus={() => setIsFocused(true)}
-                      onBlur={() => setIsFocused(false)}
+                      type="number"
+                      value={formData.carPrice}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          carPrice: e.target.value,
+                        })
+                      }
+                      onFocus={() => setIsFocusedCarPrice(true)}
+                      onBlur={() => setIsFocusedCarPrice(false)}
                       className="peer w-full px-3 pt-6 pb-2 text-lg font-medium border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                       placeholder=" " // Trick for floating label
                     />
                     <label
                       className={`absolute left-3 transition-all duration-300 
           ${
-            // eslint-disable-next-line no-constant-condition
-            isFocused || true
+            isFocusedCarPrice || formData.carPrice
               ? 'text-xs top-2 text-gray-500'
               : 'text-gray-400 top-4'
           } 
@@ -1064,19 +599,23 @@ const Home = () => {
                   <div className="flex space-x-2 mt-2">
                     <div className="relative w-80">
                       <input
-                        type="text"
-                        value={4}
-                        //   onChange={}
-                        onFocus={() => setIsFocused(true)}
-                        onBlur={() => setIsFocused(false)}
+                        type="number"
+                        value={formData.term}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            term: e.target.value,
+                          })
+                        }
+                        onFocus={() => setIsFocusedTerm(true)}
+                        onBlur={() => setIsFocusedTerm(false)}
                         className="peer w-full px-3 pt-6 pb-2 text-lg font-medium border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                         placeholder=" " // Trick for floating label
                       />
                       <label
                         className={`absolute left-3 transition-all duration-300 
           ${
-            // eslint-disable-next-line no-constant-condition
-            isFocused || true
+            isFocusedTerm || formData.term
               ? 'text-xs top-2 text-gray-500'
               : 'text-gray-400 top-4'
           } 
@@ -1087,19 +626,23 @@ const Home = () => {
                     </div>
                     <div className="relative w-80">
                       <input
-                        type="text"
-                        value={'10,000,000'}
-                        //   onChange={}
-                        onFocus={() => setIsFocused(true)}
-                        onBlur={() => setIsFocused(false)}
+                        type="number"
+                        value={formData.downPayment}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            downPayment: e.target.value,
+                          })
+                        }
+                        onFocus={() => setIsFocusedDownPayment(true)}
+                        onBlur={() => setIsFocusedDownPayment(false)}
                         className="peer w-full px-3 pt-6 pb-2 text-lg font-medium border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                         placeholder=" " // Trick for floating label
                       />
                       <label
                         className={`absolute left-3 transition-all duration-300 
           ${
-            // eslint-disable-next-line no-constant-condition
-            isFocused || true
+            isFocusedDownPayment || formData.downPayment
               ? 'text-xs top-2 text-gray-500'
               : 'text-gray-400 top-4'
           } 
@@ -1109,7 +652,28 @@ const Home = () => {
                       </label>
                     </div>
                   </div>
-                  <button className="w-full h-15 mt-2 text-white btn-primary btn-lg rounded-full">
+                  {monthlyPayment !== null && (
+                    <div className="mt-6 p-4 bg-primary/10 rounded-2xl">
+                      <p className="text-sm text-gray-600">
+                        Estimated Monthly Payment
+                      </p>
+                      <p className="text-3xl font-bold text-primary">
+                        N
+                        {monthlyPayment.toLocaleString('en-NG', {
+                          maximumFractionDigits: 2,
+                        })}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-2">
+                        Based on {formData.term} years with{' '}
+                        {(0.05 * 100).toFixed(1)}% annual interest
+                      </p>
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    onClick={calculateInstallment}
+                    className="w-full h-15 mt-2 text-white btn-primary btn-lg rounded-full"
+                  >
                     Calculate
                   </button>
                 </form>
@@ -1140,7 +704,10 @@ const Home = () => {
             >
               Browse Cars
             </button>
-            <button className="btn btn-xl backdrop-blur-lg bg-secondary/30 border-none shadow-none text-white rounded-full font-medium">
+            <button
+              onClick={() => navigate('/contact')}
+              className="btn btn-xl backdrop-blur-lg bg-secondary/30 border-none shadow-none text-white rounded-full font-medium"
+            >
               Contact Us
             </button>
           </div>
@@ -1204,24 +771,30 @@ const Home = () => {
               </p>
               <div className="flex flex-col space-y-2 mt-2 text-xs md:text-base">
                 <div className="flex space-x-2 text-white">
-                  <CircleCheck className="stroke-white mr-2" /> We are Nigeria’s
-                  largest car dealership
+                  <CircleCheck className="stroke-white mr-2" />
+                  Fast and transparent process
                 </div>
                 <div className="flex space-x-2 text-white">
-                  <CircleCheck className="stroke-white mr-2" /> We are Nigeria’s
-                  largest car dealership
+                  <CircleCheck className="stroke-white mr-2" />
+                  Instant payment, no hidden fees
                 </div>
                 <div className="flex space-x-2 text-white">
-                  <CircleCheck className="stroke-white mr-2" /> We are Nigeria’s
-                  largest car dealership
+                  <CircleCheck className="stroke-white mr-2" />
+                  Trusted by thousands of car owners across Nigeria
                 </div>
               </div>
 
               <div className="flex space-x-2 mt-4 w-full ">
-                <button className="flex-1 btn md:btn-lg btn-primary rounded-full font-medium w-full">
+                <button
+                  onClick={() => navigate('/sell/form')}
+                  className="flex-1 btn md:btn-lg btn-primary rounded-full font-medium w-full"
+                >
                   Sell Now
                 </button>
-                <button className="flex-1 btn md:btn-lg backdrop-blur-lg bg-secondary/30 border-none shadow-none text-white rounded-full font-medium">
+                <button
+                  onClick={() => navigate('/sell')}
+                  className="flex-1 btn md:btn-lg backdrop-blur-lg bg-secondary/30 border-none shadow-none text-white rounded-full font-medium"
+                >
                   Learn More
                 </button>
               </div>
@@ -1284,7 +857,7 @@ const Home = () => {
                     fuel={{ icon: gas, value: car.fuelType }}
                     year={{ icon: date, value: car.year }}
                     price={car.price}
-                    link={`/cars/${car.id}`}
+                    link={`/car/${car.id}`}
                   />
                 ))
               )}
@@ -1570,19 +1143,23 @@ const Home = () => {
                 <form action="" className="my-2">
                   <div className="relative w-full">
                     <input
-                      type="text"
-                      value={'100,000,000'}
-                      //   onChange={}
-                      onFocus={() => setIsFocused(true)}
-                      onBlur={() => setIsFocused(false)}
+                      type="number"
+                      value={formData.carPrice}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          carPrice: e.target.value,
+                        })
+                      }
+                      onFocus={() => setIsFocusedCarPrice(true)}
+                      onBlur={() => setIsFocusedCarPrice(false)}
                       className="peer w-full px-3 pt-6 pb-2 text-lg font-medium border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                       placeholder=" " // Trick for floating label
                     />
                     <label
                       className={`absolute left-3 transition-all duration-300 
           ${
-            // eslint-disable-next-line no-constant-condition
-            isFocused || true
+            isFocusedCarPrice || formData.carPrice
               ? 'text-xs top-2 text-gray-500'
               : 'text-gray-400 top-4'
           } 
@@ -1594,19 +1171,23 @@ const Home = () => {
                   <div className="flex space-x-2 mt-2">
                     <div className="relative w-80">
                       <input
-                        type="text"
-                        value={4}
-                        //   onChange={}
-                        onFocus={() => setIsFocused(true)}
-                        onBlur={() => setIsFocused(false)}
+                        type="number"
+                        value={formData.term}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            term: e.target.value,
+                          })
+                        }
+                        onFocus={() => setIsFocusedTerm(true)}
+                        onBlur={() => setIsFocusedTerm(false)}
                         className="peer w-full px-3 pt-6 pb-2 text-lg font-medium border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                         placeholder=" " // Trick for floating label
                       />
                       <label
                         className={`absolute left-3 transition-all duration-300 
           ${
-            // eslint-disable-next-line no-constant-condition
-            isFocused || true
+            isFocusedTerm || formData.term
               ? 'text-xs top-2 text-gray-500'
               : 'text-gray-400 top-4'
           } 
@@ -1617,19 +1198,23 @@ const Home = () => {
                     </div>
                     <div className="relative w-80">
                       <input
-                        type="text"
-                        value={'10,000,000'}
-                        //   onChange={}
-                        onFocus={() => setIsFocused(true)}
-                        onBlur={() => setIsFocused(false)}
+                        type="number"
+                        value={formData.downPayment}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            downPayment: e.target.value,
+                          })
+                        }
+                        onFocus={() => setIsFocusedDownPayment(true)}
+                        onBlur={() => setIsFocusedDownPayment(false)}
                         className="peer w-full px-3 pt-6 pb-2 text-lg font-medium border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                         placeholder=" " // Trick for floating label
                       />
                       <label
                         className={`absolute left-3 transition-all duration-300 
           ${
-            // eslint-disable-next-line no-constant-condition
-            isFocused || true
+            isFocusedDownPayment || formData.downPayment
               ? 'text-xs top-2 text-gray-500'
               : 'text-gray-400 top-4'
           } 
@@ -1639,7 +1224,28 @@ const Home = () => {
                       </label>
                     </div>
                   </div>
-                  <button className="w-full h-15 mt-2 text-white btn-primary btn-lg rounded-full">
+                  {monthlyPayment !== null && (
+                    <div className="mt-6 p-4 bg-primary/10 rounded-2xl">
+                      <p className="text-sm text-gray-600">
+                        Estimated Monthly Payment
+                      </p>
+                      <p className="text-3xl font-bold text-primary">
+                        N
+                        {monthlyPayment.toLocaleString('en-NG', {
+                          maximumFractionDigits: 2,
+                        })}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-2">
+                        Based on {formData.term} years with{' '}
+                        {(0.05 * 100).toFixed(1)}% annual interest
+                      </p>
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    onClick={calculateInstallment}
+                    className="w-full h-15 mt-2 text-white btn-primary btn-lg rounded-full"
+                  >
                     Calculate
                   </button>
                 </form>

@@ -213,6 +213,12 @@ const CarDetails = () => {
     }
   };
 
+  const handleCompareClick = () => {
+    navigate(`/compare?car1=${id}`, {
+      state: { carId: id },
+    });
+  };
+
   const ratingCategories = ['Exterior', 'Interior', 'Comfort', 'Performance'];
 
   if (isGettingCar) {
@@ -229,7 +235,7 @@ const CarDetails = () => {
         <div className="bg-secondary h-16 w-full sticky top-0 z-50"></div>
         <div className="w-full max-w-7xl mx-auto px-4 mt-2">
           {/* <Breadcrumbs /> */}
-
+          
           {/* New Hero Section with Image and CTAs */}
           <section
             id="hero"
@@ -485,7 +491,9 @@ const CarDetails = () => {
                 >
                   <Share className="size-5" /> Share
                 </button>
-                <button className="flex-1 btn rounded-full border-2 border-gray-300 bg-transparent text-gray-700 hover:bg-gray-200">
+                <button 
+                onClick={handleCompareClick}
+                className="flex-1 btn rounded-full border-2 border-gray-300 bg-transparent text-gray-700 hover:bg-gray-200">
                   <ArrowUpDown className="size-5" /> Compare
                 </button>
                 <button className="flex-1 btn rounded-full border-2 border-gray-300 bg-transparent text-gray-700 hover:bg-gray-200">
@@ -975,7 +983,7 @@ const CarDetails = () => {
                 <CarCard
                   className="flex-shrink-0"
                   image={relatedCar.featuredImage}
-                  title={relatedCar.title}
+                  title={relatedCar.make + ' ' + relatedCar.model}
                   description={relatedCar.description}
                   mileage={{ icon: mileage, value: relatedCar.mileage }}
                   transmission={{
@@ -985,7 +993,7 @@ const CarDetails = () => {
                   fuel={{ icon: gas, value: relatedCar.fuelType }}
                   year={{ icon: date, value: relatedCar.year }}
                   price={relatedCar.price}
-                  link={`/cars/${relatedCar.id}`}
+                  link={`/car/${relatedCar.id}`}
                 />
               ))}
             </div>
@@ -1006,6 +1014,7 @@ const CarDetails = () => {
         <div className="bg-secondary h-16 w-full sticky top-0 z-50"></div>
         <div className="w-full max-w-5xl mx-auto px-4 mt-2">
           {/* <Breadcrumbs /> */}
+          
           <section id="Hero" className="w-full my-4">
             <div className="flex w-full justify-between items-end">
               <div>
@@ -1026,7 +1035,9 @@ const CarDetails = () => {
                 >
                   <Share className="size-5" /> Share
                 </button>
-                <button className="flex-1 btn rounded-full border-2 border-gray-300 bg-transparent text-gray-700 hover:bg-gray-200">
+                <button 
+                onClick={handleCompareClick}
+                className="flex-1 btn rounded-full border-2 border-gray-300 bg-transparent text-gray-700 hover:bg-gray-200">
                   <ArrowUpDown className="size-5" /> Compare
                 </button>
                 <button className="flex-1 btn rounded-full border-2 border-gray-300 bg-transparent text-gray-700 hover:bg-gray-200">
@@ -1795,7 +1806,7 @@ const CarDetails = () => {
                 <CarCard
                   className="flex-shrink-0"
                   image={relatedCar.featuredImage}
-                  title={relatedCar.title}
+                  title={relatedCar.make + ' ' + relatedCar.model}
                   description={relatedCar.description}
                   mileage={{ icon: mileage, value: relatedCar.mileage }}
                   transmission={{
@@ -1805,7 +1816,7 @@ const CarDetails = () => {
                   fuel={{ icon: gas, value: relatedCar.fuelType }}
                   year={{ icon: date, value: relatedCar.year }}
                   price={relatedCar.price}
-                  link={`/cars/${relatedCar.id}`}
+                  link={`/car/${relatedCar.id}`}
                 />
               ))}
             </div>
