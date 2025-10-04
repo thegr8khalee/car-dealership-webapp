@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { useDashboardStore } from '../../store/useDasboardStore';
 import { ChevronDown, ChevronLeft, UserPlus, Shield, Mail } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAdminStaffStore } from '../../store/useAdminStaffStore';
 
 const AdminStaff = () => {
   const {
@@ -27,7 +28,7 @@ const AdminStaff = () => {
   };
 
   const handleAddStaff = () => {
-    navigate('/admin/staff/create');
+    navigate('/admin/staff/add');
   };
 
   if (isFetchingStaffs) return <div>Loading...</div>;
@@ -51,7 +52,9 @@ const AdminStaff = () => {
 
       {/* Staff List */}
       {staffs?.length === 0 ? (
-        <div className="text-center py-8 text-gray-500">No staff members found.</div>
+        <div className="text-center py-8 text-gray-500">
+          No staff members found.
+        </div>
       ) : (
         staffs?.map((staff) => <StaffCard key={staff.id} item={staff} />)
       )}
@@ -116,7 +119,7 @@ const StaffCard = ({ item }) => {
   const [isDropDownOpen, setIsDropDownOpen] = React.useState(false);
   const [dropdownHeight, setDropdownHeight] = React.useState(0);
   const dropdownRef = React.useRef(null);
-  // const { getStaffs } = useDashboardStore();
+  const { deleteStaff, isLoading } = useAdminStaffStore();
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -130,13 +133,14 @@ const StaffCard = ({ item }) => {
   };
 
   const handleEdit = (id) => {
-    navigate(`/admin/staff/update/${id}`);
+    navigate(`/admin/staff/edit/${id}`);
   };
 
   const handleDelete = (id) => {
     // TODO: Implement delete functionality
     window.confirm('Are you sure you want to delete this staff member?') &&
-      console.log('Delete staff:', id);
+      deleteStaff(id);
+      
   };
 
   const getRoleBadgeColor = (role) => {
@@ -173,7 +177,11 @@ const StaffCard = ({ item }) => {
         {/* Avatar */}
         <div className="avatar placeholder">
           <div className="rounded-full w-16 h-16">
-            <img src={item.avatar} alt={item.name} className="rounded-full h-full w-full" />
+            <img
+              src={item.avatar}
+              alt={item.name}
+              className="rounded-full h-full w-full"
+            />
           </div>
         </div>
 
@@ -245,7 +253,7 @@ const StaffCard = ({ item }) => {
             onClick={() => handleDelete(item.id)}
             className="btn btn-outline border-primary border-2 text-primary m-2 p-2 flex-1 rounded-full"
           >
-            Delete
+            {isLoading ? 'Deleting...' : 'Delete'}
           </button>
         </div>
       </div>

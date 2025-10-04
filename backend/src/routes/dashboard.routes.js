@@ -17,6 +17,7 @@ import {
   getReviewsStats,
   getReviews,
   updateReviewStatus,
+  getUserDetails,
 } from '../controllers/dashboard.controller.js';
 import { protectAdminRoute, requireRole } from '../middleware/protectAdminRoute.js';
 import { getAllBlogs } from '../controllers/blog.controller.js';
@@ -80,4 +81,5 @@ router.patch('/comments/:id/status', protectAdminRoute, requireRole(['super_admi
 router.get('/reviews/stats', protectAdminRoute, requireRole(['super_admin', 'editor', 'moderator']), getReviewsStats);
 router.get('/reviews', protectAdminRoute, requireRole(['super_admin', 'editor', 'moderator']), getReviews);
 router.patch('/reviews/:id/status', protectAdminRoute, requireRole(['super_admin', 'editor', 'moderator']), updateReviewStatus);
+router.get('/users/:id/details', protectAdminRoute, requireRole(['super_admin', 'editor', 'moderator']), getUserDetails);
 export default router;

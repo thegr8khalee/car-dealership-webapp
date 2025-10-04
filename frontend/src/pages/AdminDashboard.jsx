@@ -11,10 +11,12 @@ import AdminNewsTeller from '../components/admin/AdminNewsTeller';
 import AdminComments from '../components/admin/AdminComments';
 import Adminreviews from '../components/admin/Adminreviews';
 import AdminSellingToUs from '../components/admin/AdminSellingToUs';
+import UserDetailPage from '../components/admin/UserDetailPAge';
 
 const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState('dashboard');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null); // For user detail view
 
   // Read from URL when page loads
   useEffect(() => {
@@ -52,13 +54,15 @@ const AdminDashboard = () => {
       case 'Staffs':
         return <AdminStaff />;
       case 'Users':
-        return <AdminUsers />;
+        return <AdminUsers setActiveSection={handleSetActiveSection} setSelectedUser={setSelectedUser} />;
       case 'Newsteller':
         return <AdminNewsTeller />;
       case 'Comments':
         return <AdminComments />;
       case 'Reviews':
         return <Adminreviews />;
+      case 'user-profile':
+        return <UserDetailPage user={selectedUser} setActiveSection={handleSetActiveSection} />;
       default:
         return (
           <AdminDashboardContent setActiveSection={handleSetActiveSection} />

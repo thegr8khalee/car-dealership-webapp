@@ -10,9 +10,9 @@ import {
   Calendar,
   Search,
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 
-const AdminUsers = () => {
+const AdminUsers = ({ setActiveSection, setSelectedUser }) => {
   const {
     getUsers,
     users,
@@ -23,7 +23,7 @@ const AdminUsers = () => {
   } = useDashboardStore();
 
   const [searchTerm, setSearchTerm] = useState('');
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   useEffect(() => {
     getUsers({ page: 1, limit: 10 });
@@ -76,7 +76,14 @@ const AdminUsers = () => {
       {users?.length === 0 ? (
         <div className="text-center py-8 text-gray-500">No users found.</div>
       ) : (
-        users?.map((user) => <UserCard key={user.id} item={user} />)
+        users?.map((user) => (
+          <UserCard
+            key={user.id}
+            item={user}
+            setActiveSection={setActiveSection}
+            setSelectedUser={setSelectedUser}
+          />
+        ))
       )}
 
       {/* Pagination */}
@@ -131,11 +138,11 @@ const AdminUsers = () => {
   );
 };
 
-const UserCard = ({ item }) => {
+const UserCard = ({ item, setActiveSection, setSelectedUser }) => {
   const [isDropDownOpen, setIsDropDownOpen] = React.useState(false);
   const [dropdownHeight, setDropdownHeight] = React.useState(0);
   const dropdownRef = React.useRef(null);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   React.useEffect(() => {
     if (dropdownRef.current) {
@@ -147,15 +154,22 @@ const UserCard = ({ item }) => {
     setIsDropDownOpen(!isDropDownOpen);
   };
 
-  const handleViewDetails = (id) => {
-    navigate(`/admin/users/${id}`);
+  const handleViewDetails = async (id) => {
+    console.log('View details for user ID:', id);
+    const { getUserWithDetails } = useDashboardStore.getState();
+    const userWithDetails = await getUserWithDetails(id);
+
+    if (userWithDetails) {
+      setSelectedUser(userWithDetails);
+      setActiveSection('user-profile');
+    }
   };
 
-  const handleDelete = (id) => {
-    // TODO: Implement delete functionality
-    window.confirm('Are you sure you want to delete this user?') &&
-      console.log('Delete user:', id);
-  };
+  // const handleDelete = (id) => {
+  //   // TODO: Implement delete functionality
+  //   window.confirm('Are you sure you want to delete this user?') &&
+  //     console.log('Delete user:', id);
+  // };
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -228,12 +242,12 @@ const UserCard = ({ item }) => {
           >
             View Details
           </button>
-          <button
+          {/* <button
             onClick={() => handleDelete(item.id)}
             className="btn btn-outline border-primary border-2 text-primary m-2 p-2 flex-1 rounded-full"
           >
             Delete
-          </button>
+          </button> */}
         </div>
       </div>
     </div>

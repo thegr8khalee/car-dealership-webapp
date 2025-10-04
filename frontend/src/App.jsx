@@ -26,6 +26,8 @@ import Contact from './pages/Contact';
 import Sell from './pages/Sell';
 import SellCarPage from './pages/SellForm';
 import ScrollToTop from './components/ScrollToTop';
+import AddStaffPage from './pages/addStaffPage';
+import EditStaffPage from './pages/editStaffPage';
 
 function App() {
   const { checkAuth, authUser } = useUserAuthStore();
@@ -61,8 +63,8 @@ function App() {
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/blog/:id" element={<BlogDetail />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path='/sell' element={<Sell />} />
-          <Route path='/sell/form' element={<SellCarPage />} />
+          <Route path="/sell" element={<Sell />} />
+          <Route path="/sell/form" element={<SellCarPage />} />
 
           {/** admin routes */}
           <Route element={<AdminLoginProtectedRoute />}>
@@ -71,10 +73,15 @@ function App() {
 
           <Route element={<AdminProtectedRoute />}>
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
-            <Route path='/admin/cars/new' element={<AddCarPage />} />
-            <Route path='/admin/cars/update/:id' element={<UpdateCarPage />} />
-            <Route path='/admin/blogs/new' element={<AddBlogPage />} />
-            <Route path='/admin/blogs/update/:id' element={<UpdateBlogPage />} />
+            <Route path="/admin/cars/new" element={<AddCarPage />} />
+            <Route path="/admin/cars/update/:id" element={<UpdateCarPage />} />
+            <Route path="/admin/blogs/new" element={<AddBlogPage />} />
+            <Route
+              path="/admin/blogs/update/:id"
+              element={<UpdateBlogPage />}
+            />
+            <Route path="/admin/staff/add" element={<AddStaffPage />} />
+            <Route path="/admin/staff/edit/:id" element={<EditStaffPage />} />
           </Route>
         </Routes>
 

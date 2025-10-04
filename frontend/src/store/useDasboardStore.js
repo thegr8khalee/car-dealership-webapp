@@ -777,4 +777,22 @@ export const useDashboardStore = create((set, get) => ({
       throw error;
     }
   },
+
+  getUserWithDetails: async (userId) => {
+    set({ isLoading: true, error: null });
+    try {
+      const res = await axiosInstance.get(`admin/dashboard/users/${userId}/details`);
+
+      if (res.data.success) {
+        return res.data.data; // Should include user, comments, reviews, newsletter
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || 'Failed to fetch user details';
+      toast.error(errorMessage);
+      return null;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
 }));

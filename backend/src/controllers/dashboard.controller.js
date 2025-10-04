@@ -13,6 +13,51 @@ import {
 import Admin from '../models/admin.model.js';
 import SellNow from '../models/sell.model.js';
 
+export const getUserDetails = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = id;
+
+    const user = await User.findByPk(userId, {
+      attributes: { exclude: ['passwordHash'] },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Get comments - no include needed if you don't need blog details
+    const comments = await Comment.findAll({
+      where: { userId },
+      order: [['createdAt', 'DESC']],
+    });
+
+    // Get reviews - no include needed if you don't need car details
+    const reviews = await Review.findAll({
+      where: { userId },
+      order: [['createdAt', 'DESC']],
+    });
+
+    // Get newsletter subscription
+    const newsletter = await Newsletter.findOne({
+      where: { email: user.email },
+    });
+
+    res.status(200).json({
+      success: true,
+      data: {
+        ...user.toJSON(),
+        comments,
+        reviews,
+        newsletter,
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching user details:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // Main dashboard overview stats
 export const getDashboardStats = async (req, res) => {
   try {
