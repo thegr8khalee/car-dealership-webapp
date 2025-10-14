@@ -191,4 +191,30 @@ export const useAdminOpsStore = create((set, get) => ({
       throw error;
     }
   },
+
+  createBroadcast: async (broadcastData) => {
+    set({ isSendingNewsletter: true, newsletterError: null });
+    try {
+      const res = await axiosInstance.post('admin/broadcast/send', broadcastData);
+
+      toast.success('Broadcast sent successfully!');
+
+      // Refresh broadcasts list
+      // get().getRecentBroadcasts({ page: 1, limit: 10 });
+
+      set({ isSendingNewsletter: false });
+      return res.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || 'Failed to send broadcast';
+
+      set({
+        newsletterError: errorMessage,
+        isSendingNewsletter: false,
+      });
+
+      toast.error(errorMessage);
+      throw error;
+    }
+  },
 }));

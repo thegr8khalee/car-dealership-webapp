@@ -194,7 +194,7 @@ const Home = () => {
 
           <div className="absolute bottom-5 inset-x-0 text-center z-10">
             <h1 className="text-white text-3xl font-['Microgramma_D_Extended'] tracking-widest">
-              Company Name
+              Sarkin Mota
             </h1>
           </div>
         </section>
@@ -714,7 +714,7 @@ const Home = () => {
 
           <div className="absolute bottom-5 inset-x-0 text-center z-10">
             <h1 className="text-white text-5xl md:text-6xl lg:text-7xl font-['Microgramma_D_Extended'] tracking-widest">
-              Company Name
+              Sarkin Mota
             </h1>
           </div>
         </section>
@@ -808,22 +808,6 @@ const Home = () => {
             </h1>
             <div className="flex w-full justify-between">
               <div className="flex flex-shrink-0 space-x-8 border-gray-200">
-                {tabs.map((tab) => (
-                  <button
-                    key={tab}
-                    onClick={() => setActiveTab(tab)}
-                    className={`relative pb-2 text-sm transition ${
-                      activeTab === tab
-                        ? 'text-black font-semibold'
-                        : 'text-gray-500'
-                    }`}
-                  >
-                    {tab}
-                    {activeTab === tab && (
-                      <span className="absolute left-0 -bottom-[1px] w-full h-[2px] bg-red-500 rounded-full"></span>
-                    )}
-                  </button>
-                ))}
               </div>
               <div className="w-full flex justify-end pr-2">
                 <button

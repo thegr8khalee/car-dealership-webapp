@@ -40,7 +40,7 @@ const AdminNewsletter = () => {
   };
 
   const handleNewBroadcast = () => {
-    navigate('/admin/newsletter/create');
+    navigate('/admin/broadcast/new');
   };
 
   if (isFetchingNewsletter && !newsletterStats) {

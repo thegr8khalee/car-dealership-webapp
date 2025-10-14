@@ -28,6 +28,8 @@ import SellCarPage from './pages/SellForm';
 import ScrollToTop from './components/ScrollToTop';
 import AddStaffPage from './pages/addStaffPage';
 import EditStaffPage from './pages/editStaffPage';
+import NewBroadcastPage from './pages/newBroadcast';
+import Makes from './pages/Makes';
 
 function App() {
   const { checkAuth, authUser } = useUserAuthStore();
@@ -60,6 +62,7 @@ function App() {
           <Route path="/listings" element={<Listings />} />
           <Route path="/car/:id" element={<CarDetails />} />
           <Route path="/compare" element={<CompareCars />} />
+          <Route path="/makes" element={<Makes />} />
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/blog/:id" element={<BlogDetail />} />
           <Route path="/contact" element={<Contact />} />
@@ -82,6 +85,7 @@ function App() {
             />
             <Route path="/admin/staff/add" element={<AddStaffPage />} />
             <Route path="/admin/staff/edit/:id" element={<EditStaffPage />} />
+            <Route path='/admin/broadcast/new' element={<NewBroadcastPage />} />
           </Route>
         </Routes>
 

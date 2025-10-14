@@ -8,6 +8,17 @@ import Blog from './blog.model.js';
 import Comment from './comment.model.js';
 import Newsletter from './news.model.js';
 import Review from './review.model.js';
+import Broadcast from './broadcast.model.js';
+
+Admin.hasMany(Broadcast, {
+  foreignKey: 'sentById',
+  as: 'broadcastsSent',
+});
+
+Broadcast.belongsTo(Admin, {
+  foreignKey: 'sentById',
+  as: 'sender',
+});
 
 // Blog associations - Changed alias from 'author' to 'adminAuthor'
 Blog.belongsTo(Admin, {

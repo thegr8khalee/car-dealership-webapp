@@ -75,7 +75,7 @@ const Navbar = ({ className = '' }) => {
               className="text-2xl font-['Microgramma_D_Extended'] text-primary"
               href="/"
             >
-              LOGO
+              SARKIN<span className="text-white"> MOTA</span>
             </a>
           </div>
 
