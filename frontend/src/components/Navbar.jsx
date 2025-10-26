@@ -52,7 +52,7 @@ const Navbar = ({ className = '' }) => {
 
       <div className="drawer-content flex flex-col">
         <div
-          className={`fixed navbar backdrop-blur-lg bg-secondary/30 items-center w-full top-0 z-50 ${className}`}
+          className={`fixed navbar backdrop-blur-lg ${window.location.pathname !== '/' ? 'bg-secondary' : 'bg-secondary/30'} items-center w-full top-0 z-50 ${className}`}
         >
           <div className="navbar-start">
             <label

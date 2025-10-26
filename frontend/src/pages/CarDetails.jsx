@@ -126,8 +126,8 @@ const CarDetails = () => {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
-      fill={filled ? '#FF1A1A' : 'none'}
-      stroke="#FF1A1A"
+      fill={filled ? '#f0c710' : 'none'}
+      stroke="#f0c710"
       strokeWidth="1.5"
       className="size-5 transition-transform duration-200 cursor-pointer text-yellow-400"
       onClick={onClick}
@@ -535,24 +535,24 @@ const CarDetails = () => {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`flex-1 relative pb-2 text-sm md:text-base font-medium transition-colors ${
+                  className={`flex-1 relative p-2 text-sm md:text-base font-medium transition-colors ${
                     activeTab === tab
-                      ? 'text-primary'
+                      ? 'text-secondary bg-primary/50 rounded-full'
                       : 'text-gray-500 hover:text-primary'
                   }`}
                 >
                   {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                  {activeTab === tab && (
-                    <motion.div
-                      layoutId="underline"
-                      className="absolute left-0 right-0 -bottom-[1px] h-[2px] bg-primary"
-                      transition={{
-                        type: 'spring',
-                        stiffness: 400,
-                        damping: 30,
-                      }}
-                    />
-                  )}
+                  {/* {activeTab === tab && (
+                    // <motion.div
+                    //   layoutId="underline"
+                    //   className="absolute left-0 right-0 -bottom-[1px] h-[2px] bg-primary"
+                    //   transition={{
+                    //     type: 'spring',
+                    //     stiffness: 400,
+                    //     damping: 30,
+                    //   }}
+                    // />
+                  )} */}
                 </button>
               ))}
             </div>
@@ -569,14 +569,14 @@ const CarDetails = () => {
                 {/* Overview */}
                 {activeTab === 'overview' && (
                   <div className="bg-white p-6 rounded-xl shadow-sm">
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-2">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-2 text-secondary">
                       <div className="flex items-center">
                         <img
                           src={sedan}
                           alt="Sedan"
                           className="inline mr-2 size-6"
                         />
-                        <span className="text-sm text-primary capitalize">
+                        <span className="text-sm  capitalize">
                           {car?.bodyType}
                         </span>
                       </div>
@@ -586,7 +586,7 @@ const CarDetails = () => {
                           alt="Sedan"
                           className="inline mr-2 size-6"
                         />
-                        <span className="text-sm text-primary">
+                        <span className="text-sm text-secondary">
                           {car?.mileage}
                         </span>
                       </div>
@@ -596,7 +596,7 @@ const CarDetails = () => {
                           alt="Sedan"
                           className="inline mr-2 size-6"
                         />
-                        <span className="text-sm text-primary capitalize">
+                        <span className="text-sm capitalize">
                           {car?.fuelType}
                         </span>
                       </div>
@@ -606,7 +606,7 @@ const CarDetails = () => {
                           alt="Sedan"
                           className="inline mr-2 size-6"
                         />
-                        <span className="text-sm text-primary capitalize">
+                        <span className="text-sm  capitalize">
                           {car?.transmission}
                         </span>
                       </div>
@@ -616,13 +616,13 @@ const CarDetails = () => {
                           alt="Sedan"
                           className="inline mr-2 size-6"
                         />
-                        <span className="text-sm text-primary">
+                        <span className="text-sm ">
                           {car?.year}
                         </span>
                       </div>{' '}
                       <div className="flex items-center">
                         <UserRound className="inline mr-2 size-6" />
-                        <span className="text-sm text-primary capitalize">
+                        <span className="text-sm  capitalize">
                           {car?.condition}
                         </span>
                       </div>
@@ -632,7 +632,7 @@ const CarDetails = () => {
                           alt="Sedan"
                           className="inline mr-2 size-6"
                         />
-                        <span className="text-sm text-primary capitalize">
+                        <span className="text-sm  capitalize">
                           {car?.engineSize}L
                         </span>
                       </div>
@@ -642,13 +642,13 @@ const CarDetails = () => {
                           alt="Sedan"
                           className="inline mr-2 size-6"
                         />
-                        <span className="text-sm text-primary">
+                        <span className="text-sm ">
                           {car?.cylinder} Cylinders
                         </span>
                       </div>
                       <div className="flex items-center">
                         <PaintBucket className="inline mr-2 size-6" />
-                        <span className="text-sm text-primary">
+                        <span className="text-sm ">
                           {car?.color}
                         </span>
                       </div>
@@ -658,7 +658,7 @@ const CarDetails = () => {
                           alt="Sedan"
                           className="inline mr-2 size-6"
                         />
-                        <span className="text-sm text-primary">
+                        <span className="text-sm ">
                           {car?.door} Doors
                         </span>
                       </div>
@@ -682,8 +682,8 @@ const CarDetails = () => {
                             key={index}
                             className="flex items-center gap-2 text-gray-700"
                           >
-                            <span className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/20">
-                              <Check className="w-3 h-3 text-primary" />
+                            <span className="flex items-center justify-center w-5 h-5 rounded-full ">
+                              <Check className="w-5 h-5 text-primary" />
                             </span>
                             {item}
                           </li>
@@ -698,8 +698,8 @@ const CarDetails = () => {
                             key={index}
                             className="flex items-center gap-2 text-gray-700"
                           >
-                            <span className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/20">
-                              <Check className="w-3 h-3 text-primary" />
+                            <span className="flex items-center justify-center w-5 h-5 rounded-full ">
+                              <Check className="size-5 text-primary" />
                             </span>
                             {item}
                           </li>
@@ -714,8 +714,8 @@ const CarDetails = () => {
                             key={index}
                             className="flex items-center gap-2 text-gray-700"
                           >
-                            <span className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/20">
-                              <Check className="w-3 h-3 text-primary" />
+                            <span className="flex items-center justify-center w-5 h-5 rounded-full">
+                              <Check className="size-5 text-primary" />
                             </span>
                             {item}
                           </li>
@@ -730,8 +730,8 @@ const CarDetails = () => {
                             key={index}
                             className="flex items-center gap-2 text-gray-700"
                           >
-                            <span className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/20">
-                              <Check className="w-3 h-3 text-primary" />
+                            <span className="flex items-center justify-center w-5 h-5 rounded-full ">
+                              <Check className="size-5 text-primary" />
                             </span>
                             {item}
                           </li>
@@ -1246,14 +1246,14 @@ const CarDetails = () => {
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`flex-1 relative pb-2 text-sm md:text-base font-medium transition-colors ${
+                    className={`flex-1 relative p-2 text-sm md:text-base font-medium transition-colors ${
                       activeTab === tab
-                        ? 'text-primary'
+                        ? 'text-secondary bg-primary/50 rounded-full'
                         : 'text-gray-500 hover:text-primary'
                     }`}
                   >
                     {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                    {activeTab === tab && (
+                    {/* {activeTab === tab && (
                       <motion.div
                         layoutId="underline"
                         className="absolute left-0 right-0 -bottom-[1px] h-[2px] bg-primary"
@@ -1263,7 +1263,7 @@ const CarDetails = () => {
                           damping: 30,
                         }}
                       />
-                    )}
+                    )} */}
                   </button>
                 ))}
               </div>
@@ -1280,14 +1280,14 @@ const CarDetails = () => {
                   {/* Overview */}
                   {activeTab === 'overview' && (
                     <div className="bg-white p-6 rounded-xl shadow-sm">
-                      <div className="grid grid-cols-2 gap-4 mt-2">
+                      <div className="grid grid-cols-2 gap-4 mt-2 text-secondary">
                         <div className="flex items-center">
                           <img
                             src={sedan}
                             alt="Sedan"
                             className="inline mr-2 size-6"
                           />
-                          <span className="text-sm text-primary capitalize">
+                          <span className="text-sm text-secondary capitalize">
                             {car?.bodyType}
                           </span>
                         </div>
@@ -1297,7 +1297,7 @@ const CarDetails = () => {
                             alt="Sedan"
                             className="inline mr-2 size-6"
                           />
-                          <span className="text-sm text-primary">
+                          <span className="text-sm ">
                             {car?.mileage}
                           </span>
                         </div>
@@ -1307,7 +1307,7 @@ const CarDetails = () => {
                             alt="Sedan"
                             className="inline mr-2 size-6"
                           />
-                          <span className="text-sm text-primary capitalize">
+                          <span className="text-sm  capitalize">
                             {car?.fuelType}
                           </span>
                         </div>
@@ -1317,7 +1317,7 @@ const CarDetails = () => {
                             alt="Sedan"
                             className="inline mr-2 size-6"
                           />
-                          <span className="text-sm text-primary capitalize">
+                          <span className="text-sm  capitalize">
                             {car?.transmission}
                           </span>
                         </div>
@@ -1327,13 +1327,13 @@ const CarDetails = () => {
                             alt="Sedan"
                             className="inline mr-2 size-6"
                           />
-                          <span className="text-sm text-primary">
+                          <span className="text-sm ">
                             {car?.year}
                           </span>
                         </div>{' '}
                         <div className="flex items-center">
                           <UserRound className="inline mr-2 size-6" />
-                          <span className="text-sm text-primary capitalize">
+                          <span className="text-sm  capitalize">
                             {car?.condition}
                           </span>
                         </div>
@@ -1343,7 +1343,7 @@ const CarDetails = () => {
                             alt="Sedan"
                             className="inline mr-2 size-6"
                           />
-                          <span className="text-sm text-primary">
+                          <span className="text-sm ">
                             {car?.engineSize}L
                           </span>
                         </div>
@@ -1353,13 +1353,13 @@ const CarDetails = () => {
                             alt="Sedan"
                             className="inline mr-2 size-6"
                           />
-                          <span className="text-sm text-primary">
+                          <span className="text-sm ">
                             {car?.cylinder} Cylinders
                           </span>
                         </div>
                         <div className="flex items-center">
                           <PaintBucket className="inline mr-2 size-6" />
-                          <span className="text-sm text-primary capitalize">
+                          <span className="text-sm  capitalize">
                             {car?.color}
                           </span>
                         </div>
@@ -1369,7 +1369,7 @@ const CarDetails = () => {
                             alt="Sedan"
                             className="inline mr-2 size-6"
                           />
-                          <span className="text-sm text-primary">
+                          <span className="text-sm ">
                             {car?.door} Doors
                           </span>
                         </div>
@@ -1395,8 +1395,8 @@ const CarDetails = () => {
                               key={index}
                               className="flex items-center gap-2 text-gray-700"
                             >
-                              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/20">
-                                <Check className="w-3 h-3 text-primary" />
+                              <span className="flex items-center justify-center w-5 h-5 rounded-full">
+                                <Check className="size-5 text-primary" />
                               </span>
                               {item}
                             </li>
@@ -1411,8 +1411,8 @@ const CarDetails = () => {
                               key={index}
                               className="flex items-center gap-2 text-gray-700"
                             >
-                              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/20">
-                                <Check className="w-3 h-3 text-primary" />
+                              <span className="flex items-center justify-center w-5 h-5 rounded-full ">
+                                <Check className="w-5 h-5 text-primary" />
                               </span>
                               {item}
                             </li>
@@ -1427,8 +1427,8 @@ const CarDetails = () => {
                               key={index}
                               className="flex items-center gap-2 text-gray-700"
                             >
-                              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/20">
-                                <Check className="w-3 h-3 text-primary" />
+                              <span className="flex items-center justify-center w-5 h-5 rounded-full">
+                                <Check className="w-5 h-5 text-primary" />
                               </span>
                               {item}
                             </li>
@@ -1443,8 +1443,8 @@ const CarDetails = () => {
                               key={index}
                               className="flex items-center gap-2 text-gray-700"
                             >
-                              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/20">
-                                <Check className="w-3 h-3 text-primary" />
+                              <span className="flex items-center justify-center w-5 h-5 rounded-full">
+                                <Check className="size-5 text-primary" />
                               </span>
                               {item}
                             </li>
@@ -1458,14 +1458,14 @@ const CarDetails = () => {
             </div>
             <div className="flex flex-col space-y-4 my-4 hidden md:block">
               <div className="bg-white p-6 rounded-xl shadow-sm">
-                <div className="grid grid-cols-4 gap-4 mt-2">
+                <div className="grid grid-cols-4 gap-4 mt-2 text-secondary">
                   <div className="flex items-center">
                     <img
                       src={sedan}
                       alt="Sedan"
                       className="inline mr-2 size-6"
                     />
-                    <span className="text-sm text-primary">
+                    <span className="text-sm ">
                       {car?.bodyType}
                     </span>
                   </div>
@@ -1475,11 +1475,11 @@ const CarDetails = () => {
                       alt="Sedan"
                       className="inline mr-2 size-6"
                     />
-                    <span className="text-sm text-primary">{car?.mileage}</span>
+                    <span className="text-sm ">{car?.mileage}</span>
                   </div>
                   <div className="flex items-center">
                     <img src={gas} alt="Sedan" className="inline mr-2 size-6" />
-                    <span className="text-sm text-primary">
+                    <span className="text-sm ">
                       {car?.fuelType}
                     </span>
                   </div>
@@ -1489,7 +1489,7 @@ const CarDetails = () => {
                       alt="Sedan"
                       className="inline mr-2 size-6"
                     />
-                    <span className="text-sm text-primary">
+                    <span className="text-sm ">
                       {car?.transmission}
                     </span>
                   </div>
@@ -1499,11 +1499,11 @@ const CarDetails = () => {
                       alt="Sedan"
                       className="inline mr-2 size-6"
                     />
-                    <span className="text-sm text-primary">{car?.year}</span>
+                    <span className="text-sm ">{car?.year}</span>
                   </div>{' '}
                   <div className="flex items-center">
                     <UserRound className="inline mr-2 size-6" />
-                    <span className="text-sm text-primary">
+                    <span className="text-sm ">
                       {car?.condition}
                     </span>
                   </div>
@@ -1513,7 +1513,7 @@ const CarDetails = () => {
                       alt="Sedan"
                       className="inline mr-2 size-6"
                     />
-                    <span className="text-sm text-primary">
+                    <span className="text-sm ">
                       {car?.engineSize}L
                     </span>
                   </div>
@@ -1523,13 +1523,13 @@ const CarDetails = () => {
                       alt="Sedan"
                       className="inline mr-2 size-6"
                     />
-                    <span className="text-sm text-primary">
+                    <span className="text-sm ">
                       {car?.cylinder} Cylinders
                     </span>
                   </div>
                   <div className="flex items-center">
                     <PaintBucket className="inline mr-2 size-6" />
-                    <span className="text-sm text-primary">{car?.color}</span>
+                    <span className="text-sm ">{car?.color}</span>
                   </div>
                   <div className="flex items-center">
                     <img
@@ -1537,7 +1537,7 @@ const CarDetails = () => {
                       alt="Sedan"
                       className="inline mr-2 size-6"
                     />
-                    <span className="text-sm text-primary">
+                    <span className="text-sm ">
                       {car?.door} Doors
                     </span>
                   </div>
@@ -1561,8 +1561,8 @@ const CarDetails = () => {
                           key={index}
                           className="flex items-center gap-2 text-gray-700"
                         >
-                          <span className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/20">
-                            <Check className="w-3 h-3 text-primary" />
+                          <span className="flex items-center justify-center w-5 h-5 rounded-full">
+                            <Check className="size-5 text-primary" />
                           </span>
                           {item}
                         </li>
@@ -1577,8 +1577,8 @@ const CarDetails = () => {
                           key={index}
                           className="flex items-center gap-2 text-gray-700"
                         >
-                          <span className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/20">
-                            <Check className="w-3 h-3 text-primary" />
+                          <span className="flex items-center justify-center w-5 h-5 rounded-full">
+                            <Check className="size-5 text-primary" />
                           </span>
                           {item}
                         </li>
@@ -1593,8 +1593,8 @@ const CarDetails = () => {
                           key={index}
                           className="flex items-center gap-2 text-gray-700"
                         >
-                          <span className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/20">
-                            <Check className="w-3 h-3 text-primary" />
+                          <span className="flex items-center justify-center w-5 h-5 rounded-full ">
+                            <Check className="size-5 text-primary" />
                           </span>
                           {item}
                         </li>
@@ -1609,8 +1609,8 @@ const CarDetails = () => {
                           key={index}
                           className="flex items-center gap-2 text-gray-700"
                         >
-                          <span className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/20">
-                            <Check className="w-3 h-3 text-primary" />
+                          <span className="flex items-center justify-center w-5 h-5 rounded-full">
+                            <Check className="size-5 text-primary" />
                           </span>
                           {item}
                         </li>
@@ -1854,15 +1854,15 @@ const OverallRatingDisplay = ({ overallRating }) => {
 
   if (overallRating > 0) {
     if (overallRating >= 4) {
-      strokeColor = '#FF1A1A'; // Green-500
-      textColor = '#FF1A1A';
+      strokeColor = '#f0c710'; // Green-500
+      textColor = '#f0c710';
     } else if (overallRating >= 3) {
-      strokeColor = '#FF1A1A'; // Yellow-400
-      textColor = '#FF1A1A';
+      strokeColor = '#f0c710'; // Yellow-400
+      textColor = '#f0c710';
     } else {
-      strokeColor = '#FF1A1A'; // Rose-400
+      strokeColor = 'primary'; // Rose-400
       // eslint-disable-next-line no-unused-vars
-      textColor = '#FF1A1A';
+      textColor = '#f0c710';
     }
   }
 

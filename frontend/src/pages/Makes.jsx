@@ -93,9 +93,9 @@ const Makes = () => {
           transition={{ duration: 0.6 }}
           className="max-w-6xl mx-auto px-4 text-center"
         >
-          <div className="inline-block p-2 px-6 rounded-full border border-gray-300 mb-6">
+          {/* <div className="inline-block p-2 px-6 rounded-full border border-gray-300 mb-6">
             <span className="text-sm text-gray-800">Vehicle Makes</span>
-          </div>
+          </div> */}
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
             Explore Our Top Makes
           </h1>
@@ -107,32 +107,32 @@ const Makes = () => {
       </section>
 
       {/* Search and Filter Section */}
-      <section className="w-full py-8 border-b">
+      <section className="w-full py-8 border-b border-gray-300">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
             {/* Search Bar */}
-            <div className="relative w-full md:w-96">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 size-5" />
+            <div className="relative w-full md:w-96 rounded-full">
+              <Search className="rounded-full absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 size-5" />
               <input
                 type="text"
                 placeholder="Search makes..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
 
             {/* Category Filter */}
             <div className="flex gap-2 items-center">
-              <Filter className="text-gray-600 size-5" />
+              <Filter className="text-secondary size-5" />
               {categories.map((category) => (
                 <button
                   key={category.id}
                   onClick={() => setSelectedCategory(category.id)}
-                  className={`px-4 py-2 rounded-lg font-medium transition ${
+                  className={`px-4 py-2 rounded-full font-medium transition ${
                     selectedCategory === category.id
-                      ? 'bg-primary text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? 'bg-primary text-secondary'
+                      : 'bg-gray-100'
                   }`}
                 >
                   {category.label}
@@ -155,12 +155,13 @@ const Makes = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredMakes.map((make, index) => (
-                <motion.div
+                <motion.button
+                onClick={() => selectMake(make.slug)}
                   key={make.slug}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  onClick={() => handleMakeClick(make.slug)}
+                  // onClick={() => handleMakeClick(make.slug)}
                   className="group bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-xl transition-all duration-300 cursor-pointer"
                 >
                   {/* Make Logo */}
@@ -186,14 +187,14 @@ const Makes = () => {
                     <p className="text-gray-600">{make.description}</p>
 
                     {/* View Button */}
-                    <button 
+                    {/* <button 
                     onClick={() => selectMake(make.slug)}
                     className="flex items-center gap-2 text-primary font-medium transition-all">
                       View Models
                       <ArrowUpRight className="size-4" />
-                    </button>
+                    </button> */}
                   </div>
-                </motion.div>
+                </motion.button>
               ))}
             </div>
           )}
@@ -201,7 +202,7 @@ const Makes = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="w-full py-16 bg-gray-50">
+      <section className="w-full py-16 bg-secondary">
         <div className="max-w-6xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <motion.div
@@ -211,7 +212,7 @@ const Makes = () => {
               transition={{ duration: 0.6 }}
             >
               <h3 className="text-4xl font-bold text-primary mb-2">5+</h3>
-              <p className="text-gray-600">Premium Makes</p>
+              <p className="text-white">Premium Makes</p>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -220,7 +221,7 @@ const Makes = () => {
               transition={{ duration: 0.6, delay: 0.1 }}
             >
               <h3 className="text-4xl font-bold text-primary mb-2">200+</h3>
-              <p className="text-gray-600">Vehicle Models</p>
+              <p className="text-white">Vehicle Models</p>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -229,7 +230,7 @@ const Makes = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               <h3 className="text-4xl font-bold text-primary mb-2">1000+</h3>
-              <p className="text-gray-600">Happy Customers</p>
+              <p className="text-white">Happy Customers</p>
             </motion.div>
           </div>
         </div>
@@ -251,9 +252,11 @@ const Makes = () => {
             Contact us and we'll help you find the perfect vehicle from any
             manufacturer
           </p>
-          <button className="bg-primary text-white px-8 py-4 rounded-lg font-medium hover:bg-primary/90 transition inline-flex items-center gap-2">
+          <button 
+          onclick={() => navigate('/contact')}
+          className="btn btn-lg btn-primary rounded-full text-white px-8 py-4 font-medium hover:bg-primary/90 transition inline-flex items-center gap-2">
             Contact Us
-            <ArrowRight className="size-5" />
+            {/* <ArrowRight className="size-5" /> */}
           </button>
         </motion.div>
       </section>

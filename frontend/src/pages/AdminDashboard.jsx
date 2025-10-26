@@ -88,6 +88,7 @@ const AdminDashboard = () => {
       />
 
       <div className="w-screen flex-1 sm:p-4 lg:p-8 rounded-none overflow-y-scroll">
+        
         <button
           className="btn lg:hidden bg-transparent my-4 btn-circle"
           onClick={() => setIsSidebarOpen(true)}

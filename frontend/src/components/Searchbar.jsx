@@ -324,7 +324,7 @@ const CarSearchBar = () => {
           />
           <span>Filters</span>
           {hasActiveFilters && (
-            <span className="ml-2 bg-primary text-white text-xs rounded-full px-2 py-1 min-w-[20px] h-5 flex items-center justify-center">
+            <span className="ml-2 bg-primary text-secondary text-xs rounded-full px-2 py-1 min-w-[20px] h-5 flex items-center justify-center">
               {getActiveFilterCount()}
             </span>
           )}
@@ -362,7 +362,7 @@ const CarSearchBar = () => {
         {/* Search Button */}
         <div className="h-full flex justify-end">
           <button
-            className="btn btn-primary rounded-full h-full font-normal text-xs px-6 min-w-[100px]"
+            className=" btn btn-primary rounded-full h-full font-normal px-6 min-w-[100px]"
             onClick={handleSearch}
             disabled={isSearching}
           >
@@ -403,7 +403,7 @@ const CarSearchBar = () => {
                   {hasActiveFilters && (
                     <button
                       onClick={clearAllFilters}
-                      className="text-primary text-sm font-medium hover:underline"
+                      className="text-secondary text-sm font-medium hover:underline"
                       disabled={isSearching}
                     >
                       Clear All
@@ -413,14 +413,14 @@ const CarSearchBar = () => {
                     onClick={() => setIsFilterOpen(false)}
                     className="text-gray-500 hover:text-gray-700"
                   >
-                    <X className="size-5" />
+                    <X className="size-5 text-secondary" />
                   </button>
                 </div>
               </div>
 
               {/* Price Range */}
               <div className="mb-6">
-                <h1 className="text-primary font-medium font-[poppins] text-sm mb-3">
+                <h1 className="text-secondary font-medium font-[poppins] text-sm mb-3">
                   Price Range
                 </h1>
                 <div className="pt-2">
@@ -476,7 +476,7 @@ const CarSearchBar = () => {
 
               {/* Condition */}
               <div className="mb-6">
-                <h1 className="text-primary font-medium font-[poppins] text-sm mb-3">
+                <h1 className=" font-medium font-[poppins] text-sm mb-3">
                   Condition
                 </h1>
                 <div className="flex flex-wrap gap-2">
@@ -487,7 +487,7 @@ const CarSearchBar = () => {
                         onClick={() => toggleSelectCondition(condition)}
                         className={`btn btn-sm rounded-full font-medium transition-all ${
                           selectedCondition.includes(condition)
-                            ? 'bg-primary text-white border-primary shadow-md'
+                            ? 'bg-primary text-secondary border-primary'
                             : 'border-gray-300 text-gray-600 bg-white hover:bg-gray-50'
                         }`}
                       >
@@ -500,7 +500,7 @@ const CarSearchBar = () => {
 
               {/* Body Type */}
               <div className="mb-6">
-                <h1 className="text-primary font-medium font-[poppins] text-sm mb-3">
+                <h1 className="text font-medium font-[poppins] text-sm mb-3">
                   Body Type
                 </h1>
                 <div className="flex overflow-x-auto w-full space-x-3 pb-2">
@@ -516,7 +516,7 @@ const CarSearchBar = () => {
                       key={bodyType.name}
                       className={`rounded-xl border-2 p-3 flex flex-col items-center min-w-[90px] cursor-pointer transition-all ${
                         selectedBodyType.includes(bodyType.name)
-                          ? 'bg-primary text-white border-primary shadow-md transform'
+                          ? 'bg-primary text-secondary border-primary transform'
                           : 'border-gray-200 text-gray-600 bg-white hover:bg-gray-50 hover:border-gray-300'
                       }`}
                       onClick={() => toggleSelectBodyType(bodyType.name)}
@@ -526,7 +526,7 @@ const CarSearchBar = () => {
                         alt={bodyType.name}
                         className={`size-8 mb-2 transition-all ${
                           selectedBodyType.includes(bodyType.name)
-                            ? 'invert brightness-0'
+                            ? ''
                             : 'opacity-70'
                         }`}
                       />
@@ -538,7 +538,7 @@ const CarSearchBar = () => {
 
               {/* Fuel Type */}
               <div className="mb-6">
-                <h1 className="text-primary font-medium font-[poppins] text-sm mb-3">
+                <h1 className="text- font-medium font-[poppins] text-sm mb-3">
                   Fuel Type
                 </h1>
                 <div className="flex gap-3">
@@ -551,7 +551,7 @@ const CarSearchBar = () => {
                       key={fuelType.name}
                       className={`rounded-full border-2 px-4 py-3 flex items-center justify-center space-x-2 flex-1 cursor-pointer transition-all ${
                         selectedFuelType.includes(fuelType.name)
-                          ? 'bg-primary text-white border-primary shadow-md'
+                          ? 'bg-primary text- border-primary '
                           : 'border-gray-200 text-gray-600 bg-white hover:bg-gray-50 hover:border-gray-300'
                       }`}
                       onClick={() => toggleSelectFuelType(fuelType.name)}
@@ -561,7 +561,7 @@ const CarSearchBar = () => {
                         alt={fuelType.name}
                         className={`size-4 ${
                           selectedFuelType.includes(fuelType.name)
-                            ? 'invert brightness-0'
+                            ? ''
                             : 'opacity-70'
                         }`}
                       />
@@ -575,7 +575,7 @@ const CarSearchBar = () => {
 
               {/* Make */}
               <div className="mb-6">
-                <h1 className="text-primary font-medium font-[poppins] text-sm mb-3">
+                <h1 className="text- font-medium font-[poppins] text-sm mb-3">
                   Make
                 </h1>
                 <div className="flex overflow-x-auto w-full space-x-3 pb-2">
@@ -590,7 +590,7 @@ const CarSearchBar = () => {
                       key={make.name}
                       className={`rounded-xl border-2 p-4 flex flex-col items-center min-w-[100px] cursor-pointer transition-all ${
                         selectedMake.includes(make.name)
-                          ? 'bg-primary border-primary shadow-md transform text-white'
+                          ? 'bg-primary border-primary transform '
                           : 'border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300'
                       }`}
                       onClick={() => toggleSelectMake(make.name)}
@@ -610,7 +610,7 @@ const CarSearchBar = () => {
 
               {/* Year */}
               <div className="mb-6">
-                <h1 className="text-primary font-medium font-[poppins] text-sm mb-3">
+                <h1 className="text- font-medium font-[poppins] text-sm mb-3">
                   Year
                 </h1>
                 <div className="flex overflow-x-auto w-full space-x-2 pb-2">
@@ -622,7 +622,7 @@ const CarSearchBar = () => {
                         key={year}
                         className={`rounded-full border-2 px-4 py-2 text-sm font-medium transition-all min-w-[70px] ${
                           selectedYear.includes(year)
-                            ? 'bg-primary text-white border-primary shadow-md'
+                            ? 'bg-primary text- border-primary'
                             : 'border-gray-200 text-gray-600 bg-white hover:bg-gray-50 hover:border-gray-300'
                         }`}
                         onClick={() => toggleSelectYear(year)}

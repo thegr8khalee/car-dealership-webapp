@@ -71,186 +71,191 @@ const LoginPage = () => {
 
   // Render the login form or forgot password form
   return (
-    <div className="p-4 flex justify-center items-center h-screen bg-base-300 font-[poppins]">
-      <div className="card w-md bg-base-100 shadow-xl rounded-2xl">
-        <div className="card-body p-8">
-          <h2 className="card-title text-center w-full flex justify-center text-3xl font-bold font-[inter]">
-            Welcome back!
-          </h2>
-          <p className="text-center text-sm text-gray-500">
-            Please enter your credentials to access your account.
-          </p>
+    <div>
+      <section className="w-full sticky top-0 bg-secondary pt-16 px-4 h-16 z-50">
+        <hr className="border-t border-gray-500" />
+      </section>
+      <div className="p-4 flex justify-center items-center h-screen bg-base-300 font-[poppins]">
+        <div className="card w-md bg-base-100 shadow-xl rounded-2xl">
+          <div className="card-body p-8">
+            <h2 className="card-title text-center w-full flex justify-center text-3xl font-bold font-[inter]">
+              Welcome back!
+            </h2>
+            <p className="text-center text-sm text-gray-500">
+              Please enter your credentials to access your account.
+            </p>
 
-          {/* Login Form */}
-          {!showForgotPasswordForm ? (
-            <form onSubmit={handleSubmit}>
-              <div className="relative w-full mb-4">
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                  onFocus={() => setIsFocusedEmail(true)}
-                  onBlur={() => setIsFocusedEmail(false)}
-                  className="peer w-full px-3 pt-6 pb-2 text-lg font-medium border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-                  placeholder=" " // Floating label trick
-                  required
-                />
-                <label
-                  className={`absolute left-3 transition-all duration-300
+            {/* Login Form */}
+            {!showForgotPasswordForm ? (
+              <form onSubmit={handleSubmit}>
+                <div className="relative w-full mb-4">
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
+                    onFocus={() => setIsFocusedEmail(true)}
+                    onBlur={() => setIsFocusedEmail(false)}
+                    className="peer w-full px-3 pt-6 pb-2 text-lg font-medium border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                    placeholder=" " // Floating label trick
+                    required
+                  />
+                  <label
+                    className={`absolute left-3 transition-all duration-300
       ${
         isFocusedEmail || formData.email
           ? 'text-xs top-2 text-gray-500'
           : 'text-gray-400 top-4 text-lg'
       }
     `}
-                >
-                  Email
-                </label>
-                <p className="validator-hint hidden">
-                  Enter a valid email address
-                </p>
-              </div>
-              <div className="relative w-full mb-6">
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={formData.password}
-                  onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
-                  }
-                  onFocus={() => setIsFocusedPassword(true)}
-                  onBlur={() => setIsFocusedPassword(false)}
-                  className="peer w-full px-3 pt-6 pb-2 text-lg font-medium border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-                  placeholder=" " // floating label trick
-                  required
-                  minLength={8}
-                  pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-                  title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
-                />
-                <label
-                  className={`absolute left-3 transition-all duration-300
+                  >
+                    Email
+                  </label>
+                  <p className="validator-hint hidden">
+                    Enter a valid email address
+                  </p>
+                </div>
+                <div className="relative w-full mb-6">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    value={formData.password}
+                    onChange={(e) =>
+                      setFormData({ ...formData, password: e.target.value })
+                    }
+                    onFocus={() => setIsFocusedPassword(true)}
+                    onBlur={() => setIsFocusedPassword(false)}
+                    className="peer w-full px-3 pt-6 pb-2 text-lg font-medium border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                    placeholder=" " // floating label trick
+                    required
+                    minLength={8}
+                    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                    title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
+                  />
+                  <label
+                    className={`absolute left-3 transition-all duration-300
                     ${
                       isFocusedPassword || formData.password
                         ? 'text-xs top-2 text-gray-500'
                         : 'text-gray-400 top-4 text-lg'
                     }
                   `}
-                >
-                  Password
-                </label>
-                <button
-                  type="button"
-                  className="absolute top-6 right-3 flex items-center"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <EyeOff className="size-5 text-base-content/40" />
-                  ) : (
-                    <Eye className="size-5 text-base-content/40" />
-                  )}
-                </button>
-                <p className="validator-hint hidden">
-                  Must be more than 8 characters, including number, lowercase
-                  letter, uppercase letter
-                </p>
-              </div>
-              <div className="form-control">
-                <button
-                  type="submit"
-                  className="btn btn-primary w-full border-0 font-semibold py-3 rounded-full shadow-md hover:shadow-lg transition duration-200 text-white text-sm font-[inter]"
-                  disabled={isLoading} // Disable button while loading
-                >
-                  {isLoading ? (
-                    <Loader2 className="h-5 w-5 animate-spin" />
-                  ) : (
-                    'Login'
-                  )}
-                </button>
-                <div className="w-full text-center mt-2">
-                  <Link to="/signup" className="hover:underline font-[inter]">
-                    Sign Up
-                  </Link>
-                </div>
-                {/* NEW: Forgot Password Link */}
-                <div className="w-full text-center mt-2">
-                  <button
-                    type="button" // Use type="button" to prevent form submission
-                    onClick={() => setShowForgotPasswordForm(true)}
-                    className="btn btn-link text-sm text-info hover:underline"
                   >
-                    Forgot Password?
-                  </button>
-                </div>
-              </div>
-            </form>
-          ) : (
-            // NEW: Forgot Password Form
-            <form onSubmit={handleForgotPasswordSubmit}>
-              <h3 className="text-xl font-semibold mb-4 text-center">
-                Reset Your Password
-              </h3>
-              <p className="text-sm text-gray-600 mb-4 text-center">
-                Enter your email address and we'll send you a link to reset your
-                password.
-              </p>
-              <label className="label">
-                <span className="label-text text-lg font-medium">Email</span>
-              </label>
-              <div className="form-control mb-4">
-                <label className="input validator w-full rounded-none">
-                  <svg
-                    className="h-[1em] opacity-50"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                  >
-                    <g
-                      strokeLinejoin="round"
-                      strokeLinecap="round"
-                      strokeWidth="2.5"
-                      fill="none"
-                      stroke="currentColor"
-                    >
-                      <rect width="20" height="16" x="2" y="4" rx="2"></rect>
-                      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-                    </g>
-                  </svg>
-                  <input
-                    type="email"
-                    className="w-full"
-                    placeholder="mail@site.com"
-                    value={forgotPasswordEmail}
-                    onChange={(e) => setForgotPasswordEmail(e.target.value)}
-                    required
-                    disabled={isRequestingReset}
-                  />
-                </label>
-              </div>
-              <div className="form-control">
-                <button
-                  type="submit"
-                  className="btn btn-primary text-white w-full border-0 font-semibold py-3 rounded-none shadow-md hover:shadow-lg transition duration-200 text-sm font-['poppins']"
-                  disabled={isRequestingReset}
-                >
-                  {isRequestingReset ? (
-                    <Loader2 className="h-5 w-5 animate-spin" />
-                  ) : (
-                    'Send Reset Link'
-                  )}
-                </button>
-                <div className="w-full text-center mt-2">
+                    Password
+                  </label>
                   <button
                     type="button"
-                    onClick={() => setShowForgotPasswordForm(false)}
-                    className="btn btn-link text-sm text-gray-600 hover:underline"
+                    className="absolute top-6 right-3 flex items-center"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="size-5 text-base-content/40" />
+                    ) : (
+                      <Eye className="size-5 text-base-content/40" />
+                    )}
+                  </button>
+                  <p className="validator-hint hidden">
+                    Must be more than 8 characters, including number, lowercase
+                    letter, uppercase letter
+                  </p>
+                </div>
+                <div className="form-control">
+                  <button
+                    type="submit"
+                    className="btn btn-primary w-full border-0 font-semibold py-3 rounded-full shadow-md hover:shadow-lg transition duration-200 text-white text-sm font-[inter]"
+                    disabled={isLoading} // Disable button while loading
+                  >
+                    {isLoading ? (
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                    ) : (
+                      'Login'
+                    )}
+                  </button>
+                  <div className="w-full text-center mt-2">
+                    <Link to="/signup" className="hover:underline font-[inter]">
+                      Sign Up
+                    </Link>
+                  </div>
+                  {/* NEW: Forgot Password Link */}
+                  <div className="w-full text-center mt-2">
+                    <button
+                      type="button" // Use type="button" to prevent form submission
+                      onClick={() => setShowForgotPasswordForm(true)}
+                      className="btn btn-link text-sm text-info hover:underline"
+                    >
+                      Forgot Password?
+                    </button>
+                  </div>
+                </div>
+              </form>
+            ) : (
+              // NEW: Forgot Password Form
+              <form onSubmit={handleForgotPasswordSubmit}>
+                <h3 className="text-xl font-semibold mb-4 text-center">
+                  Reset Your Password
+                </h3>
+                <p className="text-sm text-gray-600 mb-4 text-center">
+                  Enter your email address and we'll send you a link to reset
+                  your password.
+                </p>
+                <label className="label">
+                  <span className="label-text text-lg font-medium">Email</span>
+                </label>
+                <div className="form-control mb-4">
+                  <label className="input validator w-full rounded-none">
+                    <svg
+                      className="h-[1em] opacity-50"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                    >
+                      <g
+                        strokeLinejoin="round"
+                        strokeLinecap="round"
+                        strokeWidth="2.5"
+                        fill="none"
+                        stroke="currentColor"
+                      >
+                        <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                      </g>
+                    </svg>
+                    <input
+                      type="email"
+                      className="w-full"
+                      placeholder="mail@site.com"
+                      value={forgotPasswordEmail}
+                      onChange={(e) => setForgotPasswordEmail(e.target.value)}
+                      required
+                      disabled={isRequestingReset}
+                    />
+                  </label>
+                </div>
+                <div className="form-control">
+                  <button
+                    type="submit"
+                    className="btn btn-primary text-white w-full border-0 font-semibold py-3 rounded-none shadow-md hover:shadow-lg transition duration-200 text-sm font-['poppins']"
                     disabled={isRequestingReset}
                   >
-                    Cancel
+                    {isRequestingReset ? (
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                    ) : (
+                      'Send Reset Link'
+                    )}
                   </button>
+                  <div className="w-full text-center mt-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowForgotPasswordForm(false)}
+                      className="btn btn-link text-sm text-gray-600 hover:underline"
+                      disabled={isRequestingReset}
+                    >
+                      Cancel
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </form>
-          )}
+              </form>
+            )}
+          </div>
         </div>
       </div>
     </div>

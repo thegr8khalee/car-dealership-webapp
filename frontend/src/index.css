@@ -5,7 +5,7 @@
 @plugin "daisyui/theme" {
   name: 'light';
   default: true;
-  --color-primary: #FF1A1A;
+  --color-primary: #ffd51e;
   --color-secondary: #000000;
   --color-accent: #8a8a8a;
 }
@@ -18,5 +18,5 @@
 }
 
 .btn-primary {
-  @apply bg-[#FF1A1A] text-white border-none shadow-none hover:bg-secondary font-[poppins];
+  @apply bg-[#f0c710] text-secondary border-none shadow-none hover:bg-secondary hover:text-white font-[poppins];
 }
