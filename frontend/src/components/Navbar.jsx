@@ -72,14 +72,14 @@ const Navbar = ({ className = '' }) => {
 
           <div className="navbar-center">
             <a
-              className="text-2xl font-['Microgramma_D_Extended'] text-primary"
+              className="text-lg sm:text-2xl font-['Microgramma_D_Extended'] text-primary"
               href="/"
             >
               SARKIN<span className="text-white"> MOTA</span>
             </a>
           </div>
 
-          <div className="navbar-end">
+          <div className="navbar-end sm:flex hidden">
             {!authUser ? (
               <button
                 className="btn btn-primary rounded-full text-xs font-normal"
@@ -94,6 +94,24 @@ const Navbar = ({ className = '' }) => {
               >
                 <User2 className="size-5" />
                 Profile
+              </button>
+            )}
+          </div>
+          <div className="navbar-end sm:hidden flex">
+            {!authUser ? (
+              <button
+                className="btn btn-circle btn-primary rounded-full text-xs font-normal"
+                onClick={() => handleSignIn()}
+              >
+                <User2 className="size-5" />
+              </button>
+            ) : (
+              <button
+                className="btn btn-circle btn-primary rounded-full text-xs font-normal"
+                onClick={() => handleProfile()}
+              >
+                <User2 className="size-5" />
+                
               </button>
             )}
           </div>
