@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import { Range } from 'react-range';
-import Hero from '../images/Hero.jpg';
-import Herolg from '../images/HeroLg.jpg';
+import Hero from '../images/Hero.webp';
+import Herolg from '../images/Hero.webp';
 import { FaCheckCircle } from 'react-icons/fa';
 import {
   ArrowRight,

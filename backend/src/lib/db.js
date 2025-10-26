@@ -4,61 +4,41 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// Support either a single DATABASE_URL (recommended for Supabase) or individual
-// DB_* env vars to build the connection. If DATABASE_URL is present, use it.
-const databaseUrl = process.env.DATABASE_URL || process.env.SUPABASE_DB_URL || null;
-
-const sequelizeOptions = {
-  dialect: 'postgres',
-  protocol: 'postgres',
+const sequelize = new Sequelize({
+  database: process.env.DB_NAME || 'car_blog',
+  username: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  host: process.env.DB_HOST || 'localhost',
+  port: process.env.DB_PORT || 3306,
+  dialect: 'mysql', // or 'postgres', 'sqlite', 'mariadb'
+  
+  // Connection pool configuration
+  pool: {
+    max: 20,
+    min: 0,
+    acquire: 60000,
+    idle: 10000
+  },
+  
+  // Logging configuration
   logging: process.env.NODE_ENV === 'development' ? console.log : false,
+  
+  // Timezone configuration
   timezone: '+00:00',
+  
+  // Additional options
   define: {
     timestamps: true,
     underscored: false,
     paranoid: false,
     freezeTableName: false,
   },
-  pool: {
-    max: 20,
-    min: 0,
-    acquire: 60000,
-    idle: 10000,
-  },
-  retry: { max: 3 },
-};
-
-// If using a remote Postgres (like Supabase) that requires SSL, enable it when
-// DB_SSL=true or when DATABASE_URL is provided and NODE_ENV=production.
-const needsSsl = (process.env.DB_SSL === 'true') || (databaseUrl && process.env.NODE_ENV === 'production');
-if (needsSsl) {
-  sequelizeOptions.dialectOptions = sequelizeOptions.dialectOptions || {};
-  sequelizeOptions.dialectOptions.ssl = {
-    require: true,
-    // Supabase uses certificates signed by public CAs; however in some
-    // environments you may need to allow unauthorized. Keep rejectUnauthorized
-    // configurable via env var.
-    rejectUnauthorized: process.env.DB_REJECT_UNAUTHORIZED !== 'false',
-  };
-}
-
-let sequelize;
-if (databaseUrl) {
-  // Use connection string directly
-  sequelize = new Sequelize(databaseUrl, sequelizeOptions);
-} else {
-  // Fallback to individual env vars (useful for local development)
-  sequelize = new Sequelize(
-    process.env.DB_NAME || 'car_blog',
-    process.env.DB_USER || 'postgres',
-    process.env.DB_PASSWORD || '',
-    {
-      host: process.env.DB_HOST || 'localhost',
-      port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 5432,
-      ...sequelizeOptions,
-    }
-  );
-}
+  
+  // Retry configuration
+  retry: {
+    max: 3
+  }
+});
 
 export default sequelize;
 

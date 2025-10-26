@@ -69,10 +69,10 @@ const LearnMoreSell = () => {
     },
   ];
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const handleSell = () => {
-    navigate('/sell/form')
-  }
+    navigate('/sell/form');
+  };
 
   const benefits = [
     "Nigeria's largest and most trusted car dealership",
@@ -86,6 +86,9 @@ const LearnMoreSell = () => {
     <div className="bg-base-200">
       {/* Mobile View */}
       <div id="mobile-view" className="sm:hidden">
+        <section className="w-full sticky top-0 bg-secondary pt-16 px-4 h-16 z-50">
+          <hr className="border-t border-gray-500" />
+        </section>
         {/* Hero Section */}
         <section className="pt-16 bg-secondary py-12 px-4">
           <motion.div
@@ -231,9 +234,10 @@ const LearnMoreSell = () => {
                 <MapPin size={20} />
                 <span>123 Main Street, Garki, Abuja</span>
               </a>
-              <button 
-              onClick={handleSell}
-              className="w-full btn btn-primary btn-lg rounded-full font-medium mt-6">
+              <button
+                onClick={handleSell}
+                className="w-full btn btn-primary btn-lg rounded-full font-medium mt-6"
+              >
                 Sell My Car Now
               </button>
             </div>
@@ -243,6 +247,9 @@ const LearnMoreSell = () => {
 
       {/* Desktop View */}
       <div id="desktop-view" className="hidden sm:block">
+        <section className="w-full sticky top-0 bg-secondary pt-16 px-4 h-16 z-50">
+          <hr className="border-t border-gray-500" />
+        </section>
         {/* Hero Section */}
         <section className="bg-secondary py-20 px-4">
           <div className="max-w-6xl mx-auto">
@@ -408,9 +415,10 @@ const LearnMoreSell = () => {
                 </div>
               </a>
             </div>
-            <button 
-            onClick={handleSell}
-            className="btn btn-primary btn-lg rounded-full font-medium text-lg px-12">
+            <button
+              onClick={handleSell}
+              className="btn btn-primary btn-lg rounded-full font-medium text-lg px-12"
+            >
               Sell My Car Now
             </button>
           </div>

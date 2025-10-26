@@ -189,9 +189,9 @@ const BlogDetail = () => {
       {/* Main Content */}
       <div className="w-full max-w-6xl mx-auto px-4">
         {/* Breadcrumbs */}
-        <section className="pt-4">
+        {/* <section className="pt-4">
           <Breadcrumbs />
-        </section>
+        </section> */}
 
         {/* Blog Header */}
         <section className="py-6">
@@ -269,14 +269,14 @@ const BlogDetail = () => {
           {blogDetail.tags && blogDetail.tags.length > 0 && (
             <div className="mb-8">
               <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <Tag size={20} />
+                <Tag size={20} className='text-primary'/>
                 Tags
               </h3>
               <div className="flex flex-wrap gap-2">
                 {blogDetail.tags.map((tag, index) => (
                   <span
                     key={index}
-                    className="badge badge-primary badge-outline rounded-full px-3 py-2 capitalize hover:badge-primary transition-colors cursor-pointer"
+                    className="badge border border-secondary rounded-full px-3 py-2 capitalize transition-colors cursor-pointer"
                   >
                     {tag}
                   </span>
@@ -489,7 +489,7 @@ const BlogDetail = () => {
                 <button
                   type="submit"
                   disabled={isSubmittingComment}
-                  className="w-full h-12 flex items-center justify-center gap-2 text-white bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition rounded-xl font-semibold"
+                  className="btn btn-primary w-full h-12 flex items-center justify-center gap-2 text-white bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition rounded-xl font-semibold"
                 >
                   {isSubmittingComment ? (
                     <>

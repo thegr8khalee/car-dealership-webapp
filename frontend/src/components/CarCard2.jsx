@@ -13,7 +13,7 @@ const CarCard2 = ({
   link = '#',
 }) => {
   return (
-    <div className="card rounded-2xl bg-base-100 min-w-60 shadow-lg my-4">
+    <Link to={link} className="card rounded-2xl bg-base-100 min-w-60 shadow-lg my-4">
       <figure>
         <img src={image} alt={title} className="w-full h-60 md:h-45 object-cover" />
       </figure>
@@ -50,15 +50,15 @@ const CarCard2 = ({
         {/* Price + Link */}
         <div className="flex justify-between items-center">
           <h1 className="font-semibold">{price}</h1>
-          <div className="flex items-center">
+          {/* <div className="flex items-center">
             <Link to={link} className="text-primary text-xs">
               View Details
             </Link>
             <ArrowUpRight className="stroke-primary size-5 ml-1" />
-          </div>
+          </div> */}
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

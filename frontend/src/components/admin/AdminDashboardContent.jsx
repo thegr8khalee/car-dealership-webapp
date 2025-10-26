@@ -720,7 +720,7 @@ const AdminDashboardContent = () => {
 
         {/* Admin Profile Card & Refresh */}
         <div className="flex items-center space-x-4">
-          <div className="stat shadow-lg rounded-2xl flex flex-row p-4 bg-primary text-white min-w-fit">
+          <div className="stat shadow-lg rounded-2xl flex flex-row p-4 bg-primary text-secondary min-w-fit">
             <div className="flex items-center space-x-3">
               <div className="avatar">
                 <div className="w-12 h-12 rounded-full">
