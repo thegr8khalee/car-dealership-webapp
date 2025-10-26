@@ -78,16 +78,25 @@ app.use('/api/sell', sellRoutes);
 app.use('/api/admin/dashboard/sell-submissions', sellSubmissionRoutes);
 app.use('/api/admin/staff', adminStaffRoutes);
 app.use('/api/admin/broadcast', broadcastRoutes);
-app.use(notFound);
-app.use(globalErrorHandler);
-
+// Serve frontend static assets in production before the 404 handler
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend/dist')));
+  // __dirname is the backend folder when started from backend/ (start script: node src/index.js)
+  // frontend is a sibling folder of backend, so go up one level to reach it.
+  const frontendDistPath = path.join(__dirname, '../frontend', 'dist');
 
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend', 'dist', 'index.html'));
+  app.use(express.static(frontendDistPath));
+
+  app.get('*', (req, res, next) => {
+    // If the request is for an API route, skip and allow API routes/handlers to run
+    if (req.originalUrl.startsWith('/api')) return next();
+
+    res.sendFile(path.join(frontendDistPath, 'index.html'));
   });
 }
+
+// 404 handler (placed after static serving and API routes)
+app.use(notFound);
+app.use(globalErrorHandler);
 
 // Start server
 const startServer = async () => {
