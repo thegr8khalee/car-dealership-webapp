@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   ArrowUpDown,
   ArrowUpRight,
@@ -48,6 +48,13 @@ const CarDetails = () => {
 
   useEffect(() => {
     getCarById(id);
+
+    if (car?.imageUrls) {
+      car.imageUrls.forEach((url) => {
+        const img = new Image();
+        img.src = url;
+      });
+    }
   }, [getCarById, id]);
 
   const car = currentCar?.car;
@@ -98,13 +105,13 @@ const CarDetails = () => {
 
   const images = car?.imageUrls || [];
 
-  const prevImage = () => {
+  const prevImage = useCallback(() => {
     setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
-  };
+  }, [images.length]);
 
-  const nextImage = () => {
+  const nextImage = useCallback(() => {
     setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-  };
+  }, [images.length]);
 
   const handleShare = () => {
     const url = window.location.href;
@@ -235,7 +242,7 @@ const CarDetails = () => {
         <div className="bg-secondary h-16 w-full sticky top-0 z-50"></div>
         <div className="w-full max-w-7xl mx-auto px-4 mt-2">
           {/* <Breadcrumbs /> */}
-          
+
           {/* New Hero Section with Image and CTAs */}
           <section
             id="hero"
@@ -491,9 +498,10 @@ const CarDetails = () => {
                 >
                   <Share className="size-5" /> Share
                 </button>
-                <button 
-                onClick={handleCompareClick}
-                className="flex-1 btn rounded-full border-2 border-gray-300 bg-transparent text-gray-700 hover:bg-gray-200">
+                <button
+                  onClick={handleCompareClick}
+                  className="flex-1 btn rounded-full border-2 border-gray-300 bg-transparent text-gray-700 hover:bg-gray-200"
+                >
                   <ArrowUpDown className="size-5" /> Compare
                 </button>
                 <button className="flex-1 btn rounded-full border-2 border-gray-300 bg-transparent text-gray-700 hover:bg-gray-200">
@@ -616,9 +624,7 @@ const CarDetails = () => {
                           alt="Sedan"
                           className="inline mr-2 size-6"
                         />
-                        <span className="text-sm ">
-                          {car?.year}
-                        </span>
+                        <span className="text-sm ">{car?.year}</span>
                       </div>{' '}
                       <div className="flex items-center">
                         <UserRound className="inline mr-2 size-6" />
@@ -648,9 +654,7 @@ const CarDetails = () => {
                       </div>
                       <div className="flex items-center">
                         <PaintBucket className="inline mr-2 size-6" />
-                        <span className="text-sm ">
-                          {car?.color}
-                        </span>
+                        <span className="text-sm ">{car?.color}</span>
                       </div>
                       <div className="flex items-center">
                         <img
@@ -658,9 +662,7 @@ const CarDetails = () => {
                           alt="Sedan"
                           className="inline mr-2 size-6"
                         />
-                        <span className="text-sm ">
-                          {car?.door} Doors
-                        </span>
+                        <span className="text-sm ">{car?.door} Doors</span>
                       </div>
                     </div>
                   </div>
@@ -1014,7 +1016,7 @@ const CarDetails = () => {
         <div className="bg-secondary h-16 w-full sticky top-0 z-50"></div>
         <div className="w-full max-w-5xl mx-auto px-4 mt-2">
           {/* <Breadcrumbs /> */}
-          
+
           <section id="Hero" className="w-full my-4">
             <div className="flex w-full justify-between items-end">
               <div>
@@ -1023,8 +1025,8 @@ const CarDetails = () => {
                 </h1>
                 <span className="text-gray-500">{car?.year}</span>
 
-                <h1 className="text-2xl font-medium text-primary">
-                  N35,000,000
+                <h1 className="text-2xl font-medium text-secondary">
+                 N{car?.price?.toLocaleString()}
                 </h1>
               </div>
 
@@ -1035,9 +1037,10 @@ const CarDetails = () => {
                 >
                   <Share className="size-5" /> Share
                 </button>
-                <button 
-                onClick={handleCompareClick}
-                className="flex-1 btn rounded-full border-2 border-gray-300 bg-transparent text-gray-700 hover:bg-gray-200">
+                <button
+                  onClick={handleCompareClick}
+                  className="flex-1 btn rounded-full border-2 border-gray-300 bg-transparent text-gray-700 hover:bg-gray-200"
+                >
                   <ArrowUpDown className="size-5" /> Compare
                 </button>
                 <button className="flex-1 btn rounded-full border-2 border-gray-300 bg-transparent text-gray-700 hover:bg-gray-200">
@@ -1297,9 +1300,7 @@ const CarDetails = () => {
                             alt="Sedan"
                             className="inline mr-2 size-6"
                           />
-                          <span className="text-sm ">
-                            {car?.mileage}
-                          </span>
+                          <span className="text-sm ">{car?.mileage}</span>
                         </div>
                         <div className="flex items-center">
                           <img
@@ -1327,9 +1328,7 @@ const CarDetails = () => {
                             alt="Sedan"
                             className="inline mr-2 size-6"
                           />
-                          <span className="text-sm ">
-                            {car?.year}
-                          </span>
+                          <span className="text-sm ">{car?.year}</span>
                         </div>{' '}
                         <div className="flex items-center">
                           <UserRound className="inline mr-2 size-6" />
@@ -1343,9 +1342,7 @@ const CarDetails = () => {
                             alt="Sedan"
                             className="inline mr-2 size-6"
                           />
-                          <span className="text-sm ">
-                            {car?.engineSize}L
-                          </span>
+                          <span className="text-sm ">{car?.engineSize}L</span>
                         </div>
                         <div className="flex items-center">
                           <img
@@ -1369,9 +1366,7 @@ const CarDetails = () => {
                             alt="Sedan"
                             className="inline mr-2 size-6"
                           />
-                          <span className="text-sm ">
-                            {car?.door} Doors
-                          </span>
+                          <span className="text-sm ">{car?.door} Doors</span>
                         </div>
                       </div>
                     </div>
@@ -1465,9 +1460,7 @@ const CarDetails = () => {
                       alt="Sedan"
                       className="inline mr-2 size-6"
                     />
-                    <span className="text-sm ">
-                      {car?.bodyType}
-                    </span>
+                    <span className="text-sm ">{car?.bodyType}</span>
                   </div>
                   <div className="flex items-center">
                     <img
@@ -1479,9 +1472,7 @@ const CarDetails = () => {
                   </div>
                   <div className="flex items-center">
                     <img src={gas} alt="Sedan" className="inline mr-2 size-6" />
-                    <span className="text-sm ">
-                      {car?.fuelType}
-                    </span>
+                    <span className="text-sm ">{car?.fuelType}</span>
                   </div>
                   <div className="flex items-center">
                     <img
@@ -1489,9 +1480,7 @@ const CarDetails = () => {
                       alt="Sedan"
                       className="inline mr-2 size-6"
                     />
-                    <span className="text-sm ">
-                      {car?.transmission}
-                    </span>
+                    <span className="text-sm ">{car?.transmission}</span>
                   </div>
                   <div className="flex items-center">
                     <img
@@ -1503,9 +1492,7 @@ const CarDetails = () => {
                   </div>{' '}
                   <div className="flex items-center">
                     <UserRound className="inline mr-2 size-6" />
-                    <span className="text-sm ">
-                      {car?.condition}
-                    </span>
+                    <span className="text-sm ">{car?.condition}</span>
                   </div>
                   <div className="flex items-center">
                     <img
@@ -1513,9 +1500,7 @@ const CarDetails = () => {
                       alt="Sedan"
                       className="inline mr-2 size-6"
                     />
-                    <span className="text-sm ">
-                      {car?.engineSize}L
-                    </span>
+                    <span className="text-sm ">{car?.engineSize}L</span>
                   </div>
                   <div className="flex items-center">
                     <img
@@ -1523,9 +1508,7 @@ const CarDetails = () => {
                       alt="Sedan"
                       className="inline mr-2 size-6"
                     />
-                    <span className="text-sm ">
-                      {car?.cylinder} Cylinders
-                    </span>
+                    <span className="text-sm ">{car?.cylinder} Cylinders</span>
                   </div>
                   <div className="flex items-center">
                     <PaintBucket className="inline mr-2 size-6" />
@@ -1537,9 +1520,7 @@ const CarDetails = () => {
                       alt="Sedan"
                       className="inline mr-2 size-6"
                     />
-                    <span className="text-sm ">
-                      {car?.door} Doors
-                    </span>
+                    <span className="text-sm ">{car?.door} Doors</span>
                   </div>
                 </div>
               </div>
