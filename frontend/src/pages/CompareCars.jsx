@@ -88,7 +88,7 @@ const CompareCars = () => {
           <img
             src={car.imageUrls?.[0] || car.featuredImage}
             alt={`${car.make} ${car.model}`}
-            className="w-full h-48 object-cover"
+            className="w-full aspect-video object-cover"
           />
           {position === 'right' && (
             <button
@@ -352,7 +352,7 @@ const CompareCars = () => {
                 <CarCard
                   key={car.id}
                   className="flex-shrink-0"
-                  image={car.image}
+                  image={car.imageUrls[0]}
                   title={`${car.make} ${car.model}`}
                   description={car.description}
                   mileage={{ icon: mileage, value: car.mileage }}

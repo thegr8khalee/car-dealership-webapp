@@ -43,7 +43,7 @@ const Navbar = ({ className = '' }) => {
 
   // helper function to apply bold if active
   const getButtonClass = (path) =>
-    `font-normal btn bg-transparent border-0 shadow-0 hover:bg-transparent hover:shadow-none text-start justify-start ${
+    `font-normal btn text-lg bg-transparent border-0 shadow-0 hover:bg-transparent hover:shadow-none text-start justify-start ${
       location.pathname === path ? 'font-bold text-primary' : ''
     }`;
 
@@ -67,6 +67,7 @@ const Navbar = ({ className = '' }) => {
               <Link to={'/listings'}>Listing</Link>
               <Link to={'/makes'}>Makes</Link>
               <Link to={'/blogs'}>Blogs</Link>
+              <Link to={'/contact'}>Contact Us</Link>
               {isAdmin ? <Link to={'/admin/dashboard'}>Dashboard</Link> : null}
             </div>
           </div>
@@ -169,6 +170,17 @@ const Navbar = ({ className = '' }) => {
                 className={getButtonClass('/blogs')}
               >
                 Blogs
+              </button>
+            </li>
+            <li className="p-2">
+              <button
+                onClick={() => {
+                  navigate('/contact');
+                  closeDrawer();
+                }}
+                className={getButtonClass('/contact')}
+              >
+                Contact Us
               </button>
             </li>
             {isAdmin ? (

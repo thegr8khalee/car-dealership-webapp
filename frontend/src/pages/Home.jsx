@@ -273,7 +273,7 @@ const Home = () => {
           <h1 className="text-xl font-semibold font-[poppins] mb-2">
             Explore All Cars
           </h1>
-          <div className="flex overflow-x-auto w-full space-x-2 pl-1">
+          <div className="flex overflow-x-auto w-full space-x-2">
             {isLoading ? (
               <p>Loading cars...</p>
             ) : cars?.length === 0 ? (
@@ -283,7 +283,7 @@ const Home = () => {
                 <CarCard
                   key={car.id}
                   className="flex-shrink-0"
-                  image={car.image}
+                  image={car.imageUrls[0]}
                   title={`${car.make} ${car.model}`}
                   description={car.description}
                   mileage={{ icon: mileage, value: car.mileage }}
@@ -545,6 +545,8 @@ const Home = () => {
                     date={blog.date}
                     title={blog.title}
                     tagline={blog.tagline}
+                    image={blog.featuredImage}
+                    link={`/blog/${blog.id}`}
                   />
                 ))
             )}
@@ -565,7 +567,7 @@ const Home = () => {
               alt="Sell"
               className="absolute inset-0 w-full h-full object-cover opacity-70"
             />
-            <div className="relative z-10 h-full w-full p-8">
+            <div className="relative z-10 h-full w-full p-4">
               <div className="bg-white shadow-lg rounded-3xl h-full w-full p-4 items-center justify-center">
                 <h1 className="font-[poppins] text-2xl font-bold mt-2">
                   Installment Plan Calculator
@@ -595,7 +597,7 @@ const Home = () => {
           ${
             isFocusedCarPrice || formData.carPrice
               ? 'text-xs top-2 text-gray-500'
-              : 'text-gray-400 top-4'
+              : 'text-gray-400 top-5 text-xs'
           } 
         `}
                     >
@@ -623,7 +625,7 @@ const Home = () => {
           ${
             isFocusedTerm || formData.term
               ? 'text-xs top-2 text-gray-500'
-              : 'text-gray-400 top-4'
+              : 'text-gray-400 top-5 text-xs'
           } 
         `}
                       >
@@ -650,7 +652,7 @@ const Home = () => {
           ${
             isFocusedDownPayment || formData.downPayment
               ? 'text-xs top-2 text-gray-500'
-              : 'text-gray-400 top-4'
+              : 'text-gray-400 top-5 text-xs'
           } 
         `}
                       >
@@ -837,7 +839,7 @@ const Home = () => {
                   <CarCard
                     key={car.id}
                     className="flex-shrink-0"
-                    image={car.image}
+                    image={car.imageUrls[0]}
                     title={`${car.make} ${car.model}`}
                     description={car.description}
                     mileage={{ icon: mileage, value: car.mileage }}
@@ -962,9 +964,9 @@ const Home = () => {
             <div className="w-full flex space-x-4 overflow-x-auto">
               <TeamCard
                 image={ceo}
-                name="Jane Doe"
+                name="Al-Amin"
                 title="CEO"
-                description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem tenetur nihil odit magnam reiciendis eaque repellendus?"
+                description="I am Al-Amin, the CEO of Sarkin Mota. Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem tenetur nihil odit magnam reiciendis eaque repellendus?"
               />
               <TeamCard
                 image={ceo}
@@ -1115,6 +1117,8 @@ const Home = () => {
                       date={blog.date}
                       title={blog.title}
                       tagline={blog.tagline}
+                      image={blog.featuredImage}
+                      link={`/blog/${blog.id}`}
                     />
                   ))
               )}
@@ -1158,7 +1162,7 @@ const Home = () => {
           ${
             isFocusedCarPrice || formData.carPrice
               ? 'text-xs top-2 text-gray-500'
-              : 'text-gray-400 top-4'
+              : 'text-gray-400 top-5 text-sm'
           } 
         `}
                     >
@@ -1186,7 +1190,7 @@ const Home = () => {
           ${
             isFocusedTerm || formData.term
               ? 'text-xs top-2 text-gray-500'
-              : 'text-gray-400 top-4'
+              : 'text-gray-400 top-5 text-sm'
           } 
         `}
                       >
@@ -1213,7 +1217,7 @@ const Home = () => {
           ${
             isFocusedDownPayment || formData.downPayment
               ? 'text-xs top-2 text-gray-500'
-              : 'text-gray-400 top-4'
+              : 'text-gray-400 top-5 text-sm'
           } 
         `}
                       >

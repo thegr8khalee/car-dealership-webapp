@@ -306,7 +306,7 @@ const BlogDetail = () => {
                     fuel={{ icon: gas, value: car.fuelType }}
                     year={{ icon: date, value: car.year }}
                     price={car.price}
-                    link={`/cars/${car.id}`}
+                    link={`/car/${car.id}`}
                   />
                 ))}
               </div>

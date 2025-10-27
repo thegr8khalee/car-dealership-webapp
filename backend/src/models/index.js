@@ -116,7 +116,7 @@ export const seedData = async () => {
         make: 'Toyota',
         model: 'Camry',
         year: 2024,
-        price: 25000,
+        price: 37000000,
         condition: 'new',
         bodyType: 'sedan',
         fuelType: 'gasoline',
@@ -130,36 +130,30 @@ export const seedData = async () => {
         description:
           'The 2024 Toyota Camry offers a perfect blend of reliability, efficiency, and comfort.',
         imageUrls: [
-          'https://example.com/camry-front.jpg',
-          'https://example.com/camry-side.jpg',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577358/Gemini_Generated_Image_2cibe02cibe02cib_vrw7cd.png',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577355/Gemini_Generated_Image_ti0mjti0mjti0mjt_iadyvh.png',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577355/Gemini_Generated_Image_w06jllw06jllw06j_xcpx3h.png',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577358/Gemini_Generated_Image_vzn4jxvzn4jxvzn4_kkbx2t.png'
         ],
-        interior: [
-          'Leather seats',
-          'Dual-zone climate control',
-          'Infotainment system',
-        ],
+        interior: ['Leather seats', 'Dual-zone climate control', 'Infotainment system'],
         exterior: ['LED headlights', 'Alloy wheels', 'Sunroof'],
         comfort: ['Heated seats', 'Power-adjustable seats', 'Keyless entry'],
-        safety: [
-          'Toyota Safety Sense 2.0',
-          'Blind spot monitoring',
-          'Rear cross traffic alert',
-        ],
+        safety: ['Toyota Safety Sense 2.0', 'Blind spot monitoring', 'Rear cross traffic alert'],
         sold: false,
         door: 4,
         color: 'Midnight Black Metallic',
         cylinder: 4,
-        length: 192.1,
-        width: 72.4,
-        trunkCapacity: 15.1,
+        length: 192.10,
+        width: 72.40,
+        trunkCapacity: 15.10,
         tireSize: 'P215/60R16',
-        zeroToHundred: 7.6,
+        zeroToHundred: 7.60,
       },
       {
         make: 'Honda',
         model: 'Civic',
         year: 2023,
-        price: 28000,
+        price: 41440000,
         condition: 'new',
         bodyType: 'sedan',
         fuelType: 'gasoline',
@@ -170,16 +164,32 @@ export const seedData = async () => {
         mileage: 0,
         drivetrain: 'fwd',
         msrp: 27500,
-        description:
-          'A stylish and reliable compact sedan with great fuel economy.',
-        imageUrls: ['https://example.com/civic.jpg'],
+        description: 'A stylish and reliable compact sedan with great fuel economy.',
+        imageUrls: [
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577357/Gemini_Generated_Image_wptstcwptstcwpts_gnwqlb.png',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577355/Gemini_Generated_Image_w8h0xiw8h0xiw8h0_b8hbrb.png',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577367/Gemini_Generated_Image_a0yv1za0yv1za0yv_iccl2y.png',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577366/Gemini_Generated_Image_7r4dqv7r4dqv7r4d_j56bvb.png'
+        ],
+        interior: ['Fabric seats', 'Touchscreen display', 'Bluetooth connectivity'],
+        exterior: ['LED daytime running lights', '16-inch alloy wheels'],
+        comfort: ['Automatic climate control', 'Cruise control'],
+        safety: ['Honda Sensing', 'Lane keeping assist', 'Collision mitigation braking system'],
         sold: false,
+        door: 4,
+        color: 'Lunar Silver Metallic',
+        cylinder: 4,
+        length: 184.0,
+        width: 70.9,
+        trunkCapacity: 14.8,
+        tireSize: 'P215/55R16',
+        zeroToHundred: 8.2,
       },
       {
         make: 'Ford',
         model: 'F-150',
         year: 2022,
-        price: 45000,
+        price: 66600000,
         condition: 'used',
         bodyType: 'truck',
         fuelType: 'gasoline',
@@ -190,16 +200,32 @@ export const seedData = async () => {
         mileage: 15000,
         drivetrain: '4wd',
         msrp: 48000,
-        description:
-          'The best-selling truck in America, built to handle any job.',
-        imageUrls: ['https://example.com/f150.jpg'],
+        description: 'The best-selling truck in America, built to handle any job.',
+        imageUrls: [
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577366/Gemini_Generated_Image_9v4gxv9v4gxv9v4g_adtk09.png',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577365/Gemini_Generated_Image_v0pi7yv0pi7yv0pi_ftqbsu.png',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577364/Gemini_Generated_Image_aztfdpaztfdpaztf_obpn7j.png',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577363/Gemini_Generated_Image_7ns1bz7ns1bz7ns1_krczzm.png'
+        ],
+        interior: ['Cloth seats', 'Rearview camera', 'SYNC 4 infotainment'],
+        exterior: ['Fog lights', 'Tow package', 'Running boards'],
+        comfort: ['Adjustable steering wheel', 'Power windows'],
+        safety: ['Rearview camera', 'Stability control'],
         sold: false,
+        door: 4,
+        color: 'Oxford White',
+        cylinder: 8,
+        length: 231.7,
+        width: 79.9,
+        trunkCapacity: null,
+        tireSize: 'P275/65R18',
+        zeroToHundred: 6.5,
       },
       {
         make: 'Tesla',
         model: 'Model 3',
         year: 2024,
-        price: 40000,
+        price: 59200000,
         condition: 'new',
         bodyType: 'sedan',
         fuelType: 'electric',
@@ -210,16 +236,32 @@ export const seedData = async () => {
         mileage: 0,
         drivetrain: 'rwd',
         msrp: 41500,
-        description:
-          'An all-electric sedan with incredible performance and range.',
-        imageUrls: ['https://example.com/model3.jpg'],
+        description: 'An all-electric sedan with incredible performance and range.',
+        imageUrls: [
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577362/Gemini_Generated_Image_1mgk5t1mgk5t1mgk_j9cys6.png',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577363/Gemini_Generated_Image_96hjby96hjby96hj_r4x2cc.png',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577361/Gemini_Generated_Image_7ncwta7ncwta7ncw_djzxtb.png',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577361/Gemini_Generated_Image_2c4tne2c4tne2c4t_iu0i7a.png'
+        ],
+        interior: ['Vegan leather seats', 'Touchscreen dashboard', 'Autopilot controls'],
+        exterior: ['Glass roof', 'Flush door handles', 'LED taillights'],
+        comfort: ['Heated steering wheel', 'Cabin overheat protection'],
+        safety: ['Autopilot', 'Automatic emergency braking'],
         sold: false,
+        door: 4,
+        color: 'Pearl White Multi-Coat',
+        cylinder: null,
+        length: 184.8,
+        width: 72.8,
+        trunkCapacity: 15.0,
+        tireSize: '235/45R18',
+        zeroToHundred: 5.8,
       },
       {
         make: 'Jeep',
         model: 'Wrangler',
         year: 2023,
-        price: 42000,
+        price: 62160000,
         condition: 'new',
         bodyType: 'suv',
         fuelType: 'gasoline',
@@ -231,8 +273,25 @@ export const seedData = async () => {
         drivetrain: '4wd',
         msrp: 43500,
         description: 'An iconic off-road vehicle with legendary capability.',
-        imageUrls: ['https://example.com/wrangler.jpg'],
+        imageUrls: [
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577360/Gemini_Generated_Image_w9f3caw9f3caw9f3_l9lirf.png',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577359/Gemini_Generated_Image_xl711qxl711qxl71_qks44s.png',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577358/Gemini_Generated_Image_qzic8lqzic8lqzic_yxknkn.png',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577374/Gemini_Generated_Image_uue24uuue24uuue2_zfbyma.png'
+        ],
+        interior: ['Wash-out interior', 'Apple CarPlay', 'Uconnect system'],
+        exterior: ['Removable roof', 'LED headlights', 'Skid plates'],
+        comfort: ['Adjustable seating', 'Easy-clean surfaces'],
+        safety: ['Park assist', 'Hill descent control', 'Traction control'],
         sold: false,
+        door: 4,
+        color: 'Firecracker Red',
+        cylinder: 6,
+        length: 188.4,
+        width: 73.8,
+        trunkCapacity: 31.7,
+        tireSize: 'P245/75R17',
+        zeroToHundred: 7.0,
       },
     ];
 
@@ -254,13 +313,19 @@ export const seedData = async () => {
         },
         category: 'reviews',
         status: 'published',
-        featuredImage: 'https://example.com/camry-blog.jpg',
-        content:
-          'The Toyota Camry continues to be a top contender in the mid-size sedan segment, offering a perfect balance of comfort, fuel efficiency, and a host of standard features. With its sleek design and advanced safety technology, it remains a smart choice for families and commuters alike.',
+        featuredImage:
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577358/Gemini_Generated_Image_vzn4jxvzn4jxvzn4_kkbx2t.png',
+        content: `
+The 2024 Toyota Camry continues its reputation as one of the most dependable sedans on the market. Known for its refined performance and comfort, the Camry blends practicality with a touch of sportiness. Its updated exterior design — sleek lines, aggressive grille, and LED headlights — gives it a modern yet timeless look that appeals to families and professionals alike.
+
+Inside, the Camry impresses with premium materials and intuitive controls. Toyota’s latest infotainment system includes smartphone integration, a responsive touchscreen, and multiple driver-assist features such as adaptive cruise control and lane-keeping assist. The hybrid version remains one of the most fuel-efficient sedans in its class.
+
+If you’re seeking a car that offers strong resale value, top-tier reliability, and affordable maintenance, the Camry remains a smart and safe investment for Nigerian drivers.
+    `,
         carIds: [
           cars.find((c) => c.make === 'Toyota' && c.model === 'Camry')?.id,
         ],
-        tags: ['review', 'sedan', 'Toyota'],
+        tags: ['review', 'sedan', 'Toyota', 'Camry'],
         viewCount: 150,
       },
       {
@@ -272,14 +337,20 @@ export const seedData = async () => {
         },
         category: 'comparisons',
         status: 'published',
-        featuredImage: 'https://example.com/civic-camry-comp.jpg',
-        content:
-          'When it comes to compact sedans, the Honda Civic and Toyota Camry are often at the top of the list. We break down the key differences in performance, interior comfort, and fuel efficiency to help you decide which one is right for you.',
+        featuredImage:
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577357/Gemini_Generated_Image_wptstcwptstcwpts_gnwqlb.png',
+        content: `
+When it comes to compact and mid-size sedans, the Honda Civic and Toyota Camry often dominate the conversation. The Civic is celebrated for its sporty handling, stylish interior, and impressive fuel economy, while the Camry offers a more spacious cabin and a smooth, refined ride that prioritizes comfort.
+
+In terms of performance, the Civic feels lighter and more agile, making it perfect for city driving, while the Camry’s larger engine and higher horsepower give it a stronger presence on highways. Inside, both cars come with intuitive infotainment systems and advanced driver-assist technologies, but the Camry offers more rear legroom and cargo space.
+
+Ultimately, the Civic appeals to younger drivers looking for fun and efficiency, while the Camry caters to families or anyone prioritizing comfort and reliability. Both stand as excellent long-term investments depending on your driving needs.
+    `,
         carIds: [
           cars.find((c) => c.make === 'Honda' && c.model === 'Civic')?.id,
           cars.find((c) => c.make === 'Toyota' && c.model === 'Camry')?.id,
         ],
-        tags: ['comparison', 'sedan', 'Honda', 'Toyota'],
+        tags: ['comparison', 'sedan', 'Honda', 'Toyota', 'Civic'],
         viewCount: 200,
       },
       {
@@ -291,13 +362,19 @@ export const seedData = async () => {
         },
         category: 'technology',
         status: 'published',
-        featuredImage: 'https://example.com/ev-future.jpg',
-        content:
-          'The electric vehicle market is evolving at a rapid pace, with new models and battery technologies emerging constantly. We explore the innovations that are shaping the future of mobility, from faster charging to longer-range batteries.',
+        featuredImage:
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577362/Gemini_Generated_Image_1mgk5t1mgk5t1mgk_j9cys6.png',
+        content: `
+The electric vehicle (EV) revolution is reshaping the automotive landscape faster than ever before. Brands like Tesla, Rivian, and Hyundai are pushing the boundaries of performance and sustainability. The Tesla Model 3, for instance, combines sleek design with industry-leading battery efficiency, giving drivers both style and peace of mind.
+
+Recent advancements in battery technology have made EVs more practical and affordable. Charging networks are expanding rapidly across Africa, including early efforts in Nigeria to establish public charging hubs in major cities. EVs are no longer a niche luxury — they’re becoming the mainstream choice for environmentally conscious drivers.
+
+Looking ahead, innovations like solid-state batteries, wireless charging, and AI-assisted driving will make EVs even more efficient and accessible. The future is electric, and it’s arriving faster than most people realize.
+    `,
         carIds: [
           cars.find((c) => c.make === 'Tesla' && c.model === 'Model 3')?.id,
         ],
-        tags: ['EV', 'technology', 'electric'],
+        tags: ['EV', 'technology', 'electric', 'Tesla'],
         viewCount: 300,
       },
       {
@@ -309,13 +386,19 @@ export const seedData = async () => {
         },
         category: 'news',
         status: 'published',
-        featuredImage: 'https://example.com/wrangler-news.jpg',
-        content:
-          'Jeep enthusiasts are always eager for the latest updates on the legendary Wrangler. We take a look at the upcoming changes to the iconic off-roader, including new powertrain options and advanced infotainment systems.',
+        featuredImage:
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577360/Gemini_Generated_Image_w9f3caw9f3caw9f3_l9lirf.png',
+        content: `
+The Jeep Wrangler has always been the symbol of adventure — and the 2023 model continues that legacy with even more capability and tech upgrades. It retains its rugged body-on-frame design, removable roof panels, and classic seven-slot grille while introducing modern comforts and safety enhancements.
+
+Under the hood, drivers can choose between a fuel-efficient V6, a torquey diesel, or even a plug-in hybrid powertrain for eco-friendly off-roading. Inside, the Wrangler now offers a larger touchscreen with Apple CarPlay, improved seat comfort, and new driver-assist systems that make it equally suited for city commutes and off-road trails.
+
+Whether you’re conquering muddy tracks or cruising through Lagos traffic, the 2023 Wrangler remains one of the most versatile SUVs money can buy.
+    `,
         carIds: [
           cars.find((c) => c.make === 'Jeep' && c.model === 'Wrangler')?.id,
         ],
-        tags: ['news', 'SUV', 'Jeep'],
+        tags: ['news', 'SUV', 'Jeep', 'off-road'],
         viewCount: 180,
       },
       {
@@ -327,13 +410,19 @@ export const seedData = async () => {
         },
         category: 'maintenance',
         status: 'published',
-        featuredImage: 'https://example.com/f150-maint.jpg',
-        content:
-          'Regular maintenance is key to the longevity of your truck. This guide provides essential tips for keeping your Ford F-150 in top condition, from oil changes to tire rotations, to ensure it’s ready for any challenge.',
+        featuredImage:
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577366/Gemini_Generated_Image_9v4gxv9v4gxv9v4g_adtk09.png',
+        content: `
+Your truck works hard — so keeping it in top shape ensures it lasts for years to come. The Ford F-150, known for its durability and power, benefits greatly from consistent maintenance. Regular oil changes, tire rotations, and brake inspections can prevent costly breakdowns and extend your truck’s lifespan.
+
+Check your fluids often — especially transmission and coolant levels — since trucks that tow or haul regularly experience more strain on their systems. Cleaning and protecting the undercarriage also helps prevent rust, particularly during Nigeria’s rainy season. 
+
+Lastly, listen to your truck. Unusual noises or reduced performance are early signs that something needs attention. Treat your F-150 well, and it will reward you with dependable performance no matter where the road takes you.
+    `,
         carIds: [
           cars.find((c) => c.make === 'Ford' && c.model === 'F-150')?.id,
         ],
-        tags: ['maintenance', 'truck', 'Ford'],
+        tags: ['maintenance', 'truck', 'Ford', 'F-150'],
         viewCount: 120,
       },
     ];

@@ -42,7 +42,7 @@ import { useUserAuthStore } from '../store/useUserAuthStore';
 const CarDetails = () => {
   const { id } = useParams();
   // console.log('Car ID from params:', id);
-  const { car: currentCar, getCarById, isGettingCar } = useCarStore();
+  const { car: currentCar, getCarById, isLoading } = useCarStore();
   const { authUser } = useUserAuthStore();
   // Data for car features and tabs
 
@@ -221,7 +221,7 @@ const CarDetails = () => {
 
   const ratingCategories = ['Exterior', 'Interior', 'Comfort', 'Performance'];
 
-  if (isGettingCar) {
+  if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <Loader2 className="animate-spin size-8 text-primary" />
@@ -278,12 +278,12 @@ const CarDetails = () => {
                 </button>
 
                 {/* Video button */}
-                <button
+                {/* <button
                   className="absolute left-4 bottom-4 btn rounded-full shadow-lg bg-black text-white border-0"
                   aria-label="Play Video"
                 >
                   <Video className="size-5" /> Video
-                </button>
+                </button> */}
               </div>
             )}
 
@@ -982,7 +982,7 @@ const CarDetails = () => {
               {currentCar?.relatedCars.map((relatedCar) => (
                 <CarCard
                   className="flex-shrink-0"
-                  image={relatedCar.featuredImage}
+                  image={relatedCar.imageUrls[0]}
                   title={relatedCar.make + ' ' + relatedCar.model}
                   description={relatedCar.description}
                   mileage={{ icon: mileage, value: relatedCar.mileage }}
@@ -1066,12 +1066,12 @@ const CarDetails = () => {
                 <ChevronRight className="size-6" />
               </button>
               {/* Video button */}
-              <button
+              {/* <button
                 className="absolute left-4 bottom-4 btn rounded-full shadow-lg bg-black text-white border-0"
                 aria-label="Play Video"
               >
                 <Video className="size-5" /> Video
-              </button>
+              </button> */}
             </div>
           </section>
           <section id="key-specs" className="w-full my-8">
@@ -1805,7 +1805,7 @@ const CarDetails = () => {
               {currentCar?.relatedCars.map((relatedCar) => (
                 <CarCard
                   className="flex-shrink-0"
-                  image={relatedCar.featuredImage}
+                  image={relatedCar.imageUrls[0]}
                   title={relatedCar.make + ' ' + relatedCar.model}
                   description={relatedCar.description}
                   mileage={{ icon: mileage, value: relatedCar.mileage }}
