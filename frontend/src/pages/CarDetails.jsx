@@ -79,7 +79,7 @@ const CarDetails = () => {
     date: '',
   });
   const [calcFormData, setCalcFormData] = useState({
-    price: car?.price || '',
+    price: '',
     years: '',
     downPayment: '',
   });
@@ -230,12 +230,12 @@ const CarDetails = () => {
 
   const calculateInstallment = () => {
     // Validate all required fields are filled
-    if (!calcFormData.price || !calcFormData.years || !calcFormData.downPayment) {
+    if (!calcFormData.years || !calcFormData.downPayment) {
       toast.error('Please fill in all fields');
       return;
     }
 
-    const price = parseFloat(calcFormData.price);
+    const price = parseFloat(car?.price);
     const down = parseFloat(calcFormData.downPayment);
     const years = parseFloat(calcFormData.years);
 
@@ -809,16 +809,14 @@ const CarDetails = () => {
                   <input
                     type="number"
                     name="price"
-                    value={calcFormData.price}
-                    onChange={handleCalcChange}
+                    value={car?.price}
+                    // onChange={handleCalcChange}
                     className="peer w-full px-3 pt-6 pb-2 text-lg font-medium border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200"
                     placeholder=" "
                   />
                   <label
                     htmlFor="price"
-                    className={`absolute left-3 transition-all duration-300 text-gray-400 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary ${
-                      calcFormData.price && 'top-2 text-xs text-primary'
-                    }`}
+                    className={`absolute left-3 transition-all duration-300  peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary top-2 text-xs text-primary`}
                   >
                     Car Price (N)
                   </label>
@@ -864,7 +862,7 @@ const CarDetails = () => {
                     <p className="text-sm text-gray-600">
                       Estimated Monthly Payment
                     </p>
-                    <p className="text-3xl font-bold text-primary">
+                    <p className="text-3xl font-bold">
                       N
                       {monthlyPayment.toLocaleString('en-NG', {
                         maximumFractionDigits: 2,
@@ -1250,16 +1248,14 @@ const CarDetails = () => {
                       <input
                         type="number"
                         name="price"
-                        value={calcFormData.price}
-                        onChange={handleCalcChange}
+                        value={car?.price}
+                        // onChange={handleCalcChange}
                         className="peer w-full px-3 pt-6 pb-2 text-lg font-medium border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200"
                         placeholder=" "
                       />
                       <label
                         htmlFor="price"
-                        className={`absolute left-3 transition-all duration-300 text-gray-400 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary ${
-                          calcFormData.price && 'top-2 text-xs text-primary'
-                        }`}
+                        className={`absolute left-3 transition-all duration-300 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary top-2 text-xs text-primary`}
                       >
                         Car Price (N)
                       </label>
@@ -1301,7 +1297,28 @@ const CarDetails = () => {
                         Down Payment (N)
                       </label>
                     </div>
+                    {/* {monthlyPayment !== null && (
+                      <div className="mt-6 p-4 bg-primary/10 rounded-2xl">
+                        <p className="text-sm text-gray-600">
+                          Estimated Monthly Payment
+                        </p>
+                        <p className="text-3xl font-bold text-primary">
+                          N
+                          {monthlyPayment.toLocaleString('en-NG', {
+                            maximumFractionDigits: 2,
+                          })}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-2">
+                          Based on {formData.term} years with{' '}
+                          {(0.05 * 100).toFixed(1)}% annual interest
+                        </p>
+                      </div>
+                    )} */}
                     <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        calculateInstallment();
+                      }}
                       type="button"
                       className="w-full h-15 mt-2 text-white btn-primary btn-lg text-lg rounded-xl font-semibold"
                     >
@@ -1310,6 +1327,23 @@ const CarDetails = () => {
                   </form>
                 </div>
               </div>
+              {monthlyPayment !== null && (
+                <div className="mt-6 p-4 bg-base-100 shadow-xl rounded-2xl">
+                  <p className="text-sm text-gray-600">
+                    Estimated Monthly Payment
+                  </p>
+                  <p className="text-3xl font-bold">
+                    N
+                    {monthlyPayment.toLocaleString('en-NG', {
+                      maximumFractionDigits: 2,
+                    })}
+                  </p>
+                  <p className="text-xs text-gray-500 mt-2">
+                    Based on {formData.term} years with{' '}
+                    {(0.05 * 100).toFixed(1)}% annual interest
+                  </p>
+                </div>
+              )}
             </div>
             <div className="md:hidden block">
               {/* Tab Selectors */}
