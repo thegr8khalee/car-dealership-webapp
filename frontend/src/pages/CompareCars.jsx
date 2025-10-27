@@ -18,6 +18,7 @@ import mileage from '../images/mileage.png';
 import transmission from '../images/transmission.png';
 import date from '../images/date.png';
 import gas from '../images/gas.png';
+import CarCard from '../components/CarCard';
 
 const CompareCars = () => {
   const navigate = useNavigate();

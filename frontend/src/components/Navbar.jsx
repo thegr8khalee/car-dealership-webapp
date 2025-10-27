@@ -64,7 +64,7 @@ const Navbar = ({ className = '' }) => {
             <div className="pl-4 space-x-4 hidden md:flex font-[poppins] text-sm text-white">
               <Link to={'/'}>Home</Link>
               <Link to={'/listings'}>Listing</Link>
-              <Link>Makes</Link>
+              <Link to={'/makes'}>Makes</Link>
               <Link to={'/blogs'}>Blogs</Link>
               {isAdmin ? <Link to={'/admin/dashboard'}>Dashboard</Link> : null}
             </div>
