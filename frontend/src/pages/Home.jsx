@@ -172,7 +172,7 @@ const Home = () => {
           />
 
           <div className="absolute inset-x-0 bottom-28 text-center">
-            <h1 className="text-white text-4xl font-bold font-[poppins]">
+            <h1 className="text-white text-4xl font-bold font-[poppins] drop-shadow-[0_6px_12px_rgba(0,0,0,1)]">
               Search Less. Live More.
             </h1>
           </div>
@@ -193,8 +193,8 @@ const Home = () => {
           </div>
 
           <div className="absolute bottom-5 inset-x-0 text-center z-10">
-            <h1 className="text-white text-3xl font-['Microgramma_D_Extended'] tracking-widest">
-              Sarkin Mota
+            <h1 className="text-white text-3xl font-['Microgramma_D_Extended'] tracking-widest drop-shadow-[0_6px_12px_rgba(0,0,0,1)]">
+              My Bratha!
             </h1>
           </div>
         </section>
@@ -415,9 +415,9 @@ const Home = () => {
           <div className="w-full flex space-x-2 overflow-x-auto">
             <TeamCard
               image={ceo}
-              name="Jane Doe"
+              name="Al-amin"
               title="CEO"
-              description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem tenetur nihil odit magnam reiciendis eaque repellendus?"
+              description="I am Al-amin, the CEO of Sarkin Mota. With a passion for cars and a vision to revolutionize the automotive industry, I lead our team to deliver exceptional service and value to our customers."
             />
             <TeamCard
               image={ceo}
@@ -700,7 +700,7 @@ const Home = () => {
           />
 
           <div className="absolute inset-x-0 bottom-45 text-center">
-            <h1 className="text-white text-5xl md:text-7xl lg:text-8xl font-bold font-[poppins]">
+            <h1 className="drop-shadow-[0_6px_12px_rgba(0,0,0,1)] text-white text-5xl md:text-7xl lg:text-8xl font-bold font-[poppins]">
               Search Less. Live More.
             </h1>
           </div>
@@ -721,8 +721,8 @@ const Home = () => {
           </div>
 
           <div className="absolute bottom-5 inset-x-0 text-center z-10">
-            <h1 className="text-white text-5xl md:text-6xl lg:text-7xl font-['Microgramma_D_Extended'] tracking-widest">
-              Sarkin Mota
+            <h1 className="drop-shadow-[0_6px_12px_rgba(0,0,0,1)] text-white text-5xl md:text-6xl lg:text-7xl font-['Microgramma_D_Extended'] tracking-widest">
+              My Bratha!
             </h1>
           </div>
         </section>
@@ -966,7 +966,7 @@ const Home = () => {
                 image={ceo}
                 name="Al-Amin"
                 title="CEO"
-                description="I am Al-Amin, the CEO of Sarkin Mota. Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem tenetur nihil odit magnam reiciendis eaque repellendus?"
+                description="I am Al-amin, the CEO of Sarkin Mota. With a passion for cars and a vision to revolutionize the automotive industry, I lead our team to deliver exceptional service and value to our customers."
               />
               <TeamCard
                 image={ceo}

@@ -79,7 +79,7 @@ const CarDetails = () => {
     date: '',
   });
   const [calcFormData, setCalcFormData] = useState({
-    price: '',
+    price: car?.price || '',
     years: '',
     downPayment: '',
   });
@@ -224,6 +224,54 @@ const CarDetails = () => {
     navigate(`/compare?car1=${id}`, {
       state: { carId: id },
     });
+  };
+
+  const [monthlyPayment, setMonthlyPayment] = useState(null);
+
+  const calculateInstallment = () => {
+    // Validate all required fields are filled
+    if (!calcFormData.price || !calcFormData.years || !calcFormData.downPayment) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+
+    const price = parseFloat(calcFormData.price);
+    const down = parseFloat(calcFormData.downPayment);
+    const years = parseFloat(calcFormData.years);
+
+    // Validate values are positive numbers
+    if (price <= 0 || down < 0 || years <= 0) {
+      toast.error('Please enter valid positive numbers');
+      return;
+    }
+
+    // Check if down payment is not greater than car price
+    if (down >= price) {
+      toast.error('Down payment cannot be greater than or equal to car price');
+      return;
+    }
+
+    // Calculate loan amount
+    const loanAmount = price - down;
+
+    // Typical interest rate (you can make this configurable)
+    const annualInterestRate = 0.05; // 5% annual interest rate
+    const monthlyInterestRate = annualInterestRate / 12;
+    const numberOfPayments = years * 12;
+
+    // Calculate monthly payment using the loan payment formula
+    // M = P * [r(1 + r)^n] / [(1 + r)^n - 1]
+    let monthly;
+
+    if (monthlyInterestRate === 0) {
+      // If no interest, simple division
+      monthly = loanAmount / numberOfPayments;
+    } else {
+      const x = Math.pow(1 + monthlyInterestRate, numberOfPayments);
+      monthly = (loanAmount * (monthlyInterestRate * x)) / (x - 1);
+    }
+
+    setMonthlyPayment(monthly);
   };
 
   const ratingCategories = ['Exterior', 'Interior', 'Comfort', 'Performance'];
@@ -811,7 +859,28 @@ const CarDetails = () => {
                     Down Payment (N)
                   </label>
                 </div>
+                {monthlyPayment !== null && (
+                  <div className="mt-6 p-4 bg-primary/10 rounded-2xl">
+                    <p className="text-sm text-gray-600">
+                      Estimated Monthly Payment
+                    </p>
+                    <p className="text-3xl font-bold text-primary">
+                      N
+                      {monthlyPayment.toLocaleString('en-NG', {
+                        maximumFractionDigits: 2,
+                      })}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-2">
+                      Based on {formData.term} years with{' '}
+                      {(0.05 * 100).toFixed(1)}% annual interest
+                    </p>
+                  </div>
+                )}
                 <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    calculateInstallment();
+                  }}
                   type="button"
                   className="w-full h-15 mt-2 text-white btn-primary btn-lg text-lg rounded-xl font-semibold"
                 >
@@ -1026,7 +1095,7 @@ const CarDetails = () => {
                 <span className="text-gray-500">{car?.year}</span>
 
                 <h1 className="text-2xl font-medium text-secondary">
-                 N{car?.price?.toLocaleString()}
+                  N{car?.price?.toLocaleString()}
                 </h1>
               </div>
 
