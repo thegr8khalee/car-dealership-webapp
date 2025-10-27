@@ -130,10 +130,10 @@ export const seedData = async () => {
         description:
           'The 2024 Toyota Camry offers a perfect blend of reliability, efficiency, and comfort.',
         imageUrls: [
-          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577358/Gemini_Generated_Image_2cibe02cibe02cib_vrw7cd.png',
-          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577355/Gemini_Generated_Image_ti0mjti0mjti0mjt_iadyvh.png',
-          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577355/Gemini_Generated_Image_w06jllw06jllw06j_xcpx3h.png',
-          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577358/Gemini_Generated_Image_vzn4jxvzn4jxvzn4_kkbx2t.png'
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761591521/Gemini_Generated_Image_2cibe02cibe02cib_c6ykuk.webp',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761591520/Gemini_Generated_Image_ti0mjti0mjti0mjt_mx1a5k.webp',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761591519/Gemini_Generated_Image_w06jllw06jllw06j_o1leof.webp',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761591518/Gemini_Generated_Image_vzn4jxvzn4jxvzn4_d6df3s.webp'
         ],
         interior: ['Leather seats', 'Dual-zone climate control', 'Infotainment system'],
         exterior: ['LED headlights', 'Alloy wheels', 'Sunroof'],
@@ -166,10 +166,10 @@ export const seedData = async () => {
         msrp: 27500,
         description: 'A stylish and reliable compact sedan with great fuel economy.',
         imageUrls: [
-          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577357/Gemini_Generated_Image_wptstcwptstcwpts_gnwqlb.png',
-          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577355/Gemini_Generated_Image_w8h0xiw8h0xiw8h0_b8hbrb.png',
-          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577367/Gemini_Generated_Image_a0yv1za0yv1za0yv_iccl2y.png',
-          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577366/Gemini_Generated_Image_7r4dqv7r4dqv7r4d_j56bvb.png'
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761591517/Gemini_Generated_Image_wptstcwptstcwpts_blot2w.webp',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761591516/Gemini_Generated_Image_w8h0xiw8h0xiw8h0_oqs9le.webp',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761591515/Gemini_Generated_Image_a0yv1za0yv1za0yv_abjb92.webp',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761591514/Gemini_Generated_Image_7r4dqv7r4dqv7r4d_gwxb8b.webp'
         ],
         interior: ['Fabric seats', 'Touchscreen display', 'Bluetooth connectivity'],
         exterior: ['LED daytime running lights', '16-inch alloy wheels'],
@@ -202,10 +202,10 @@ export const seedData = async () => {
         msrp: 48000,
         description: 'The best-selling truck in America, built to handle any job.',
         imageUrls: [
-          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577366/Gemini_Generated_Image_9v4gxv9v4gxv9v4g_adtk09.png',
-          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577365/Gemini_Generated_Image_v0pi7yv0pi7yv0pi_ftqbsu.png',
-          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577364/Gemini_Generated_Image_aztfdpaztfdpaztf_obpn7j.png',
-          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577363/Gemini_Generated_Image_7ns1bz7ns1bz7ns1_krczzm.png'
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761591514/Gemini_Generated_Image_9v4gxv9v4gxv9v4g_wpwvh1.webp',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761591514/Gemini_Generated_Image_v0pi7yv0pi7yv0pi_jxl3hp.webp',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761591513/Gemini_Generated_Image_aztfdpaztfdpaztf_aomrfx.webp',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761591746/Gemini_Generated_Image_7ns1bz7ns1bz7ns1_ayszln.webp'
         ],
         interior: ['Cloth seats', 'Rearview camera', 'SYNC 4 infotainment'],
         exterior: ['Fog lights', 'Tow package', 'Running boards'],
@@ -238,10 +238,10 @@ export const seedData = async () => {
         msrp: 41500,
         description: 'An all-electric sedan with incredible performance and range.',
         imageUrls: [
-          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577362/Gemini_Generated_Image_1mgk5t1mgk5t1mgk_j9cys6.png',
-          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577363/Gemini_Generated_Image_96hjby96hjby96hj_r4x2cc.png',
-          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577361/Gemini_Generated_Image_7ncwta7ncwta7ncw_djzxtb.png',
-          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577361/Gemini_Generated_Image_2c4tne2c4tne2c4t_iu0i7a.png'
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761591529/Gemini_Generated_Image_1mgk5t1mgk5t1mgk_du7byo.webp',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761591528/Gemini_Generated_Image_96hjby96hjby96hj_lm3pd7.webp',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761591527/Gemini_Generated_Image_7ncwta7ncwta7ncw_lz4esc.webp',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761591526/Gemini_Generated_Image_2c4tne2c4tne2c4t_iucb03.webp'
         ],
         interior: ['Vegan leather seats', 'Touchscreen dashboard', 'Autopilot controls'],
         exterior: ['Glass roof', 'Flush door handles', 'LED taillights'],
@@ -274,10 +274,10 @@ export const seedData = async () => {
         msrp: 43500,
         description: 'An iconic off-road vehicle with legendary capability.',
         imageUrls: [
-          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577360/Gemini_Generated_Image_w9f3caw9f3caw9f3_l9lirf.png',
-          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577359/Gemini_Generated_Image_xl711qxl711qxl71_qks44s.png',
-          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577358/Gemini_Generated_Image_qzic8lqzic8lqzic_yxknkn.png',
-          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577374/Gemini_Generated_Image_uue24uuue24uuue2_zfbyma.png'
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761591723/Gemini_Generated_Image_w9f3caw9f3caw9f3_raoqfa.webp',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761591721/Gemini_Generated_Image_xl711qxl711qxl71_syj0qa.webp',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761591720/Gemini_Generated_Image_qzic8lqzic8lqzic_gl3cfm.webp',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761591718/Gemini_Generated_Image_uue24uuue24uuue2_nf1hjf.webp'
         ],
         interior: ['Wash-out interior', 'Apple CarPlay', 'Uconnect system'],
         exterior: ['Removable roof', 'LED headlights', 'Skid plates'],
@@ -314,7 +314,7 @@ export const seedData = async () => {
         category: 'reviews',
         status: 'published',
         featuredImage:
-          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577358/Gemini_Generated_Image_vzn4jxvzn4jxvzn4_kkbx2t.png',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761591717/Gemini_Generated_Image_2cibe02cibe02cib_z1y8qo.webp',
         content: `
 The 2024 Toyota Camry continues its reputation as one of the most dependable sedans on the market. Known for its refined performance and comfort, the Camry blends practicality with a touch of sportiness. Its updated exterior design — sleek lines, aggressive grille, and LED headlights — gives it a modern yet timeless look that appeals to families and professionals alike.
 
@@ -338,7 +338,7 @@ If you’re seeking a car that offers strong resale value, top-tier reliability,
         category: 'comparisons',
         status: 'published',
         featuredImage:
-          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577357/Gemini_Generated_Image_wptstcwptstcwpts_gnwqlb.png',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761591711/Gemini_Generated_Image_wptstcwptstcwpts_vdtw6q.webp',
         content: `
 When it comes to compact and mid-size sedans, the Honda Civic and Toyota Camry often dominate the conversation. The Civic is celebrated for its sporty handling, stylish interior, and impressive fuel economy, while the Camry offers a more spacious cabin and a smooth, refined ride that prioritizes comfort.
 
@@ -363,7 +363,7 @@ Ultimately, the Civic appeals to younger drivers looking for fun and efficiency,
         category: 'technology',
         status: 'published',
         featuredImage:
-          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577362/Gemini_Generated_Image_1mgk5t1mgk5t1mgk_j9cys6.png',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761591529/Gemini_Generated_Image_1mgk5t1mgk5t1mgk_du7byo.webp',
         content: `
 The electric vehicle (EV) revolution is reshaping the automotive landscape faster than ever before. Brands like Tesla, Rivian, and Hyundai are pushing the boundaries of performance and sustainability. The Tesla Model 3, for instance, combines sleek design with industry-leading battery efficiency, giving drivers both style and peace of mind.
 
@@ -387,7 +387,7 @@ Looking ahead, innovations like solid-state batteries, wireless charging, and AI
         category: 'news',
         status: 'published',
         featuredImage:
-          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577360/Gemini_Generated_Image_w9f3caw9f3caw9f3_l9lirf.png',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761591723/Gemini_Generated_Image_w9f3caw9f3caw9f3_raoqfa.webp',
         content: `
 The Jeep Wrangler has always been the symbol of adventure — and the 2023 model continues that legacy with even more capability and tech upgrades. It retains its rugged body-on-frame design, removable roof panels, and classic seven-slot grille while introducing modern comforts and safety enhancements.
 
@@ -411,7 +411,7 @@ Whether you’re conquering muddy tracks or cruising through Lagos traffic, the 
         category: 'maintenance',
         status: 'published',
         featuredImage:
-          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761577366/Gemini_Generated_Image_9v4gxv9v4gxv9v4g_adtk09.png',
+          'https://res.cloudinary.com/dn2tbatgr/image/upload/v1761591706/Gemini_Generated_Image_9v4gxv9v4gxv9v4g_dek36i.webp',
         content: `
 Your truck works hard — so keeping it in top shape ensures it lasts for years to come. The Ford F-150, known for its durability and power, benefits greatly from consistent maintenance. Regular oil changes, tire rotations, and brake inspections can prevent costly breakdowns and extend your truck’s lifespan.
 
