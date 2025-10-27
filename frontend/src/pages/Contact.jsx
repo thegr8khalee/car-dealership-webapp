@@ -12,12 +12,12 @@ const Contact = () => {
     phone: '',
     message: '',
   });
-  const showroomLatitude = 10.526371; // Example Latitude (e.g., for Lagos, Nigeria)
-  const showroomLongitude = 7.401133; // Example Longitude (e.g., for Lagos, Nigeria)
+  const showroomLatitude = 9.053328635799218; // Example Latitude (e.g., for Lagos, Nigeria)
+  const showroomLongitude = 7.475317593815377; // Example Longitude (e.g., for Lagos, Nigeria)
   const googleMapsApiKey = import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API_KEY;
   const googleMapsEmbedUrl = `https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${showroomLatitude},${showroomLongitude}&center=${showroomLatitude},${showroomLongitude}&zoom=17`;
 
-//   const descriptiveAddress = 'C16 Bamaiyi Road, Kaduna Nigeria.';
+  //   const descriptiveAddress = 'C16 Bamaiyi Road, Kaduna Nigeria.';
 
   return (
     <div className="font-[poppins] min-h-screen items-center justify-center">
@@ -33,17 +33,14 @@ const Contact = () => {
             </p>
             <p className="mb-2">
               Email:{' '}
-              <a href="mailto:info@cardealership.com" className="text-blue-500">
-                info@cardealership.com
+              <a href="mailto:info@sarkinmota.com" className="text-blue-500">
+                info@sarkinmota.com
               </a>
             </p>
-            <p className="mb-2">
-              Phone:{' '}
-              <a href="tel:+1234567890" className="text-blue-500">
-                (123) 456-7890
-              </a>
+            <p>
+              Phone: <a href="tel:+234701 513 6111">+234 701 5136 111</a>
             </p>
-            <p className="mb-2">Address: 123 Main St, Anytown, USA</p>
+            <p className="mb-2">Address: 3F3G+74Q, Olusegun Obasanjo Wy, beside NNPC Mega Gas Station, Central Business Dis, Abuja 900103, Federal Capital Territory.</p>
           </div>
           <div className="bg-white shadow-lg rounded-3xl h-full w-full p-4 items-center justify-center">
             <h1 className="font-[poppins] text-2xl font-bold mt-2">
@@ -175,9 +172,10 @@ const Contact = () => {
           <div className="flex flex-col justify-center">
             <h1 className="text-4xl font-bold mb-4">Our Location</h1>
             <p className="mb-2">
-              Visit us at our dealership! We're located at 123 Main St, Anytown,
-              USA. Our friendly team is ready to assist you with all your car
-              needs.
+              Visit us at our dealership! We're located at 3F3G+74Q, Olusegun
+              Obasanjo Wy, beside NNPC Mega Gas Station, Central Business Dis,
+              Abuja 900103, Federal Capital Territory. Our friendly team is
+              ready to assist you with all your car needs.
             </p>
             <h3>Opening Hours</h3>
             <ul className="list-disc list-inside">
@@ -217,16 +215,32 @@ const Contact = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 w-full max-w-7xl">
           <div className="flex flex-col">
-            <h2 className="text-2xl font-semibold font-[poppins] mb-2">Support</h2>
+            <h2 className="text-2xl font-semibold font-[poppins] mb-2">
+              Support
+            </h2>
             <p>If you need assistance, please contact our support team.</p>
-            <p>Email: <a href="mailto:support@example.com">support@example.com</a></p>
-            <p>Phone: <a href="tel:+1234567890">(123) 456-7890</a></p>
+            <p>
+              Email:{' '}
+              <a href="mailto:support@sarkinmota.com">support@sarkinmota.com</a>
+            </p>
+            <p>
+              Phone: <a href="tel:+234701 513 6111">+234 701 5136 111</a>
+            </p>
           </div>
           <div className="flex flex-col">
-            <h2 className="text-2xl font-semibold font-[poppins] mb-2">Sales Inquiries</h2>
-            <p>If you're interested in purchasing a vehicle, please contact our sales team.</p>
-            <p>Email: <a href="mailto:sales@example.com">sales@example.com</a></p>
-            <p>Phone: <a href="tel:+1234567890">(123) 456-7890</a></p>
+            <h2 className="text-2xl font-semibold font-[poppins] mb-2">
+              Sales Inquiries
+            </h2>
+            <p>
+              If you're interested in purchasing a vehicle, please contact our
+              sales team.
+            </p>
+            <p>
+              Email: <a href="mailto:sales@sarkinmota.com">sales@sarkinmota.com</a>
+            </p>
+            <p>
+              Phone: <a href="tel:+234701 513 6111">+234 701 5136 111</a>
+            </p>
           </div>
         </div>
       </div>

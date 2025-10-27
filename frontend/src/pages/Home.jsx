@@ -311,24 +311,27 @@ const Home = () => {
           </div> */}
           <div className="w-full flex justify-end pr-2">
             <button
-              className="btn btn-primary btn-lg rounded-full"
+              className="btn btn-primary rounded-full"
               onClick={handleListingsClick}
             >
               View All
-              <ArrowUpRight className="stroke-whitesize-5 ml-1" />
+              <ArrowUpRight className="size-5" />
             </button>
           </div>
         </section>
         <section id="makes" className="w-full p-4">
-          <h6 className="text-primary font-[poppins]">Top Makes</h6>
+          {/* <h6 className="text-primary font-[poppins]">Top Makes</h6> */}
           <div className="flex w-full justify-between">
-            <div>
+            <div className="flex items-center justify-between w-full">
               <h1 className="font-bold text-xl font-[poppins]">
                 Explore Our Top Makes
-              </h1>
-            </div>
-            <div className="text-sm font-[poppins] flex items-end">
-              View All <ArrowUpRight className="size-5" />
+              </h1>{' '}
+              <button
+                onClick={() => navigate('/makes')}
+                className="rounded-full btn btn-primary"
+              >
+                View All <ArrowUpRight className="size-5" />
+              </button>
             </div>
           </div>
           <div className="mt-2 flex overflow-x-auto w-full space-x-2">
@@ -527,11 +530,6 @@ const Home = () => {
         <section id="blogs" className="w-full p-4 py-8">
           <div className="flex w-full justify-between items-center">
             <h1 className="font-[poppins] text-2xl font-bold">Recent Blogs</h1>
-            <div>
-              <Link to="/blogs" className="text-primary flex">
-                View All <ArrowUpRight />
-              </Link>
-            </div>
           </div>
 
           <div className="w-full flex space-x-4 overflow-x-auto ">
@@ -550,6 +548,14 @@ const Home = () => {
                   />
                 ))
             )}
+          </div>
+          <div className="w-full flex items-end justify-end">
+            <button
+              onClick={() => navigate('/blogs')}
+              className="btn btn-primary rounded-full flex"
+            >
+              View All <ArrowUpRight className="size-5" />
+            </button>
           </div>
         </section>
         <section id="Calc" className="relative w-full">
@@ -803,21 +809,22 @@ const Home = () => {
         </section>
         <section id="listings" className="w-full p-4 pr-0">
           <div className="w-full max-w-6xl mx-auto">
-            <h1 className="text-xl font-semibold font-[poppins] mb-2">
-              Explore All Cars
-            </h1>
+            <div className="flex w-full justify-between items-center">
+              <h1 className="text-xl font-semibold font-[poppins] mb-2">
+                Explore All Cars
+              </h1>
+              <button
+                className="btn btn-primary rounded-full"
+                onClick={handleListingsClick}
+              >
+                View All
+                <ArrowUpRight className="stroke-whitesize-5" />
+              </button>
+            </div>
+
             <div className="flex w-full justify-between">
-              <div className="flex flex-shrink-0 space-x-8 border-gray-200">
-              </div>
-              <div className="w-full flex justify-end pr-2">
-                <button
-                  className="btn btn-primary rounded-full"
-                  onClick={handleListingsClick}
-                >
-                  View All
-                  <ArrowUpRight className="stroke-whitesize-5 ml-1" />
-                </button>
-              </div>
+              <div className="flex flex-shrink-0 space-x-8 border-gray-200"></div>
+              <div className="w-full flex justify-end pr-2"></div>
             </div>
 
             <div className="flex overflow-x-auto w-full space-x-2 pl-1">
@@ -850,16 +857,19 @@ const Home = () => {
         </section>
         <section id="makes" className="w-full p-4 items-start justify-center">
           <div className="w-full max-w-6xl mx-auto">
-            <h6 className="text-primary font-[poppins]">Top Makes</h6>
+            {/* <h6 className="text-primary font-[poppins]">Top Makes</h6> */}
             <div className="flex w-full justify-between">
               <div>
                 <h1 className="font-bold text-xl font-[poppins]">
                   Explore Our Top Makes
                 </h1>
               </div>
-              <div className="text-sm font-[poppins] flex items-end">
+              <button
+                onClick={() => navigate('/makes')}
+                className="btn btn-primary rounded-full"
+              >
                 View All <ArrowUpRight className="size-5" />
-              </div>
+              </button>
             </div>
             <div className="mt-2 flex overflow-x-auto w-full space-x-10">
               {[
@@ -1083,9 +1093,12 @@ const Home = () => {
                 Recent Blogs
               </h1>
               <div>
-                <Link to="/blogs" className="text-primary flex">
+                <button
+                  onClick={() => navigate('/blogs')}
+                  className="btn btn-primary rounded-full flex"
+                >
                   View All <ArrowUpRight />
-                </Link>
+                </button>
               </div>
             </div>
 
