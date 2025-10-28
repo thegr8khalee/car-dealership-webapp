@@ -52,34 +52,34 @@ const UpdateCarPage = () => {
         console.log('Data fetched for car ID:', id, data); // Debug log
         if (data) {
           setFormData({
-            make: data.make || '',
-            model: data.model || '',
-            price: data.price || '',
-            condition: data.condition || '',
-            msrp: data.msrp || '',
-            mileage: data.mileage || '',
-            fuelType: data.fuelType || '',
-            transmission: data.transmission || '',
-            year: data.year || '',
-            bodyType: data.bodyType || '',
-            engineSize: data.engineSize || '',
-            horsepower: data.horsepower || '',
-            torque: data.torque || '',
-            drivetrain: data.drivetrain || '',
-            description: data.description || '',
-            sold: data.sold || false,
-            interior: data.interior || [],
-            exterior: data.exterior || [],
-            comfort: data.comfort || [],
-            safety: data.safety || [],
-            door: data.door || '',
-            color: data.color || '',
-            cylinder: data.cylinder || '',
-            length: data.length || '',
-            width: data.width || '',
-            trunkCapacity: data.trunkCapacity || '',
-            tireSize: data.tireSize || '',
-            zeroToHundred: data.zeroToHundred || '',
+            make: data.car.make || '',
+            model: data.car.model || '',
+            price: data.car.price || '',
+            condition: data.car.condition || '',
+            msrp: data.car.msrp || '',
+            mileage: data.car.mileage || '',
+            fuelType: data.car.fuelType || '',
+            transmission: data.car.transmission || '',
+            year: data.car.year || '',
+            bodyType: data.car.bodyType || '',
+            engineSize: data.car.engineSize || '',
+            horsepower: data.car.horsepower || '',
+            torque: data.car.torque || '',
+            drivetrain: data.car.drivetrain || '',
+            description: data.car.description || '',
+            sold: data.car.sold || false,
+            interior: data.car.interior || [],
+            exterior: data.car.exterior || [],
+            comfort: data.car.comfort || [],
+            safety: data.car.safety || [],
+            door: data.car.door || '',
+            color: data.car.color || '',
+            cylinder: data.car.cylinder || '',
+            length: data.car.length || '',
+            width: data.car.width || '',
+            trunkCapacity: data.car.trunkCapacity || '',
+            tireSize: data.car.tireSize || '',
+            zeroToHundred: data.car.zeroToHundred || '',
           });
           const existingImages = data.imageUrls || [];
           const processedImages = existingImages.map((img) => {
@@ -107,10 +107,10 @@ const UpdateCarPage = () => {
           );
 
           setCustomFeatures({
-            interior: data.interior || [],
-            exterior: data.exterior || [],
-            comfort: data.comfort || [],
-            safety: data.safety || [],
+            interior: data.car.interior || [],
+            exterior: data.car.exterior || [],
+            comfort: data.car.comfort || [],
+            safety: data.car.safety || [],
           });
         } else {
           console.error('Failed to fetch car data');
@@ -118,10 +118,10 @@ const UpdateCarPage = () => {
       }
     };
     fetchData();
-  }, [id, getCarById]);
+  }, [id]);
 
-  const [images, setImages] = useState(car?.imageUrls || []);
-  const [imagePreview, setImagePreview] = useState(car?.imageUrls || []);
+  const [images, setImages] = useState([]);
+const [imagePreview, setImagePreview] = useState([]);
 //   console.log('Initial Images:', imagePreview); // Debug log
   //   const [isLoading, setIsLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
