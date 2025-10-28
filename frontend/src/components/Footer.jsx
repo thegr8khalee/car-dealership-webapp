@@ -40,11 +40,11 @@ const Footer = () => {
           <a href="/about" className="hover:text-primary transition-colors">
             About
           </a>
-          <a href="/services" className="hover:text-primary transition-colors">
-            Services
+          <a href="/blogs" className="hover:text-primary transition-colors">
+            Blogs
           </a>
-          <a href="/inventory" className="hover:text-primary transition-colors">
-            Inventory
+          <a href="/listings" className="hover:text-primary transition-colors">
+            Listings
           </a>
           <a href="/contact" className="hover:text-primary transition-colors">
             Contact
@@ -55,7 +55,7 @@ const Footer = () => {
         </div>
 
         <div className="text-sm text-gray-400">
-          &copy; {new Date().getFullYear()} Car Dealership. All rights reserved.
+          &copy; {new Date().getFullYear()} Sarkin Mota Automobile. All rights reserved.
         </div>
       </div>
     </footer>
