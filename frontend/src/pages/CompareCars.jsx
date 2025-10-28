@@ -19,6 +19,7 @@ import transmission from '../images/transmission.png';
 import date from '../images/date.png';
 import gas from '../images/gas.png';
 import CarCard from '../components/CarCard';
+import CarCardSuggestion from '../components/ComparisonSuggestion';
 
 const CompareCars = () => {
   const navigate = useNavigate();
@@ -122,6 +123,14 @@ const CompareCars = () => {
             <ComparisonRow label="Horsepower" value={`${car.horsepower} hp`} />
             <ComparisonRow label="Torque" value={`${car.torque} Nm`} />
             <ComparisonRow label="0-100 km/h" value={`${car.zeroToHundred}s`} />
+          </div>
+          <div className="mt-6 w-full justify-end flex">
+            <button 
+            onClick={() => navigate(`/car/${car.id}`)}
+            className='btn btn-primary rounded-full'>
+              View Details
+              <ArrowUpRight className="stroke-secondary size-5 ml-1" />
+            </button>
           </div>
         </div>
       </div>
@@ -349,7 +358,7 @@ const CompareCars = () => {
             <h2 className="text-2xl font-bold mb-4">Suggested Cars to Compare</h2>
             <div className="flex overflow-x-auto gap-4 pb-4">
               {relatedCars.map((car) => (
-                <CarCard
+                <CarCardSuggestion
                   key={car.id}
                   className="flex-shrink-0"
                   image={car.imageUrls[0]}
@@ -363,7 +372,7 @@ const CompareCars = () => {
                   fuel={{ icon: gas, value: car.fuelType }}
                   year={{ icon: date, value: car.year }}
                   price={car.price}
-                  link={`/car/${car.id}`}
+                  link={() => handleSelectCar(car)}
                 />
               ))}
             </div>

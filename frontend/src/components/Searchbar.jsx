@@ -682,7 +682,7 @@ const CarSearchBar = () => {
                 </span>
                 <button
                   onClick={clearAllFilters}
-                  className="text-primary hover:text-primary/80 font-medium"
+                  className=" hover:text-primary/80 font-medium"
                 >
                   Clear Search
                 </button>
@@ -703,7 +703,7 @@ const CarSearchBar = () => {
                     fuel={{ icon: gas, value: relatedCar.fuelType }}
                     year={{ icon: date, value: relatedCar.year }}
                     price={relatedCar.price}
-                    link={`/cars/${relatedCar.id}`}
+                    link={`/car/${relatedCar.id}`}
                   />
                 ))}
               </div>

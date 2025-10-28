@@ -298,12 +298,12 @@ const CarDetails = () => {
           >
             {/* Image Gallery */}
             {car?.imageUrls && car?.imageUrls.length > 0 && (
-              <div className="relative flex justify-center items-center">
+              <div className="relative flex justify-center items-center h-[40vh]">
                 {/* Prev button */}
                 <button
                   onClick={prevImage}
                   disabled={images.length <= 1}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 btn btn-circle bg-white/50 backdrop-blur-md shadow-lg border-0"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/50 backdrop-blur-md shadow-lg border-0 rounded-full p-3 hover:scale-100 active:scale-100 transition-none"
                   aria-label="Previous Image"
                 >
                   <ChevronLeft className="size-6" />
@@ -326,7 +326,7 @@ const CarDetails = () => {
                 <button
                   onClick={nextImage}
                   disabled={images.length <= 1}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 btn btn-circle bg-white/50 backdrop-blur-md shadow-lg border-0"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/50 backdrop-blur-md shadow-lg border-0 rounded-full p-3 hover:scale-100 active:scale-100 transition-none"
                   aria-label="Next Image"
                 >
                   <ChevronRight className="size-6" />
@@ -1115,33 +1115,28 @@ const CarDetails = () => {
                 </button>
               </div>
             </div>
-            <div className="relative flex justify-center items-center my-4 h-full">
+            <div className="relative flex justify-center items-center my-4 h-[70vh]">
               <button
-                className="absolute left-2 top-1/2 -translate-y-1/2 btn btn-circle bg-white/50 backdrop-blur-md shadow-lg border-0"
+                className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/50 backdrop-blur-md shadow-lg border-0 rounded-full p-3 hover:scale-100 active:scale-100 transition-none"
                 aria-label="Previous Image"
-                onClick={() => prevImage()}
+                onClick={prevImage}
               >
                 <ChevronLeft className="size-6" />
               </button>
+
               <img
                 src={car?.imageUrls[currentIndex]}
                 alt="m4"
-                className="rounded-xl w-full h-full max-h-[70vh] object-cover"
+                className="rounded-xl w-full h-full object-cover"
               />
+
               <button
-                className="absolute right-2 top-1/2 -translate-y-1/2 btn btn-circle bg-white/50 backdrop-blur-md shadow-lg border-0"
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/50 backdrop-blur-md shadow-lg border-0 rounded-full p-3 hover:scale-100 active:scale-100 transition-none"
                 aria-label="Next Image"
-                onClick={() => nextImage()}
+                onClick={nextImage}
               >
                 <ChevronRight className="size-6" />
               </button>
-              {/* Video button */}
-              {/* <button
-                className="absolute left-4 bottom-4 btn rounded-full shadow-lg bg-black text-white border-0"
-                aria-label="Play Video"
-              >
-                <Video className="size-5" /> Video
-              </button> */}
             </div>
           </section>
           <section id="key-specs" className="w-full my-8">
@@ -1169,6 +1164,99 @@ const CarDetails = () => {
               </div>
             </div>
 
+            <button
+              className="mt-6 btn btn-primary w-full h-15 rounded-full font-bold text-lg"
+              onClick={() => document.getElementById('Contact-1').showModal()}
+            >
+              Contact Us
+            </button>
+
+            <dialog id="Contact-1" className="modal">
+              <div className="modal-box bg-white p-6 py-8 rounded-2xl shadow-xl">
+                <button
+                  className="btn btn-circle bg-transparent border-0 shadow-none btn-sm absolute right-2 top-2"
+                  onClick={() => document.getElementById('Contact-1').close()}
+                >
+                  <X className="size-5" />
+                </button>
+                <h2 className="text-2xl font-semibold mb-4">Contact Us Now!</h2>
+                <div className="w-full flex justify-between my-4 space-x-2">
+                  <button className="btn btn-lg bg-blue-500 rounded-full w-full flex-1 shadow-none border-none">
+                    <Phone className="size-6 fill-white stroke-white" />
+                  </button>
+                  <button className="text-white btn btn-lg bg-green-500 rounded-full w-full flex-1 shadow-none border-none">
+                    <img
+                      src={whatsapp}
+                      alt="WhatsApp"
+                      className="size-6 fill-white stroke-white"
+                    />
+                  </button>
+                </div>
+                <form action="" className="space-y-4">
+                  <div className="relative">
+                    <input
+                      type="email"
+                      name="email"
+                      value={testDriveFormData.email}
+                      onChange={handleTestDriveChange}
+                      className="peer w-full px-3 pt-6 pb-2 text-lg font-medium border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200"
+                      placeholder=" "
+                    />
+                    <label
+                      htmlFor="name"
+                      className={`absolute left-3 transition-all duration-300 text-gray-400 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary ${
+                        testDriveFormData.name && 'top-2 text-xs text-primary'
+                      }`}
+                    >
+                      Email
+                    </label>
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="email"
+                      name="subject"
+                      value={testDriveFormData.subject}
+                      onChange={handleTestDriveChange}
+                      className="peer w-full px-3 pt-6 pb-2 text-lg font-medium border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200"
+                      placeholder=" "
+                    />
+                    <label
+                      htmlFor="email"
+                      className={`absolute left-3 transition-all duration-300 text-gray-400 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary ${
+                        testDriveFormData.email && 'top-2 text-xs text-primary'
+                      }`}
+                    >
+                      Subject
+                    </label>
+                  </div>
+                  <div className="relative">
+                    <textarea
+                      name="message"
+                      value={testDriveFormData.message}
+                      onChange={handleTestDriveChange}
+                      className="peer w-full px-3 pt-6 pb-2 text-lg font-medium border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200"
+                      placeholder=" "
+                    />
+                    <label
+                      htmlFor="message"
+                      className={`absolute left-3 transition-all duration-300 text-gray-400 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary ${
+                        testDriveFormData.message &&
+                        'top-2 text-xs text-primary'
+                      }`}
+                    >
+                      Message
+                    </label>
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full h-15 mt-2 text-white btn-primary btn-lg text-lg rounded-xl font-semibold"
+                  >
+                    Send Us a Message
+                  </button>
+                </form>
+              </div>
+            </dialog>
+
             <div className="my-4">
               <div className="w-full flex justify-between space-x-4">
                 <div className="bg-white p-6 rounded-2xl shadow-xl w-full">
@@ -1182,7 +1270,7 @@ const CarDetails = () => {
                         name="name"
                         value={testDriveFormData.name}
                         onChange={handleTestDriveChange}
-                        className="peers w-full px-3 pt-6 pb-2 text-lg font-medium border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200"
+                        className="peer w-full px-3 pt-6 pb-2 text-lg font-medium border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200"
                         placeholder=" "
                       />
                       <label

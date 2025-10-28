@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
 
 const CarList = ({
@@ -8,8 +8,11 @@ const CarList = ({
   price,
   link = '#',
 }) => {
+  const navigate = useNavigate();
   return (
-    <div className="flex bg-base-100 rounded-lg">
+    <button
+      onClick={() => navigate(link)}
+      className="flex bg-base-100 rounded-lg">
       <figure className='w-[30%]'>
         <img src={image} alt={title} className="w-full object-cover" />
       </figure>
@@ -24,15 +27,15 @@ const CarList = ({
         {/* Price + Link */}
         <div className="flex justify-between items-center">
           <h1 className="font-semibold text-xl">N{price}</h1>
-          <div className="flex items-center">
+          {/* <div className="flex items-center">
             <Link to={link} className="text-primary text-sm">
               View Details
             </Link>
             <ArrowUpRight className="stroke-primary size-5 ml-1" />
-          </div>
+          </div> */}
         </div>
       </div>
-    </div>
+    </button>
   );
 };
 
