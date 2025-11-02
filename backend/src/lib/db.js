@@ -5,38 +5,46 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const sequelize = new Sequelize({
-  database: process.env.DB_NAME || 'car_blog',
-  username: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  host: process.env.DB_HOST || 'localhost',
-  port: process.env.DB_PORT || 3306,
-  dialect: 'mysql', // or 'postgres', 'sqlite', 'mariadb'
-  
-  // Connection pool configuration
+  database: process.env.MYSQLDATABASE || 'car_blog',
+  username: process.env.MYSQLUSER || 'root',
+  password: process.env.MYSQLPASSWORD || '',
+  host: process.env.MYSQLHOST || 'localhost',
+  port: process.env.MYSQLPORT || 3306,
+  dialect: 'mysql',
+
+  // Connection pool
   pool: {
     max: 20,
     min: 0,
     acquire: 60000,
     idle: 10000
   },
-  
-  // Logging configuration
+
+  // Logging
   logging: process.env.NODE_ENV === 'development' ? console.log : false,
-  
-  // Timezone configuration
+
+  // Timezone
   timezone: '+00:00',
-  
-  // Additional options
+
+  // Model definition defaults
   define: {
     timestamps: true,
     underscored: false,
     paranoid: false,
     freezeTableName: false,
   },
-  
-  // Retry configuration
+
+  // Retry on failure
   retry: {
     max: 3
+  },
+
+  // SSL for Railway
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false
+    }
   }
 });
 
@@ -86,12 +94,12 @@ export const databaseConfig = {
 };
 
 // scripts/setup-database.js - Setup script
-import models, { 
-  syncDatabase, 
-  testConnection, 
-  seedData, 
+import models, {
+  syncDatabase,
+  testConnection,
+  seedData,
   resetDatabase,
-  closeDatabase 
+  closeDatabase
 } from '../models/index.js';
 
 const setupDatabase = async () => {
@@ -101,15 +109,15 @@ const setupDatabase = async () => {
     // Test connection
     console.log('1. Testing database connection...');
     await testConnection();
-    
+
     // Sync database (create tables)
     console.log('\n2. Synchronizing database schema...');
     await syncDatabase({ alter: true });
-    
+
     // Seed initial data
     console.log('\n3. Seeding initial data...');
     await seedData();
-    
+
     console.log('\n✅ Database setup completed successfully!');
     console.log('\n📊 Database Statistics:');
     console.log(`- Models created: ${Object.keys(models).length - 1}`); // -1 for sequelize instance
@@ -129,7 +137,7 @@ const setupDatabase = async () => {
 // Run setup if this file is executed directly
 if (process.argv[1] === new URL(import.meta.url).pathname) {
   const command = process.argv[2];
-  
+
   switch (command) {
     case 'setup':
       setupDatabase();
