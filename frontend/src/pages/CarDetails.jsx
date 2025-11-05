@@ -38,9 +38,13 @@ import Review from '../components/Review';
 import toast from 'react-hot-toast';
 import { useInteractStore } from '../store/useInteractStore';
 import { useUserAuthStore } from '../store/useUserAuthStore';
+import branding from '../config/branding';
+
+const BRAND_COLORS = branding.branding.colors;
 
 const CarDetails = () => {
   const { id } = useParams();
+  const primaryColor = BRAND_COLORS.primary;
   // console.log('Car ID from params:', id);
   const { car: currentCar, getCarById, isLoading } = useCarStore();
   const { authUser } = useUserAuthStore();
@@ -133,10 +137,10 @@ const CarDetails = () => {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
-      fill={filled ? '#f0c710' : 'none'}
-      stroke="#f0c710"
+      fill={filled ? primaryColor : 'none'}
+      stroke={primaryColor}
       strokeWidth="1.5"
-      className="size-5 transition-transform duration-200 cursor-pointer text-yellow-400"
+  className="size-5 transition-transform duration-200 cursor-pointer text-primary"
       onClick={onClick}
     >
       <path d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.6l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.6l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
@@ -2022,20 +2026,9 @@ const OverallRatingDisplay = ({ overallRating }) => {
 
   // Determine the color based on the rating value
   let strokeColor = '#9CA3AF'; // Gray-400
-  let textColor = 'text-gray-500';
 
   if (overallRating > 0) {
-    if (overallRating >= 4) {
-      strokeColor = '#f0c710'; // Green-500
-      textColor = '#f0c710';
-    } else if (overallRating >= 3) {
-      strokeColor = '#f0c710'; // Yellow-400
-      textColor = '#f0c710';
-    } else {
-      strokeColor = 'primary'; // Rose-400
-      // eslint-disable-next-line no-unused-vars
-      textColor = '#f0c710';
-    }
+    strokeColor = BRAND_COLORS.primary;
   }
 
   return (
