@@ -165,29 +165,29 @@ const Home = () => {
   return (
     <div className="bg-base-200">
       <div id="mobile view" className="sm:hidden">
-        <section id="hero" className="relative w-full h-110">
+        <section id="hero" className="relative w-full min-h-screen">
           <img
             src={Hero}
             alt="Hero Background"
             className="absolute inset-0 w-full h-full object-cover"
           />
 
-          <div className="absolute inset-x-0 bottom-28 text-center">
-            <h1 className="text-white text-4xl font-bold font-[poppins] drop-shadow-[0_6px_12px_rgba(0,0,0,1)]">
+          <div className="absolute inset-x-0 bottom-44 text-start px-4">
+            <h1 className="text-white text-6xl font-bold font-[poppins] drop-shadow-[0_6px_12px_rgba(0,0,0,1)]">
               Search Less. Live More.
             </h1>
           </div>
 
-          <div className="absolute bottom-15 inset-x-0 text-center z-10 space-x-2">
+          <div className="absolute px-4  flex flex-col space-y-4 bottom-15 inset-x-0 text-center z-10 space-x-2">
             <button
-              className="btn btn-primary rounded-full font-medium"
+              className="btn btn-lg btn-primary rounded-full font-medium"
               onClick={handleListingsClick}
             >
               Browse Cars
             </button>
             <button
               onClick={() => navigate('/contact')}
-              className="btn backdrop-blur-lg bg-secondary/30 border-none shadow-none text-white rounded-full font-medium"
+              className="btn btn-lg backdrop-blur-lg bg-secondary/30 border-none shadow-none text-white rounded-full font-medium"
             >
               Contact Us
             </button>
