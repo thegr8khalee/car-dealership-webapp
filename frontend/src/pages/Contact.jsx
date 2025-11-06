@@ -1,5 +1,5 @@
-import { Phone } from 'lucide-react';
 import React, { useState } from 'react';
+import branding from '../config/branding';
 
 const Contact = () => {
   const [isFocusedMessage, setIsFocusedMessage] = useState(false);
@@ -12,12 +12,46 @@ const Contact = () => {
     phone: '',
     message: '',
   });
-  const showroomLatitude = 9.053328635799218; // Example Latitude (e.g., for Lagos, Nigeria)
-  const showroomLongitude = 7.475317593815377; // Example Longitude (e.g., for Lagos, Nigeria)
-  const googleMapsApiKey = import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API_KEY;
-  const googleMapsEmbedUrl = `https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${showroomLatitude},${showroomLongitude}&center=${showroomLatitude},${showroomLongitude}&zoom=17`;
+  const contactInfo = branding.contact ?? {};
+  const getPhoneDetails = (phone) => ({
+    display: phone?.display || phone?.value || '',
+    value: phone?.value || phone?.display || '',
+  });
 
-  //   const descriptiveAddress = 'C16 Bamaiyi Road, Kaduna Nigeria.';
+  const mainPhone = getPhoneDetails(contactInfo.phones?.main);
+  const supportPhone = getPhoneDetails(contactInfo.phones?.support);
+  const salesPhone = getPhoneDetails(contactInfo.phones?.sales);
+
+  const address = contactInfo.address ?? {};
+  const addressText =
+    address.formatted ||
+    [address.line1, address.line2, address.city, address.region, address.country]
+      .filter(Boolean)
+      .join(', ');
+
+  const fallbackLocation = {
+    latitude: 9.053328635799218,
+    longitude: 7.475317593815377,
+  };
+
+  const location = {
+    latitude:
+      typeof contactInfo.location?.latitude === 'number'
+        ? contactInfo.location.latitude
+        : fallbackLocation.latitude,
+    longitude:
+      typeof contactInfo.location?.longitude === 'number'
+        ? contactInfo.location.longitude
+        : fallbackLocation.longitude,
+  };
+
+  const googleMapsApiKey = import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API_KEY;
+  const hasLocation =
+    location.latitude !== null && location.longitude !== null;
+  const googleMapsEmbedUrl =
+    googleMapsApiKey && hasLocation
+      ? `https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${location.latitude},${location.longitude}&center=${location.latitude},${location.longitude}&zoom=17`
+      : null;
 
   return (
     <div className="font-[poppins] min-h-screen items-center justify-center">
@@ -33,14 +67,22 @@ const Contact = () => {
             </p>
             <p className="mb-2">
               Email:{' '}
-              <a href="mailto:info@sarkinmota.com" className="text-blue-500">
-                info@sarkinmota.com
+              <a
+                href={`mailto:${branding.contact.emails.info}`}
+                className="text-blue-500"
+              >
+                {branding.contact.emails.info}
               </a>
             </p>
-            <p>
-              Phone: <a href="tel:+234701 513 6111">+234 701 5136 111</a>
-            </p>
-            <p className="mb-2">Address: 3F3G+74Q, Olusegun Obasanjo Wy, beside NNPC Mega Gas Station, Central Business Dis, Abuja 900103, Federal Capital Territory.</p>
+            {mainPhone.display && (
+              <p>
+                Phone:{' '}
+                <a href={`tel:${mainPhone.value}`}>{mainPhone.display}</a>
+              </p>
+            )}
+            {addressText && (
+              <p className="mb-2">Address: {addressText}</p>
+            )}
           </div>
           <div className="bg-white shadow-lg rounded-3xl h-full w-full p-4 items-center justify-center">
             <h1 className="font-[poppins] text-2xl font-bold mt-2">
@@ -171,16 +213,25 @@ const Contact = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
           <div className="flex flex-col justify-center">
             <h1 className="text-4xl font-bold mb-4">Our Location</h1>
-            <p className="mb-2">
-              Visit us at our dealership! We're located at 3F3G+74Q, Olusegun
-              Obasanjo Wy, beside NNPC Mega Gas Station, Central Business Dis,
-              Abuja 900103, Federal Capital Territory. Our friendly team is
-              ready to assist you with all your car needs.
-            </p>
+            {addressText && (
+              <p className="mb-2">
+                Visit us at our dealership! We're located at {addressText}. Our
+                friendly team is ready to assist you with all your car needs.
+              </p>
+            )}
             <h3>Opening Hours</h3>
             <ul className="list-disc list-inside">
-              <li>Monday - Friday: 9:00 AM - 6:00 PM</li>
-              <li>Saturday: 10:00 AM - 4:00 PM</li>
+              {contactInfo.hours?.length
+                ? contactInfo.hours.map((entry) => (
+                    <li key={`${entry.label}-${entry.value}`}>
+                      {entry.label}
+                      {entry.label && entry.value ? ': ' : ''}
+                      {entry.value}
+                    </li>
+                  ))
+                : (
+                    <li>Monday - Friday: 9:00 AM - 6:00 PM</li>
+                  )}
             </ul>
           </div>
           <div className="bg-base-100 p-2 rounded-3xl shadow-xl flex flex-col items-center justify-center">
@@ -188,7 +239,7 @@ const Contact = () => {
               Find Us on the Map
             </h2>
             <div className="w-full h-80 rounded-3xl overflow-hidden border border-base-300">
-              {googleMapsApiKey ? (
+              {googleMapsEmbedUrl ? (
                 <iframe
                   src={googleMapsEmbedUrl}
                   width="100%"
@@ -202,8 +253,8 @@ const Contact = () => {
               ) : (
                 <div className="flex items-center justify-center h-full text-center text-error">
                   <p>
-                    Google Maps API Key is missing or unauthorized. Please check
-                    your console.
+                    Map unavailable. Confirm your Google Maps API key and
+                    showroom coordinates in the branding config.
                   </p>
                 </div>
               )}
@@ -221,11 +272,16 @@ const Contact = () => {
             <p>If you need assistance, please contact our support team.</p>
             <p>
               Email:{' '}
-              <a href="mailto:support@sarkinmota.com">support@sarkinmota.com</a>
+              <a href={`mailto:${branding.contact.emails.support}`}>
+                {branding.contact.emails.support}
+              </a>
             </p>
-            <p>
-              Phone: <a href="tel:+234701 513 6111">+234 701 5136 111</a>
-            </p>
+            {supportPhone.display && (
+              <p>
+                Phone:{' '}
+                <a href={`tel:${supportPhone.value}`}>{supportPhone.display}</a>
+              </p>
+            )}
           </div>
           <div className="flex flex-col">
             <h2 className="text-2xl font-semibold font-[poppins] mb-2">
@@ -236,11 +292,17 @@ const Contact = () => {
               sales team.
             </p>
             <p>
-              Email: <a href="mailto:sales@sarkinmota.com">sales@sarkinmota.com</a>
+              Email:{' '}
+              <a href={`mailto:${branding.contact.emails.sales}`}>
+                {branding.contact.emails.sales}
+              </a>
             </p>
-            <p>
-              Phone: <a href="tel:+234701 513 6111">+234 701 5136 111</a>
-            </p>
+            {salesPhone.display && (
+              <p>
+                Phone:{' '}
+                <a href={`tel:${salesPhone.value}`}>{salesPhone.display}</a>
+              </p>
+            )}
           </div>
         </div>
       </div>

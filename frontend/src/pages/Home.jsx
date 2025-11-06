@@ -48,6 +48,7 @@ import { useCarStore } from '../store/useCarStore';
 import { useBlogStore } from '../store/useBlogStore';
 import { useInteractStore } from '../store/useInteractStore';
 import toast from 'react-hot-toast';
+import branding from '../config/branding';
 
 const Home = () => {
   const [isFocusedCarPrice, setIsFocusedCarPrice] = useState(false);
@@ -415,9 +416,9 @@ const Home = () => {
           <div className="w-full flex space-x-2 overflow-x-auto">
             <TeamCard
               image={ceo}
-              name="Al-amin"
+              name={branding.company.ceo.name}
               title="CEO"
-              description="I am Al-amin, the CEO of Sarkin Mota. With a passion for cars and a vision to revolutionize the automotive industry, I lead our team to deliver exceptional service and value to our customers."
+              description={branding.company.ceo.bio}
             />
             <TeamCard
               image={ceo}
@@ -964,9 +965,9 @@ const Home = () => {
             <div className="w-full flex space-x-4 overflow-x-auto">
               <TeamCard
                 image={ceo}
-                name="Al-Amin"
+                name={branding.company.ceo.name}
                 title="CEO"
-                description="I am Al-amin, the CEO of Sarkin Mota. With a passion for cars and a vision to revolutionize the automotive industry, I lead our team to deliver exceptional service and value to our customers."
+                description={branding.company.ceo.bio}
               />
               <TeamCard
                 image={ceo}

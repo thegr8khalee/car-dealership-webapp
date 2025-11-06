@@ -6,6 +6,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useUserAuthStore } from '../store/useUserAuthStore';
 import { useAdminAuthStore } from '../store/useAdminAuthStore';
 import logo from '../images/logo.png';
+import branding from '../config/branding';
 
 const Navbar = ({ className = '' }) => {
   const { adminLogout } = useAdminAuthStore();
@@ -77,8 +78,8 @@ const Navbar = ({ className = '' }) => {
               className="text-lg flex items-center justify-center sm:text-2xl font-['Microgramma_D_Extended'] text-white"
               href="/"
             >
-              <img src={logo} alt="" className='w-10 mr-2' />
-              SARKIN MOTA
+              <img src={logo} alt={branding.branding.logoAlt} className="w-10 mr-2" />
+              {branding.company.uppercaseName}
             </a>
           </div>
 
