@@ -234,35 +234,7 @@ const Contact = () => {
                   )}
             </ul>
           </div>
-          <div className="bg-base-100 p-2 rounded-3xl shadow-xl flex flex-col items-center justify-center">
-            <h2 className="text-2xl font-semibold font-[poppins] mb-6">
-              Find Us on the Map
-            </h2>
-            <div className="w-full h-80 rounded-3xl overflow-hidden border border-base-300">
-              {googleMapsEmbedUrl ? (
-                <iframe
-                  src={googleMapsEmbedUrl}
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen=""
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Our Showroom Location"
-                ></iframe>
-              ) : (
-                <div className="flex items-center justify-center h-full text-center text-error">
-                  <p>
-                    Map unavailable. Confirm your Google Maps API key and
-                    showroom coordinates in the branding config.
-                  </p>
-                </div>
-              )}
-            </div>
-            <p className="mt-4 text-sm text-gray-600 text-center">
-              Click on the map for directions.
-            </p>
-          </div>
+          
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 w-full max-w-7xl">
           <div className="flex flex-col">
